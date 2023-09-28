@@ -1,5 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @font-face {
   font-family: ProductSans;
   src: url(assets/fonts/google_sans/ProductSans-Light.ttf) format("truetype");
@@ -8,6 +7,9 @@
   font-family: Samarkan;
   src: url(assets/fonts/samarkan/SAMAN___.TTF) format("truetype");
 }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 html,
 body {
