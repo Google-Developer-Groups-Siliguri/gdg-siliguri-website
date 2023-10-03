@@ -2,18 +2,28 @@
     margin-top: 13px;
     margin-bottom: 13px;
 }
-.organizers-heading {
+.about-us-heading {
     color: #EA4335;
     font-family: Samarkan;
     font-weight: 400;
     font-size: 24px;
-    margin-bottom: 0px !important;
+    margin-bottom: 0px;
 }
-.organizers-image { 
+.about-us-image { 
     display: flex;
     width: 300px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     border-radius: 17.368px;
+}
+.about-us-text {
+    color: #000;
+    font-family: ProductSans;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    padding-left: 10px;
+    padding-right: 10px;
 }
