@@ -1,0 +1,11 @@
+.gdg-logo{
+    width: 160px;
+    height: 150px;
+}
+
+@media screen and (max-width:400px) {
+    .gdg-logo{
+        width: 80px;
+        height: 80px;
+    }
+}
