@@ -4,6 +4,11 @@
   src: url(assets/fonts/google_sans/ProductSans-Light.ttf) format("truetype");
 }
 @font-face {
+  font-family: TiroDevanagariHindi;
+  src: url(assets/fonts/tiro_devanagari/TiroDevanagariHindi-Regular.ttf)
+    format("truetype");
+}
+@font-face {
   font-family: Samarkan;
   src: url(assets/fonts/samarkan/SAMAN___.TTF) format("truetype");
 }
@@ -18,5 +23,5 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: ProductSans;
 }
