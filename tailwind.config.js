@@ -9,11 +9,7 @@ module.exports = {
   //   },
   // },
   theme: {
-    extend: {
-      fontFamily: {
-        Samarkan: ["Samarkan"],
-      },
-    },
+    extend: {},
   },
   plugins: [
     require("postcss"),
