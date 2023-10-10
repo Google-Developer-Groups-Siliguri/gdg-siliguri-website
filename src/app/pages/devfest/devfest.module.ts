@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { DevfestComponent } from './devfest.component';
 import { RouterModule, Routes } from '@angular/router';
 import { ContactMapComponent } from 'src/app/components/contact-map/contact-map.component';
+import { SpeakersComponent } from 'src/app/components/speakers/speakers.component';
 
 const routes: Routes = [{ path: '', component: DevfestComponent }];
 
 @NgModule({
   declarations: [DevfestComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), ContactMapComponent],
+  imports: [CommonModule, RouterModule.forChild(routes), ContactMapComponent, SpeakersComponent],
 })
 export class DevfestModule {}
