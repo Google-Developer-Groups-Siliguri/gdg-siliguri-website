@@ -12,6 +12,14 @@ const routes: Routes = [{ path: '', component: DevfestComponent }];
 
 @NgModule({
   declarations: [DevfestComponent],
-  imports: [CommonModule, RouterModule.forChild(routes), ContactMapComponent, SpeakersComponent, AssociationComponent, SponsorsComponent, PartnersComponent],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    ContactMapComponent,
+    SpeakersComponent,
+    AssociationComponent,
+    SponsorsComponent,
+    PartnersComponent,
+  ],
 })
 export class DevfestModule {}
