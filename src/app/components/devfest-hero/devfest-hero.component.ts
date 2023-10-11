@@ -2,6 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
+import { register } from 'swiper/element/bundle';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
   selector: 'app-devfest-hero',
@@ -9,12 +11,14 @@ import { PLATFORM_ID } from '@angular/core';
   imports: [CommonModule],
   templateUrl: './devfest-hero.component.html',
   styleUrls: ['./devfest-hero.component.css'],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class DevfestHeroComponent implements OnInit {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
+      register();
       setInterval(() => {
         var now = new Date().getTime();
         var remainingTime = this.countdownDate - now;
