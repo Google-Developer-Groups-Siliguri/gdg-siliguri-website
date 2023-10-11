@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
@@ -9,4 +9,15 @@ import { NgOptimizedImage } from '@angular/common';
   templateUrl: './navbar-devfest.component.html',
   styleUrls: ['./navbar-devfest.component.css'],
 })
-export class NavbarDevfestComponent {}
+export class NavbarDevfestComponent {
+  @ViewChild('navbardefault') block: ElementRef | undefined;
+
+  toggleClass() {
+    const element = this.block?.nativeElement;
+    if (element.classList.contains('hidden')) {
+      element.classList.remove('hidden');
+    } else {
+      element.classList.add('hidden');
+    }
+  }
+}
