@@ -1,0 +1,123 @@
+<div class="grid grid-cols-12 gap-5 overflow-hidden mx-[1.5rem] mb-[2rem]">
+  <div class="md:col-span-6 col-span-12">
+    <img src="assets/images/devfest.png" class="logo" alt="" />
+    <h1 class="text-4xl text-gray-500 font-bold tracking-widest py-2">
+      GDG SILIGURI
+    </h1>
+    <p class="text-xl text-gray-400 font-medium">
+      Whether you're passionate about finding new opportunities, elevating your
+      knowledge on the latest Google developer tools, or exploring how to use
+      Google technologies to generate social and economic impact, DevFest offers
+      an amazing platform for developers to connect locally, learn, and build on
+      Google's tools.
+    </p>
+    <p class="flex text-lg text-gray-400 pt-4 items-center">
+      <svg
+        class="w-4 h-4 text-gray-400 dark:text-white"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 20 20"
+      >
+        <path
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M5 1v3m5-3v3m5-3v3M1 7h18M5 11h10M2 3h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"
+        />
+      </svg>
+      &nbsp;5th &amp; 6th November
+    </p>
+    <p class="flex text-lg text-gray-400 py-2 items-center">
+      <svg
+        class="w-4 h-4 text-gray-500 dark:text-white"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 17 21"
+      >
+        <g
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        >
+          <path d="M8 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+          <path
+            d="M13.8 12.938h-.01a7 7 0 1 0-11.465.144h-.016l.141.17c.1.128.2.252.3.372L8 20l5.13-6.248c.193-.209.373-.429.54-.66l.13-.154Z"
+          />
+        </g>
+      </svg>
+      &nbsp;Siliguri Institute of Technology
+    </p>
+    <a
+      href="https://docs.google.com/forms/d/e/1FAIpQLSc33RWi0cYkncSjS6TKcXDWoNj_3O-1halpaxc-SW7l2wkFdA/viewform"
+      target="_blank"
+      type="button"
+      class="text-white bg-[#7c4dff] hover:bg-blue-800 focus:outline-none font-medium rounded-3xl text-xl px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700"
+    >
+      Register
+    </a>
+  </div>
+  <div class="md:col-span-6 col-span-12">
+    <div class="grid grid-cols-12 h-full gap-6">
+      <div class="md:col-span-6 col-span-6">
+        <div
+          class="flex max-w-sm p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
+        >
+          <h5
+            class="mb-2 text-6xl font-medium tracking-tight text-gray-900 dark:text-white"
+          >
+            {{ remainingDays }}
+          </h5>
+          <p class="font-normal text-gray-700 dark:text-gray-400 text-3xl">
+            Days
+          </p>
+        </div>
+      </div>
+      <div class="md:col-span-6 col-span-6">
+        <div
+          class="flex max-w-sm p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
+        >
+          <h5
+            class="mb-2 text-6xl font-medium tracking-tight text-gray-900 dark:text-white"
+          >
+            {{ remainingHours }}
+          </h5>
+          <p class="font-normal text-gray-700 dark:text-gray-400 text-3xl">
+            Hours
+          </p>
+        </div>
+      </div>
+      <div class="md:col-span-6 col-span-6">
+        <div
+          class="flex max-w-sm p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
+        >
+          <h5
+            class="mb-2 text-6xl font-medium tracking-tight text-gray-900 dark:text-white"
+          >
+            {{ remainingMinutes }}
+          </h5>
+          <p class="font-normal text-gray-700 dark:text-gray-400 text-3xl">
+            Minutes
+          </p>
+        </div>
+      </div>
+      <div class="md:col-span-6 col-span-6">
+        <div
+          class="flex max-w-sm p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
+        >
+          <h5
+            class="mb-2 text-6xl font-medium tracking-tight text-gray-900 dark:text-white"
+          >
+            {{ remainingSeconds }}
+          </h5>
+          <p class="font-normal text-gray-700 dark:text-gray-400 text-3xl">
+            Seconds
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
