@@ -6,17 +6,9 @@
     <h1 class="text-[40px] text-black text-center font-semibold my-4">Organizers</h1>
     <div class="lg:flex lg:flex-row lg:justify-center">
       <div class="pt-6 grid justify-items-center md:grid-cols-3 gap-y-8 lg:w-[60%]">
-        <app-member-card>
-    
-        </app-member-card>
-    
-        <app-member-card>
-    
-        </app-member-card>
-    
-        <app-member-card>
-    
-        </app-member-card>
+        <ul *ngFor="let user of organizerDetails">
+          <app-member-card [item]='user'></app-member-card>
+        </ul>
       </div>
     </div>
   </div>
@@ -25,21 +17,9 @@
     <h1 class="text-[40px] text-black text-center font-semibold my-4">Volunteers</h1>
     <div class="lg:flex lg:flex-row lg:justify-center">
       <div class="pt-6 grid justify-items-center md:grid-cols-3 gap-y-8 lg:w-[60%]">
-        <app-member-card>
-    
-        </app-member-card>
-    
-        <app-member-card>
-    
-        </app-member-card>
-    
-        <app-member-card>
-    
-        </app-member-card>
-
-        <app-member-card>
-    
-        </app-member-card>
+        <ul *ngFor="let user of volunteerDetails">
+          <app-member-card [item]='user'></app-member-card>
+        </ul>
       </div>
     </div>
   </div>
