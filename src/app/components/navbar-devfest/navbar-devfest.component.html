@@ -53,6 +53,7 @@
             <a
               [routerLink]="[route.path]"
               [routerLinkActive]="['link-active']"
+              [routerLinkActiveOptions]="{ exact: route.exact }"
               class="block py-2 px-4 text-gray-600 rounded-full hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:dark:hover:bg-transparent transition-all ease-in-out duration-300 font-semibold md:rounded-lg select-none"
               aria-current="page"
               >{{ route.name }}</a

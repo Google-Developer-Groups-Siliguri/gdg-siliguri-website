@@ -12,6 +12,8 @@ export class ScheduleComponent {
     this.title.setTitle('Schedule | Devfest Siliguri 2023');
   }
 
+  mockData = true
+
   day1 = [
     {
       startTime: '10:45 AM',

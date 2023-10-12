@@ -22,7 +22,7 @@ const routes: Routes = [
     component: DevfestLayoutComponent,
     children: [
       {
-        path: 'home',
+        path: '',
         loadChildren: () =>
           import('./pages/devfest/devfest.module').then((m) => m.DevfestModule),
       },
