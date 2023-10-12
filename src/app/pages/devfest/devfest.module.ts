@@ -7,6 +7,8 @@ import { SpeakersComponent } from 'src/app/components/speakers/speakers.componen
 import { SponsorsComponent } from 'src/app/components/sponsors/sponsors.component';
 import { PartnersComponent } from 'src/app/components/partners/partners.component';
 import { DevfestHeroComponent } from 'src/app/components/devfest-hero/devfest-hero.component';
+import { ReviewComponent } from 'src/app/components/review/review.component';
+import { FaqComponent } from 'src/app/components/faq/faq.component';
 
 const routes: Routes = [{ path: '', component: DevfestComponent }];
 
@@ -20,6 +22,8 @@ const routes: Routes = [{ path: '', component: DevfestComponent }];
     SpeakersComponent,
     SponsorsComponent,
     PartnersComponent,
+    ReviewComponent,
+    FaqComponent
   ],
 })
 export class DevfestModule {}
