@@ -1,3 +1,26 @@
-<div class="mt-20 min-h-[70vh]">
-  <p>team works!</p>
+<div class="mt-20 min-h-[100vh] 2xl:mx-[8rem] md:mx-[4rem] mx-[1.5rem]">
+  <h1 class="text-[50px] lg:text-[70px] leading-tight tracking-wide font-bold text-gray-800 text-center">Team</h1>
+  <h2 class="text-xl text-[#9CA3AF] text-center font-semibold mt-4">Meet our DevFest Siliguri 2023 organisers and volunteers.</h2>
+  
+  <div class="my-10">
+    <h1 class="text-[40px] text-black text-center font-semibold my-4">Organizers</h1>
+    <div class="lg:flex lg:flex-row lg:justify-center">
+      <div class="pt-6 grid justify-items-center md:grid-cols-3 gap-y-10 lg:w-[60%]">
+        <ul *ngFor="let user of organizerDetails">
+          <app-member-card [item]='user'></app-member-card>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="my-10">
+    <h1 class="text-[40px] text-black text-center font-semibold my-4">Volunteers</h1>
+    <div class="lg:flex lg:flex-row lg:justify-center">
+      <div class="pt-6 grid justify-items-center md:grid-cols-3 gap-y-10 lg:w-[60%]">
+        <ul *ngFor="let user of volunteerDetails">
+          <app-member-card [item]='user'></app-member-card>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>
