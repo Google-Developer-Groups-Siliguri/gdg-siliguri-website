@@ -9,5 +9,5 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./member-card.component.css']
 })
 export class MemberCardComponent {
-  @Input() item:{name: string, designation: string, role: string, image: string}={name: '', designation: '', role: '', image: ''}
+  @Input() item:{name: string, designation: string, role: string, image: string, linkedIn: string, twitter: string, github: string}={name: '', designation: '', role: '', image: '', linkedIn: '', twitter: '', github: ''}
 }
