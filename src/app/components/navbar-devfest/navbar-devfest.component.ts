@@ -12,6 +12,14 @@ import { NgOptimizedImage } from '@angular/common';
 export class NavbarDevfestComponent {
   @ViewChild('navbardefault') block: ElementRef | undefined;
 
+  routes = [
+    { path: 'home', name: 'Home' },
+    { path: 'schedule', name: 'Schedule' },
+    { path: 'tickets', name: 'Tickets' },
+    { path: 'team', name: 'Team' },
+    { path: 'contact', name: 'Contact Us' },
+  ];
+
   toggleClass() {
     const element = this.block?.nativeElement;
     if (element.classList.contains('hidden')) {
