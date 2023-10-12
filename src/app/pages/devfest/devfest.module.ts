@@ -10,6 +10,7 @@ import { DevfestHeroComponent } from 'src/app/components/devfest-hero/devfest-he
 import { ReviewComponent } from 'src/app/components/review/review.component';
 import { FaqComponent } from 'src/app/components/faq/faq.component';
 import { GoogleProductsComponent } from 'src/app/components/google-products/google-products.component';
+import { KeepInTouchComponent } from 'src/app/components/keep-in-touch/keep-in-touch.component';
 
 const routes: Routes = [{ path: '', component: DevfestComponent }];
 
@@ -25,7 +26,8 @@ const routes: Routes = [{ path: '', component: DevfestComponent }];
     PartnersComponent,
     ReviewComponent,
     FaqComponent,
-    GoogleProductsComponent
+    GoogleProductsComponent,
+    KeepInTouchComponent
   ],
 })
 export class DevfestModule {}
