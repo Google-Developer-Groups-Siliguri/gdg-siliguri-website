@@ -13,6 +13,8 @@
       class="swiper mySwiper lg:w-[25rem] md:w-[18rem] md:h-full w-[280px] h-[22rem]"
       effect="cards"
       grab-cursor="true"
+      observer="true"
+      observe-parents="true"
     >
       <ng-container *ngFor="let item of data">
         <swiper-slide

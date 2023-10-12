@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { register } from 'swiper/element/bundle';
 
@@ -13,7 +13,10 @@ import { register } from 'swiper/element/bundle';
 })
 export class ReviewComponent implements OnInit {
   data = [1, 2, 3, 4, 5];
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
   ngOnInit(): void {
-    register();
+    if (isPlatformBrowser(this.platformId)) {
+      register();
+    }
   }
 }
