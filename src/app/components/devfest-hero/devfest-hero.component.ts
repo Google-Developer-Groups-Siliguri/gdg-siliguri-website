@@ -4,6 +4,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { register } from 'swiper/element/bundle';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { getDocument, getWindow } from 'ssr-window';
 
 @Component({
   selector: 'app-devfest-hero',
@@ -41,4 +42,16 @@ export class DevfestHeroComponent implements OnInit {
   remainingHours: number | undefined;
   remainingMinutes: number | undefined;
   remainingSeconds: number | undefined;
+
+  scrollToSection(id: string) {
+    var element = getDocument().getElementById(id)!;
+    var headerOffset = 100;
+    var elementPosition = element.getBoundingClientRect().top;
+    var offsetPosition = elementPosition + window.scrollY - headerOffset;
+
+    getWindow().scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth',
+    });
+  }
 }

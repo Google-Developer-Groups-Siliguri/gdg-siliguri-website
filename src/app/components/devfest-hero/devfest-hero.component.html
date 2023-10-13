@@ -42,7 +42,7 @@
       </svg>
       &nbsp;4th November 8:00 AM IST
     </p>
-    <p class="flex text-lg text-gray-500 py-2 items-center hover:underline">
+    <p class="flex text-lg text-gray-500 py-2 items-center">
       <svg
         class="w-4 h-4 text-gray-500 dark:text-white"
         aria-hidden="true"
@@ -63,7 +63,9 @@
         </g>
       </svg>
       &nbsp;
-      <a class="cursor-pointer">Royal Sarovar Portico, Siliguri</a>
+      <a class="cursor-pointer underline" (click)="scrollToSection('venue')"
+        >Royal Sarovar Portico, Siliguri</a
+      >
     </p>
     <a
       href="https://docs.google.com/forms/d/e/1FAIpQLSc33RWi0cYkncSjS6TKcXDWoNj_3O-1halpaxc-SW7l2wkFdA/viewform"
