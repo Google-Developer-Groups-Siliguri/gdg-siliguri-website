@@ -4,21 +4,21 @@ import { HomeLayoutComponent } from './layout/home-layout/home-layout.component'
 import { DevfestLayoutComponent } from './layout/devfest-layout/devfest-layout.component';
 
 const routes: Routes = [
+  // {
+  //   path: '',
+  //   component: HomeLayoutComponent,
+  //   children: [
+  //     {
+  //       path: '',
+  //       loadChildren: () =>
+  //         import('./pages/home-page/home-page.module').then(
+  //           (m) => m.HomePageModule
+  //         ),
+  //     },
+  //   ],
+  // },
   {
     path: '',
-    component: HomeLayoutComponent,
-    children: [
-      {
-        path: '',
-        loadChildren: () =>
-          import('./pages/home-page/home-page.module').then(
-            (m) => m.HomePageModule
-          ),
-      },
-    ],
-  },
-  {
-    path: 'devfest',
     component: DevfestLayoutComponent,
     children: [
       {

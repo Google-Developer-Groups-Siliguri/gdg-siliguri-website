@@ -13,7 +13,7 @@ export class NavbarDevfestComponent {
   @ViewChild('navbardefault') block: ElementRef | undefined;
 
   routes = [
-    { path: '/devfest', name: 'Home', exact: true },
+    { path: '', name: 'Home', exact: true },
     { path: 'schedule', name: 'Schedule', exact: false },
     { path: 'tickets', name: 'Tickets', exact: false },
     { path: 'team', name: 'Team', exact: false },

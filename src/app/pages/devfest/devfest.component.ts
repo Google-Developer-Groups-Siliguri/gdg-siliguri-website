@@ -8,7 +8,10 @@ import { Meta, Title } from '@angular/platform-browser';
 })
 export class DevfestComponent {
   constructor(private meta: Meta, private title: Title) {
-    this.meta.addTag({ name: 'title', content: 'Devfest Siliguri 2023' });
+    this.meta.addTag({
+      name: 'title',
+      content: 'Home | Devfest Siliguri 2023',
+    });
     this.title.setTitle('Home | Devfest Siliguri 2023');
   }
 }

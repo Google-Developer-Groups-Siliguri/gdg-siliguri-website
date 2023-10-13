@@ -36,7 +36,7 @@ export class DevfestHeroComponent implements OnInit {
     }
   }
 
-  countdownDate = new Date('november 05, 2023 00:00:00').getTime();
+  countdownDate = new Date('november 04, 2023 08:00:00').getTime();
   remainingDays: number | undefined;
   remainingHours: number | undefined;
   remainingMinutes: number | undefined;

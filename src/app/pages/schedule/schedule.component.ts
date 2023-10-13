@@ -8,11 +8,14 @@ import { Meta, Title } from '@angular/platform-browser';
 })
 export class ScheduleComponent {
   constructor(private meta: Meta, private title: Title) {
-    this.meta.addTag({ name: 'title', content: 'Devfest Siliguri 2023' });
+    this.meta.addTag({
+      name: 'title',
+      content: 'Schedule | Devfest Siliguri 2023',
+    });
     this.title.setTitle('Schedule | Devfest Siliguri 2023');
   }
 
-  mockData = true
+  mockData = true;
 
   day1 = [
     {
