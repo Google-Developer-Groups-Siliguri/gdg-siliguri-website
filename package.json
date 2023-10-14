@@ -23,6 +23,7 @@
     "@angular/platform-browser-dynamic": "^16.2.9",
     "@angular/platform-server": "^16.2.9",
     "@angular/router": "^16.2.9",
+    "@angular/service-worker": "^16.2.9",
     "@nguniversal/express-engine": "^16.2.0",
     "express": "^4.15.2",
     "flowbite": "^1.8.1",
