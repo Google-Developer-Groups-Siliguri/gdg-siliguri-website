@@ -1,16 +1,21 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component } from '@angular/core';
+import { NgFor } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
+import { Collapse } from 'flowbite';
+import type { CollapseOptions, CollapseInterface } from 'flowbite';
+import { getDocument } from 'ssr-window';
+
 @Component({
   selector: 'app-navbar-devfest',
   standalone: true,
-  imports: [CommonModule, RouterModule, NgOptimizedImage],
+  imports: [NgFor, RouterModule, NgOptimizedImage],
   templateUrl: './navbar-devfest.component.html',
   styleUrls: ['./navbar-devfest.component.css'],
 })
-export class NavbarDevfestComponent {
-  @ViewChild('navbardefault') block: ElementRef | undefined;
+export class NavbarDevfestComponent implements AfterViewInit {
+  options!: CollapseOptions;
+  collapse!: CollapseInterface;
 
   routes = [
     { path: '', name: 'Home', exact: true },
@@ -20,12 +25,23 @@ export class NavbarDevfestComponent {
     { path: 'contact', name: 'Contact Us', exact: false },
   ];
 
-  toggleClass() {
-    const element = this.block?.nativeElement;
-    if (element.classList.contains('hidden')) {
-      element.classList.remove('hidden');
-    } else {
-      element.classList.add('hidden');
-    }
+  ngAfterViewInit(): void {
+    // set the target element that will be collapsed or expanded (eg. navbar menu)
+    const $targetEl = getDocument().getElementById(
+      'navbar-container'!
+    ) as HTMLElement;
+
+    // optionally set a trigger element (eg. a button, hamburger icon)
+    const $triggerEl = getDocument().getElementById(
+      'navbar-btn'
+    )! as HTMLElement;
+
+    this.options = {};
+
+    this.collapse = new Collapse($targetEl, $triggerEl, this.options);
+  }
+
+  collapseNavbarHandler() {
+    this.collapse.collapse();
   }
 }
