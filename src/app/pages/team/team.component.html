@@ -1,41 +1,53 @@
-<div class="mt-20 min-h-[100vh] 2xl:mx-[8rem] md:mx-[4rem] mx-[1.5rem]">
-  <h1
-    class="text-[50px] lg:text-[70px] leading-tight tracking-wide font-bold text-gray-800 text-center"
-  >
-    Team
-  </h1>
-  <h2 class="text-xl text-[#9CA3AF] text-center font-semibold mt-4">
-    Meet our DevFest Siliguri 2023 organisers and volunteers.
-  </h2>
-
-  <div class="my-10">
-    <h1 class="text-[40px] text-black text-center font-semibold my-4">
-      Organizers
+<div class="mt-20 min-h-[100vh] max-w-screen-2xl mx-auto">
+  <div class="mx-[1.5rem]">
+    <h1
+      class="text-[50px] lg:text-[70px] leading-tight tracking-wide font-bold text-gray-800 text-center"
+    >
+      Team
     </h1>
-    <div class="lg:flex lg:flex-row lg:justify-center">
+    <h2 class="text-xl text-[#9CA3AF] text-center font-semibold mt-4">
+      Meet our DevFest Siliguri 2023 organisers and volunteers.
+    </h2>
+
+    <div class="w-full my-10">
+      <h1 class="text-[40px] text-black text-center font-semibold my-4">
+        Organizers
+      </h1>
       <div
-        class="pt-6 grid justify-items-center md:grid-cols-3 gap-y-10 lg:w-[60%]"
+        class="grid items-center justify-center grid-cols-12 gap-x-4 gap-y-10 xl:gap-x-20"
       >
-        <ul *ngFor="let user of organizers">
-          <app-member-card [item]="user"></app-member-card>
-        </ul>
+        <div
+          *ngFor="let user of organizers"
+          class="h-full col-span-12 lg:col-span-3 md:col-span-4"
+        >
+          <div class="flex items-center justify-center h-full">
+            <app-member-card
+              [item]="user"
+              class="w-full h-full"
+            ></app-member-card>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="my-10">
-    <h1 class="text-[40px] text-black text-center font-semibold my-4">
-      Volunteers
-    </h1>
-    <div class="lg:flex lg:flex-row lg:justify-center">
+    <div class="my-10">
+      <h1 class="text-[40px] text-black text-center font-semibold my-4">
+        Volunteers
+      </h1>
       <div
-        class="pt-6 grid justify-items-center md:grid-cols-4 gap-y-20 lg:w-[60%]"
+        class="grid items-center justify-center grid-cols-12 gap-x-4 gap-y-10 xl:gap-x-20"
       >
-        <ul *ngFor="let user of volunteers">
-          <ng-container *ngIf="user.designation === 'Volunteer'">
-            <app-member-card [item]="user"></app-member-card>
-          </ng-container>
-        </ul>
+        <div
+          *ngFor="let user of volunteers"
+          class="h-full col-span-12 lg:col-span-3 md:col-span-4"
+        >
+          <div class="flex items-center justify-center h-full">
+            <app-member-card
+              [item]="user"
+              class="w-full h-full"
+            ></app-member-card>
+          </div>
+        </div>
       </div>
     </div>
   </div>

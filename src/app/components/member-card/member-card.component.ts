@@ -1,12 +1,13 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { NgOptimizedImage } from '@angular/common';
 @Component({
   selector: 'app-member-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgOptimizedImage],
   templateUrl: './member-card.component.html',
   styleUrls: ['./member-card.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MemberCardComponent {
   @Input() item: {
