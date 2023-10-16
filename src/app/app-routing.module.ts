@@ -43,6 +43,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes, {
       initialNavigation: 'enabledBlocking',
       scrollPositionRestoration: 'enabled',
+      onSameUrlNavigation: 'ignore',
     }),
   ],
   exports: [RouterModule],
