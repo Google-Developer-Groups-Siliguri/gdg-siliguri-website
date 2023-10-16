@@ -1,32 +1,36 @@
 <div
-  class="px-[20px] w-[240px] md:w-[190px] lg:w-[220px] h-[320px] rounded-3xl bg-[#40C4FF66] shadow-xl hover:shadow-2xl flex flex-col justify-center items-center relative"
+  class="xl:p-8 md:p-4 h-full p-10 rounded-2xl bg-[#cddef5] shadow-xl hover:shadow-2xl flex flex-col justify-center items-center mx-5"
 >
   <div
-    class="w-[100px] lg:w-[100px] h-[100px] lg:h-[100px] border-2 rounded-[80px] mx-auto"
+    class="mx-auto border-8 rounded-full border-t-[#428fff] border-r-[#fe5145] border-b-[#ffbb01] border-l-[#38a852]"
   >
     <img
-      src="../../../assets/images/ioposter.webp"
-      class="w-[100px] lg:w-[100px] h-[100px] lg:h-[100px] rounded-[80px] border-4 border-[#FDE293]"
+      [ngSrc]="item.provideYourPicture"
+      class="rounded-full"
       alt="speaker image"
+      data-load="lazy"
+      height="150"
+      width="150"
+      priority="low"
     />
   </div>
-  <h2
-    class="text-center text-[25px] leading-[24px] font-semibold text-gray-800 mt-[30px] mb-[10px]"
+  <p
+    class="text-center lg:text-xl xl:text-2xl md:text-lg text-2xl font-semibold text-gray-800 mt-[30px] mb-[10px]"
   >
-    {{ item.name }}
-  </h2>
+    {{ item.yourName }}
+  </p>
   <h2
     class="text-center text-[13px] leading-[16.8px] text-gray-600 font-semibold tracking-[1px]"
   >
     {{ item.designation }}
   </h2>
 
-  <div class="mt-4 flex flex-row justify-between w-[60%]">
-    <a [href]="item.linkedIn" class="cursor-pointer">
+  <div class="flex flex-row justify-between gap-5 mt-4">
+    <a [href]="item.yourLinkedinUrl" class="cursor-pointer">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="25"
-        height="25"
+        width="40"
+        height="40"
         viewBox="7.025 7.025 497.951 497.95"
         id="linkedin"
       >
@@ -49,11 +53,15 @@
       </svg>
     </a>
 
-    <a [href]="item.twitter" class="cursor-pointer">
+    <a
+      [href]="item.yourTwitterUrl"
+      class="cursor-pointer"
+      *ngIf="item.yourTwitterUrl"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="25"
-        height="25"
+        width="40"
+        height="40"
         viewBox="0 0 112.197 112.197"
         id="twitter"
       >
@@ -65,11 +73,15 @@
       </svg>
     </a>
 
-    <a [href]="item.github" class="cursor-pointer">
+    <a
+      [href]="item.yourGithubUrl"
+      class="cursor-pointer"
+      *ngIf="item.yourGithubUrl"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="25"
-        height="25"
+        width="40"
+        height="40"
         viewBox="0 0 16 16"
         id="github"
       >
@@ -82,8 +94,8 @@
   </div>
 
   <div
-    class="w-[91px] h-[24px] rounded-xl bg-[#81C995] absolute top-[-12px] border-black flex justify-center items-center shadow-2xl"
+    class="px-3 py-2 rounded-full bg-[#38a852] absolute border-black flex justify-center items-center shadow-2xl"
   >
-    <h2 class="text-sm text-white font-semibold">{{ item.role }}</h2>
+    <h2 class="text-base font-semibold text-white">{{ item.designation }}</h2>
   </div>
 </div>
