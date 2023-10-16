@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-team',
   templateUrl: './team.component.html',
   styleUrls: ['./team.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamComponent {
   constructor(private meta: Meta, private title: Title) {
