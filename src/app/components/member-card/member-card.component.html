@@ -1,99 +1,51 @@
 <div
-  class="xl:p-8 md:p-4 h-full p-10 rounded-2xl bg-[#40c3ff33] shadow-xl hover:shadow-2xl flex flex-col justify-center items-center mx-5"
->
+  class="xl:p-8 md:p-4 h-full p-10 rounded-2xl bg-[#40c3ff33] shadow-xl hover:shadow-2xl flex flex-col justify-center items-center mx-5">
   <div
-    class="mx-auto border-8 rounded-full border-t-[#428fff] border-r-[#fe5145] border-b-[#ffbb01] border-l-[#38a852]"
-  >
-    <img
-      [ngSrc]="item.provideYourPicture"
-      class="rounded-full"
-      alt="speaker image"
-      data-load="lazy"
-      height="150"
-      width="150"
-    />
+    class="mx-auto border-8 rounded-full border-t-[#428fff] border-r-[#fe5145] border-b-[#ffbb01] border-l-[#38a852]">
+    <img [ngSrc]="item.provideYourPicture" class="rounded-full" alt="speaker image" data-load="lazy" height="150"
+      width="150" />
   </div>
-  <p
-    class="text-center lg:text-xl xl:text-2xl md:text-lg text-2xl font-semibold text-gray-800 mt-[30px] mb-[10px]"
-  >
+  <p class="text-center lg:text-xl xl:text-2xl md:text-lg text-2xl font-semibold text-gray-800 mt-[30px] mb-[10px]">
     {{ item.yourName }}
   </p>
-  <h2
-    class="text-center text-[13px] leading-[16.8px] text-gray-600 font-semibold tracking-[1px]"
-  >
-    {{ item.designation }}
+  <h2 class="text-center text-[13px] leading-[16.8px] text-gray-600 font-semibold tracking-[1px]">
+    {{ item.description }}
   </h2>
 
   <div class="flex flex-row justify-between gap-5 mt-4">
-    <a [href]="item.yourLinkedinUrl" class="cursor-pointer">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="40"
-        height="40"
-        viewBox="7.025 7.025 497.951 497.95"
-        id="linkedin"
-      >
-        <linearGradient
-          id="a"
-          x1="-974.482"
-          x2="-622.378"
-          y1="1306.773"
-          y2="1658.877"
-          gradientTransform="translate(1054.43 -1226.825)"
-          gradientUnits="userSpaceOnUse"
-        >
+    <a [href]="item.yourLinkedinUrl" target="_blank" rel="noopener noreferrer" class="cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="7.025 7.025 497.951 497.95" id="linkedin">
+        <linearGradient id="a" x1="-974.482" x2="-622.378" y1="1306.773" y2="1658.877"
+          gradientTransform="translate(1054.43 -1226.825)" gradientUnits="userSpaceOnUse">
           <stop offset="0" stop-color="#2489be"></stop>
           <stop offset="1" stop-color="#0575b3"></stop>
         </linearGradient>
-        <path
-          fill="url(#a)"
-          d="M256 7.025C118.494 7.025 7.025 118.494 7.025 256S118.494 504.975 256 504.975 504.976 393.506 504.976 256C504.975 118.494 393.504 7.025 256 7.025zm-66.427 369.343h-54.665V199.761h54.665v176.607zM161.98 176.633c-17.853 0-32.326-14.591-32.326-32.587 0-17.998 14.475-32.588 32.326-32.588s32.324 14.59 32.324 32.588c.001 17.997-14.472 32.587-32.324 32.587zm232.45 199.735h-54.4v-92.704c0-25.426-9.658-39.619-29.763-39.619-21.881 0-33.312 14.782-33.312 39.619v92.704h-52.43V199.761h52.43v23.786s15.771-29.173 53.219-29.173c37.449 0 64.257 22.866 64.257 70.169l-.001 111.825z"
-        ></path>
+        <path fill="url(#a)"
+          d="M256 7.025C118.494 7.025 7.025 118.494 7.025 256S118.494 504.975 256 504.975 504.976 393.506 504.976 256C504.975 118.494 393.504 7.025 256 7.025zm-66.427 369.343h-54.665V199.761h54.665v176.607zM161.98 176.633c-17.853 0-32.326-14.591-32.326-32.587 0-17.998 14.475-32.588 32.326-32.588s32.324 14.59 32.324 32.588c.001 17.997-14.472 32.587-32.324 32.587zm232.45 199.735h-54.4v-92.704c0-25.426-9.658-39.619-29.763-39.619-21.881 0-33.312 14.782-33.312 39.619v92.704h-52.43V199.761h52.43v23.786s15.771-29.173 53.219-29.173c37.449 0 64.257 22.866 64.257 70.169l-.001 111.825z">
+        </path>
       </svg>
     </a>
 
-    <a
-      [href]="item.yourTwitterUrl"
-      class="cursor-pointer"
-      *ngIf="item.yourTwitterUrl"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        x="0px"
-        y="0px"
-        width="40"
-        height="40"
-        viewBox="0 0 50 50"
-      >
+    <a [href]="item.yourTwitterUrl" class="cursor-pointer" target="_blank" rel="noopener noreferrer"
+      *ngIf="item.yourTwitterUrl">
+      <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40" viewBox="0 0 50 50">
         <path
-          d="M 11 4 C 7.134 4 4 7.134 4 11 L 4 39 C 4 42.866 7.134 46 11 46 L 39 46 C 42.866 46 46 42.866 46 39 L 46 11 C 46 7.134 42.866 4 39 4 L 11 4 z M 13.085938 13 L 21.023438 13 L 26.660156 21.009766 L 33.5 13 L 36 13 L 27.789062 22.613281 L 37.914062 37 L 29.978516 37 L 23.4375 27.707031 L 15.5 37 L 13 37 L 22.308594 26.103516 L 13.085938 13 z M 16.914062 15 L 31.021484 35 L 34.085938 35 L 19.978516 15 L 16.914062 15 z"
-        ></path>
+          d="M 11 4 C 7.134 4 4 7.134 4 11 L 4 39 C 4 42.866 7.134 46 11 46 L 39 46 C 42.866 46 46 42.866 46 39 L 46 11 C 46 7.134 42.866 4 39 4 L 11 4 z M 13.085938 13 L 21.023438 13 L 26.660156 21.009766 L 33.5 13 L 36 13 L 27.789062 22.613281 L 37.914062 37 L 29.978516 37 L 23.4375 27.707031 L 15.5 37 L 13 37 L 22.308594 26.103516 L 13.085938 13 z M 16.914062 15 L 31.021484 35 L 34.085938 35 L 19.978516 15 L 16.914062 15 z">
+        </path>
       </svg>
     </a>
 
-    <a
-      [href]="item.yourGithubUrl"
-      class="cursor-pointer"
-      *ngIf="item.yourGithubUrl"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="40"
-        height="40"
-        viewBox="0 0 16 16"
-        id="github"
-      >
-        <path
-          fill="#000000"
-          d="M7.999 0C3.582 0 0 3.596 0 8.032a8.031 8.031 0 0 0 5.472 7.621c.4.074.546-.174.546-.387 0-.191-.007-.696-.011-1.366-2.225.485-2.695-1.077-2.695-1.077-.363-.928-.888-1.175-.888-1.175-.727-.498.054-.488.054-.488.803.057 1.225.828 1.225.828.714 1.227 1.873.873 2.329.667.072-.519.279-.873.508-1.074-1.776-.203-3.644-.892-3.644-3.969 0-.877.312-1.594.824-2.156-.083-.203-.357-1.02.078-2.125 0 0 .672-.216 2.2.823a7.633 7.633 0 0 1 2.003-.27 7.65 7.65 0 0 1 2.003.271c1.527-1.039 2.198-.823 2.198-.823.436 1.106.162 1.922.08 2.125.513.562.822 1.279.822 2.156 0 3.085-1.87 3.764-3.652 3.963.287.248.543.738.543 1.487 0 1.074-.01 1.94-.01 2.203 0 .215.144.465.55.386A8.032 8.032 0 0 0 16 8.032C16 3.596 12.418 0 7.999 0z"
-        ></path>
+    <a [href]="item.yourGithubUrl" class="cursor-pointer" target="_blank" rel="noopener noreferrer"
+      *ngIf="item.yourGithubUrl">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 16 16" id="github">
+        <path fill="#000000"
+          d="M7.999 0C3.582 0 0 3.596 0 8.032a8.031 8.031 0 0 0 5.472 7.621c.4.074.546-.174.546-.387 0-.191-.007-.696-.011-1.366-2.225.485-2.695-1.077-2.695-1.077-.363-.928-.888-1.175-.888-1.175-.727-.498.054-.488.054-.488.803.057 1.225.828 1.225.828.714 1.227 1.873.873 2.329.667.072-.519.279-.873.508-1.074-1.776-.203-3.644-.892-3.644-3.969 0-.877.312-1.594.824-2.156-.083-.203-.357-1.02.078-2.125 0 0 .672-.216 2.2.823a7.633 7.633 0 0 1 2.003-.27 7.65 7.65 0 0 1 2.003.271c1.527-1.039 2.198-.823 2.198-.823.436 1.106.162 1.922.08 2.125.513.562.822 1.279.822 2.156 0 3.085-1.87 3.764-3.652 3.963.287.248.543.738.543 1.487 0 1.074-.01 1.94-.01 2.203 0 .215.144.465.55.386A8.032 8.032 0 0 0 16 8.032C16 3.596 12.418 0 7.999 0z">
+        </path>
       </svg>
     </a>
   </div>
 
-  <div
-    class="px-3 py-2 rounded-full bg-[#38a852] absolute border-black flex justify-center items-center shadow-2xl"
-  >
+  <div class="px-3 py-2 rounded-full bg-[#38a852] absolute border-black flex justify-center items-center shadow-2xl">
     <h2 class="text-base font-semibold text-white">{{ item.designation }}</h2>
   </div>
 </div>

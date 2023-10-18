@@ -12,6 +12,7 @@ export class MemberCardComponent {
   @Input() item: {
     yourName: string;
     designation: string;
+    description: string;
     provideYourPicture: string;
     yourLinkedinUrl: string;
     yourTwitterUrl: string;
@@ -19,6 +20,7 @@ export class MemberCardComponent {
   } = {
     yourName: '',
     designation: '',
+    description: '',
     provideYourPicture: '',
     yourLinkedinUrl: '',
     yourTwitterUrl: '',
