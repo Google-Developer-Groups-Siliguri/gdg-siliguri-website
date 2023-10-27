@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgOptimizedImage } from '@angular/common';
+import { Members } from 'src/app/services/data.service';
 @Component({
   selector: 'app-member-card',
   standalone: true,
@@ -9,21 +10,13 @@ import { NgOptimizedImage } from '@angular/common';
   styleUrls: ['./member-card.component.css'],
 })
 export class MemberCardComponent {
-  @Input() item: {
-    yourName: string;
-    designation: string;
-    description: string;
-    provideYourPicture: string;
-    yourLinkedinUrl: string;
-    yourTwitterUrl: string;
-    yourGithubUrl: string;
-  } = {
-    yourName: '',
+  @Input() item: Members = {
+    name: '',
     designation: '',
     description: '',
-    provideYourPicture: '',
-    yourLinkedinUrl: '',
-    yourTwitterUrl: '',
-    yourGithubUrl: '',
+    profilePictureURL: '',
+    linkedInURL: '',
+    twitterURL: '',
+    githubURL: '',
   };
 }
