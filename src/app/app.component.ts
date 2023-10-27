@@ -14,6 +14,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       initFlowbite();
+      console.log(process.env['apiKey']);
     }
   }
 }
