@@ -27,9 +27,9 @@ export class TeamComponent implements OnInit {
   ngOnInit(): void {}
 
   getSpeakersList() {
-    this.$firebaseDataService.getAllTeams().subscribe({
+    const subscription$ = this.$firebaseDataService.getAllTeams().subscribe({
       next: (result) => {
-        if (result) {
+        if (result.length > 0) {
           this.organizersDetails = result;
           this.organizers = this.organizersDetails.filter(
             (member) => member.designation === 'Organizer'
@@ -37,6 +37,7 @@ export class TeamComponent implements OnInit {
           this.volunteers = this.organizersDetails.filter(
             (member) => member.designation === 'Volunteer'
           );
+          subscription$.unsubscribe();
         }
       },
       error: (err) => console.error(err),
