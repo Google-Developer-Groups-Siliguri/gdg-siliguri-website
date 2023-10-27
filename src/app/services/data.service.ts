@@ -11,6 +11,11 @@ export interface Members {
   profilePictureURL: string;
   twitterURL: string;
 }
+export interface CommunityPartners {
+  icon: string;
+  communityName: string;
+  socialMediaLink: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -41,6 +46,21 @@ export class DataService {
     return new Observable<Members[]>((observer) => {
       const unsubscribe = onValue(starCountRef, (snapshot) => {
         const data: Members[] = snapshot.val();
+        observer.next(data);
+      });
+
+      // Clean up the subscription when the Observable is unsubscribed
+      return () => {
+        unsubscribe();
+      };
+    });
+  }
+  getAllCommunityPartners() {
+    const starCountRef = ref(this.db, '/communityPartners');
+
+    return new Observable<CommunityPartners[]>((observer) => {
+      const unsubscribe = onValue(starCountRef, (snapshot) => {
+        const data: CommunityPartners[] = snapshot.val();
         observer.next(data);
       });
 

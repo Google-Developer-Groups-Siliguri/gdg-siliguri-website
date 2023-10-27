@@ -24,9 +24,12 @@ export class SpeakersComponent {
   }
 
   getSpeakersList() {
-    this.$firebaseDataService.getAllSpeakers().subscribe({
+    const subscription$ = this.$firebaseDataService.getAllSpeakers().subscribe({
       next: (result) => {
-        if (result) this.speakersDetails = result;
+        if (result) {
+          this.speakersDetails = result;
+          subscription$.unsubscribe();
+        }
       },
       error: (err) => console.error(err),
     });
