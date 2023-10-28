@@ -23,8 +23,14 @@
     <a
       [href]="item.socialMediaLink"
       class="flex items-center justify-center px-3 py-3 text-base sm:text-sm md:text-base font-semibold text-center text-[#3b5c44] hover:text-[#b8f397] bg-[#b8f397] rounded-full hover:bg-[#3b5c44] focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      [attr.aria-label]="'Learn More about: ' + item.communityName"
     >
-      Read more
+      <span
+        >Learn more
+        <span class="screen-reader-text"
+          >about{{ item.communityName }}</span
+        ></span
+      >
       <svg
         class="w-3.5 h-3.5 ml-2"
         aria-hidden="true"
