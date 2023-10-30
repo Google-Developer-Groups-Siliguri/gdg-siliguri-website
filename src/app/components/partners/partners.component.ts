@@ -15,7 +15,6 @@ export class PartnersComponent {
   communityPartnerDetails: CommunityPartners[] = [];
   constructor(private $firebaseDataService: DataService) {
     this.getcommunityPartnersList();
-    console.log('hi');
   }
 
   getcommunityPartnersList() {
