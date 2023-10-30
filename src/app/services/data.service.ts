@@ -145,7 +145,7 @@ export class DataService {
 
   //schedule
   getAllSchedules() {
-    const scheduleRef = ref(this.db, this.dbPaths.faqs);
+    const scheduleRef = ref(this.db, this.dbPaths.schedule);
 
     return new Observable<Schedule[]>((observer) => {
       const unsubscribe = onValue(scheduleRef, (snapshot) => {
