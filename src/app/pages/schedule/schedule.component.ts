@@ -45,12 +45,14 @@ export class ScheduleComponent {
       endTime: '11:15 AM',
       topic: 'Introduction',
       speaker: 'Speaker Name',
+      src:"assets/images/io8.webp"
     },
     {
       startTime: '10:45 AM',
       endTime: '11:15 AM',
       topic: 'Roadmap for Android Developers and getting started with Kotlin',
       speaker: 'Speaker Name',
+      src:"assets/images/io8.webp"
     },
     {
       startTime: '10:45 AM',
@@ -58,18 +60,21 @@ export class ScheduleComponent {
       topic:
         'Roadmap for ML professionals and building end to end pipelines using ML',
       speaker: 'Speaker Name',
+      src:"assets/images/io8.webp"
     },
     {
       startTime: '10:45 AM',
       endTime: '11:15 AM',
       topic: 'Introduction',
       speaker: 'Speaker Name',
+      src:"assets/images/io8.webp"
     },
     {
       startTime: '10:45 AM',
       endTime: '11:15 AM',
       topic: 'Roadmap for Android Developers and getting started with Kotlin',
       speaker: 'Speaker Name',
+      src:"assets/images/io8.webp"
     },
     {
       startTime: '10:45 AM',
@@ -77,6 +82,7 @@ export class ScheduleComponent {
       topic:
         'Roadmap for ML professionals and building end to end pipelines using ML',
       speaker: 'Speaker Name',
+      src:"assets/images/io8.webp"
     },
   ];
 }
