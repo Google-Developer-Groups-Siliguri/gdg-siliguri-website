@@ -9,6 +9,7 @@ import { DataService, Schedule } from 'src/app/services/data.service';
 })
 export class ScheduleComponent {
   scheduleData: Schedule[] = [];
+  hasImage: boolean = false
   constructor(
     private meta: Meta,
     private title: Title,
@@ -31,11 +32,14 @@ export class ScheduleComponent {
           if (result) {
             this.scheduleData = result;
             subscription$.unsubscribe();
+            console.log(this.scheduleData);
           }
         },
         error: (err) => console.error(err),
       });
   }
+
+  
 
   mockData = true;
 

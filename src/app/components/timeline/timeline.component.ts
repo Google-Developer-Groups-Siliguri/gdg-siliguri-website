@@ -10,4 +10,5 @@ import { CommonModule } from '@angular/common';
 })
 export class TimelineComponent {
   @Input() day: any;
+  @Input() hasImage: any;
 }
