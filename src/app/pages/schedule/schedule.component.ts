@@ -9,6 +9,7 @@ import { DataService, Schedule } from 'src/app/services/data.service';
 })
 export class ScheduleComponent {
   scheduleData: Schedule[] = [];
+  hasImage: boolean = false
   constructor(
     private meta: Meta,
     private title: Title,
@@ -31,11 +32,14 @@ export class ScheduleComponent {
           if (result) {
             this.scheduleData = result;
             subscription$.unsubscribe();
+            console.log(this.scheduleData);
           }
         },
         error: (err) => console.error(err),
       });
   }
+
+  
 
   mockData = true;
 
@@ -45,12 +49,14 @@ export class ScheduleComponent {
       endTime: '11:15 AM',
       topic: 'Introduction',
       speaker: 'Speaker Name',
+      src:"assets/images/io8.webp"
     },
     {
       startTime: '10:45 AM',
       endTime: '11:15 AM',
       topic: 'Roadmap for Android Developers and getting started with Kotlin',
       speaker: 'Speaker Name',
+      src:"assets/images/io8.webp"
     },
     {
       startTime: '10:45 AM',
@@ -58,18 +64,21 @@ export class ScheduleComponent {
       topic:
         'Roadmap for ML professionals and building end to end pipelines using ML',
       speaker: 'Speaker Name',
+      src:"assets/images/io8.webp"
     },
     {
       startTime: '10:45 AM',
       endTime: '11:15 AM',
       topic: 'Introduction',
       speaker: 'Speaker Name',
+      src:"assets/images/io8.webp"
     },
     {
       startTime: '10:45 AM',
       endTime: '11:15 AM',
       topic: 'Roadmap for Android Developers and getting started with Kotlin',
       speaker: 'Speaker Name',
+      src:"assets/images/io8.webp"
     },
     {
       startTime: '10:45 AM',
@@ -77,6 +86,7 @@ export class ScheduleComponent {
       topic:
         'Roadmap for ML professionals and building end to end pipelines using ML',
       speaker: 'Speaker Name',
+      src:"assets/images/io8.webp"
     },
   ];
 }
