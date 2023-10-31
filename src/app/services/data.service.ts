@@ -37,7 +37,7 @@ export interface Schedule {
   image: string;
 }
 export interface Sponsors {
-  sponserName: string;
+  sponsorName: string;
   icon: string;
   socialMediaLink: string;
 }
@@ -164,9 +164,9 @@ export class DataService {
   getAllSponsors() {
     const sponsorsRef = ref(this.db, this.dbPaths.sponsors);
 
-    return new Observable<FAQ[]>((observer) => {
+    return new Observable<Sponsors[]>((observer) => {
       const unsubscribe = onValue(sponsorsRef, (snapshot) => {
-        const data: FAQ[] = snapshot.val();
+        const data: Sponsors[] = snapshot.val();
         observer.next(data);
       });
 
