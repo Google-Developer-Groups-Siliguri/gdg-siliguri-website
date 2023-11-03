@@ -23,16 +23,24 @@ export class DevfestHeroComponent implements OnInit {
       setInterval(() => {
         var now = new Date().getTime();
         var remainingTime = this.countdownDate - now;
-        this.remainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-        this.remainingHours = Math.floor(
-          (remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        this.remainingMinutes = Math.floor(
-          (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
-        );
-        this.remainingSeconds = Math.floor(
-          (remainingTime % (1000 * 60)) / 1000
-        );
+        this.remainingDays =
+          remainingTime > 0
+            ? Math.floor(remainingTime / (1000 * 60 * 60 * 24))
+            : 0;
+        this.remainingHours =
+          remainingTime > 0
+            ? Math.floor(
+                (remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+              )
+            : 0;
+        this.remainingMinutes =
+          remainingTime > 0
+            ? Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60))
+            : 0;
+        this.remainingSeconds =
+          remainingTime > 0
+            ? Math.floor((remainingTime % (1000 * 60)) / 1000)
+            : 0;
       });
     }
   }

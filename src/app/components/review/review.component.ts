@@ -25,7 +25,6 @@ export class ReviewComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       register();
     }
-    console.log(this.reviewsData);
   }
 
   getFeedbacks() {

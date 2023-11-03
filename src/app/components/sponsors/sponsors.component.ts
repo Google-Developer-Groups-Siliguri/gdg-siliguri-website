@@ -8,26 +8,23 @@ import { SponsorCardComponent } from '../sponsor-card/sponsor-card.component';
   standalone: true,
   imports: [CommonModule, SponsorCardComponent],
   templateUrl: './sponsors.component.html',
-  styleUrls: ['./sponsors.component.css']
+  styleUrls: ['./sponsors.component.css'],
 })
 export class SponsorsComponent {
   sponsorsDetails: Sponsors[] = [];
-  constructor (private $firebaseService: DataService) {
-    this.getcommunitySponsorsList()
+  constructor(private $firebaseService: DataService) {
+    this.getcommunitySponsorsList();
   }
 
   getcommunitySponsorsList() {
-    const subscription$ = this.$firebaseService
-      .getAllSponsors()
-      .subscribe({
-        next: (result) => {
-          if (result) {
-            console.log('RES', result);
-            this.sponsorsDetails = result;
-            subscription$.unsubscribe();
-          }
-        },
-        error: (err) => console.error(err),
-      });
+    const subscription$ = this.$firebaseService.getAllSponsors().subscribe({
+      next: (result) => {
+        if (result) {
+          this.sponsorsDetails = result;
+          subscription$.unsubscribe();
+        }
+      },
+      error: (err) => console.error(err),
+    });
   }
 }
