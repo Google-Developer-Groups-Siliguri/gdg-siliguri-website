@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-devfest-layout',
-  templateUrl: './devfest-layout.component.html',
-  styleUrls: ['./devfest-layout.component.css']
+  template: `
+    <app-navbar-devfest></app-navbar-devfest>
+    <router-outlet></router-outlet>
+    <app-footer></app-footer>
+  `,
 })
-export class DevfestLayoutComponent {
-
-}
+export class DevfestLayoutComponent {}
