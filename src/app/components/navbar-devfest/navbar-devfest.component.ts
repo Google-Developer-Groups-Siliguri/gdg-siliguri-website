@@ -18,7 +18,7 @@ export class NavbarDevfestComponent implements AfterViewInit {
   collapse!: CollapseInterface;
 
   routes = [
-    { path: '', name: 'Home', exact: true },
+    { path: '', name: 'Back to Home', exact: true },
     { path: 'schedule', name: 'Schedule', exact: false },
     { path: 'tickets', name: 'Tickets', exact: false },
     { path: 'team', name: 'Team', exact: false },
