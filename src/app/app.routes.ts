@@ -15,14 +15,14 @@ export const routes: Routes = [
       {
         path: 'events',
         loadChildren: () =>
-          import('./pages/schedule/schedule.module').then(
-            (m) => m.ScheduleModule
+          import('./pages/schedule/schedule.component').then(
+            (m) => m.ScheduleComponent
           ),
       },
       {
         path: 'team',
-        loadChildren: () =>
-          import('./pages/team/team.module').then((m) => m.TeamModule),
+        loadComponent: () =>
+          import('./pages/team/team.component').then((m) => m.TeamComponent),
       },
       {
         path: 'contact',
@@ -42,20 +42,22 @@ export const routes: Routes = [
       },
       {
         path: 'schedule',
-        loadChildren: () =>
-          import('./pages/schedule/schedule.module').then(
-            (m) => m.ScheduleModule
+        loadComponent: () =>
+          import('./pages/schedule/schedule.component').then(
+            (m) => m.ScheduleComponent
           ),
       },
       {
         path: 'tickets',
-        loadChildren: () =>
-          import('./pages/tickets/tickets.module').then((m) => m.TicketsModule),
+        loadComponent: () =>
+          import('./pages/tickets/tickets.component').then(
+            (m) => m.TicketsComponent
+          ),
       },
       {
         path: 'team',
-        loadChildren: () =>
-          import('./pages/team/team.module').then((m) => m.TeamModule),
+        loadComponent: () =>
+          import('./pages/team/team.component').then((m) => m.TeamComponent),
       },
       {
         path: 'contact',
