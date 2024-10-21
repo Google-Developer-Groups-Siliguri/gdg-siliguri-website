@@ -1,9 +1,8 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { DevfestLayoutComponent } from './layout/devfest-layout/devfest-layout.component';
+import { Routes } from '@angular/router';
 import { HomeLayoutComponent } from './layout/home-layout/home-layout.component';
+import { DevfestLayoutComponent } from './layout/devfest-layout/devfest-layout.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: HomeLayoutComponent,
@@ -66,15 +65,3 @@ const routes: Routes = [
     ],
   },
 ];
-
-@NgModule({
-  imports: [
-    RouterModule.forRoot(routes, {
-      initialNavigation: 'enabledBlocking',
-      scrollPositionRestoration: 'enabled',
-      onSameUrlNavigation: 'ignore',
-    }),
-  ],
-  exports: [RouterModule],
-})
-export class AppRoutingModule {}
