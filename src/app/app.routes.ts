@@ -9,25 +9,10 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () =>
-          import('./pages/devfest/devfest.module').then((m) => m.DevfestModule),
-      },
-      {
-        path: 'events',
-        loadChildren: () =>
-          import('./pages/schedule/schedule.component').then(
-            (m) => m.ScheduleComponent
-          ),
-      },
-      {
-        path: 'team',
         loadComponent: () =>
-          import('./pages/team/team.component').then((m) => m.TeamComponent),
-      },
-      {
-        path: 'contact',
-        loadChildren: () =>
-          import('./pages/contact/contact.module').then((m) => m.ContactModule),
+          import('./pages/home-page/home-page.component').then(
+            (m) => m.HomePageComponent
+          ),
       },
     ],
   },
