@@ -9,5 +9,5 @@ import { RouterModule } from '@angular/router';
   imports: [NgOptimizedImage, RouterModule],
 })
 export class NavbarComponent {
-  buttonTitle = 'Become a Member';
+  buttonTitle = 'Devfest Siliguri';
 }

@@ -1,0 +1,27 @@
+<div
+  class="items-center justify-center h-full max-w-sm mx-2 bg-white border border-gray-200 shadow rounded-2xl dark:bg-gray-800 dark:border-gray-700">
+  <div class="p-4">
+    <img [ngSrc]="item.icon" class="object-cover rounded-full" alt="speaker image" data-load="lazy" height="350"
+      width="350" />
+  </div>
+  <div class="p-5">
+    <div class="h-[4rem] mb-1">
+      <h5
+        class="mb-2 text-2xl font-bold tracking-tight text-center text-gray-900 sm:text-sm md:text-base lg:text-lg xl:text-2xl dark:text-white">
+        {{ item.communityName }}
+      </h5>
+    </div>
+
+    <a [href]="item.socialMediaLink"
+      class="flex items-center justify-center px-3 py-3 text-base sm:text-sm md:text-base font-semibold text-center text-[#3b5c44] hover:text-[#b8f397] bg-[#b8f397] rounded-full hover:bg-[#3b5c44] focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      [attr.aria-label]="'Learn More about: ' + item.communityName" target="_blank">
+      <span>Learn more
+        <span class="screen-reader-text">about{{ item.communityName }}</span></span>
+      <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+        viewBox="0 0 14 10">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M1 5h12m0 0L9 1m4 4L9 9" />
+      </svg>
+    </a>
+  </div>
+</div>
