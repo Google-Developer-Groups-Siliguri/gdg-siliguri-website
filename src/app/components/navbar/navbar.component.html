@@ -1,26 +1,11 @@
-<nav class="fixed top-0 left-0 z-20 w-full bg-white dark:bg-gray-900">
-  <div
-    class="flex flex-wrap items-center justify-between max-w-screen-xl py-4 md:container md:mx-auto md:px-4"
-  >
-    <a
-      class="flex items-center"
-      [routerLink]="['/']"
-      routerLinkActive="router-link-active"
-    >
-      <img
-        ngSrc="assets/images/logos/GDG_LOGO_HEADER.png"
-        width="167"
-        height="44"
-        priority
-        alt="GDG-SILIGURI"
-      />
+<nav class="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 left-0">
+  <div class="max-w-screen-xl flex flex-wrap items-center justify-between py-4 md:container md:mx-auto md:px-4">
+    <a class="flex items-center" [routerLink]="['/']" routerLinkActive="router-link-active">
+      <img ngSrc="assets/images/logos/GDG_LOGO_HEADER.png" width="167" height="44" priority alt="GDG-SILIGURI" />
     </a>
     <div class="flex md:order-2">
-      <button
-        type="button"
-        [routerLink]="['devfest']"
-        class="text-white bg-[#4885ED] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-3xl text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-      >
+      <button type="button" [routerLink]="['devfest']"
+        class="text-white bg-[#4885ED] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-3xl text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
         {{ buttonTitle }}
       </button>
     </div>
