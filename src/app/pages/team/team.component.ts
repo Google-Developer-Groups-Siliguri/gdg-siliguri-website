@@ -10,9 +10,10 @@ import { DataService, Members } from 'src/app/services/data.service';
   standalone: true,
   imports: [MemberCardComponent, NgFor, CommingSoonComponent],
   template: `
-    <div class="mt-20 min-h-[100vh] max-w-screen-2xl mx-auto">
-      <app-comming-soon></app-comming-soon>
-      <!-- <div class="mx-[1.5rem]">
+    <!-- @if () {} -->
+    <div class="mt-10 max-w-screen-2xl mx-auto">
+      <!-- <app-comming-soon></app-comming-soon> -->
+      <div class="mx-[1.5rem]">
         <h1
           class="text-[50px] lg:text-[70px] leading-tight tracking-wide font-bold text-gray-800 text-center"
         >
@@ -33,17 +34,20 @@ import { DataService, Members } from 'src/app/services/data.service';
               *ngFor="let user of organizers"
               class="h-full col-span-12 lg:col-span-3 md:col-span-4"
             >
+              @if (user.name !== 'Subhranil Sarkar') {
+
               <div class="flex items-center justify-center h-full">
                 <app-member-card
                   [item]="user"
                   class="w-full h-full"
                 ></app-member-card>
               </div>
+              }
             </div>
           </div>
         </div>
 
-        <div class="my-10">
+        <!-- <div class="my-10">
           <h1 class="text-[40px] text-black text-center font-semibold my-4">
             Volunteers
           </h1>
@@ -62,8 +66,8 @@ import { DataService, Members } from 'src/app/services/data.service';
               </div>
             </div>
           </div>
-        </div>
-      </div> -->
+        </div> -->
+      </div>
     </div>
   `,
   styles: ``,
@@ -72,6 +76,7 @@ export class TeamComponent implements OnInit {
   organizersDetails: Members[] = [];
   organizers: Members[] = [];
   volunteers: Members[] = [];
+  sectionEnabled: boolean = false;
   constructor(
     private meta: Meta,
     private title: Title,
@@ -90,11 +95,13 @@ export class TeamComponent implements OnInit {
   getSpeakersList() {
     const subscription$ = this.$firebaseDataService.getAllTeams().subscribe({
       next: (result) => {
-        if (result.length > 0) {
-          this.organizersDetails = result;
+        if (result.data.length > 0) {
+          this.organizersDetails = result.data;
+          this.sectionEnabled = result.enabled;
           this.organizers = this.organizersDetails.filter(
             (member) => member.designation === 'Organizer'
           );
+          console.log(this.organizers);
           this.volunteers = this.organizersDetails.filter(
             (member) => member.designation === 'Volunteer'
           );

@@ -19,7 +19,6 @@ import {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './faq.component.html',
-  styleUrls: ['./faq.component.css'],
 })
 export class FaqComponent implements AfterViewInit {
   accordion: AccordionInterface | undefined;

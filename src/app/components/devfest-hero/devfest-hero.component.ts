@@ -11,10 +11,11 @@ import { getDocument, getWindow } from 'ssr-window';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './devfest-hero.component.html',
-  styleUrls: ['./devfest-hero.component.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class DevfestHeroComponent implements OnInit {
+  title =
+    'GDG Siliguri is based out of Siliguri and handles the geographic region of North Bengal and Sikkim. We are a group consisting of both student and professional developers and we conduct a lot of events to empower the local tech community. These include tech talks, hackathons, codelabs, workshops and more.';
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {

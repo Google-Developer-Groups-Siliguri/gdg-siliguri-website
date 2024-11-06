@@ -62,9 +62,10 @@ export class DataService {
   getAllTeams() {
     const teamsRef = ref(this.db, this.dbPaths.teams);
 
-    return new Observable<Members[]>((observer) => {
+    return new Observable<{ enabled: boolean; data: Members[] }>((observer) => {
       const unsubscribe = onValue(teamsRef, (snapshot) => {
-        const data: Members[] = snapshot.val();
+        console.log(snapshot.val());
+        const data: { enabled: boolean; data: Members[] } = snapshot.val();
         observer.next(data);
       });
 
