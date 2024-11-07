@@ -42,6 +42,31 @@ export interface Sponsors {
   socialMediaLink: string;
 }
 
+export interface SOCIAL {
+  name: string;
+  url: string;
+}
+
+export interface EventData {
+  eventDateTime: string;
+  bannerImages: {
+    large: string;
+    long: string;
+    medium: string;
+    small: string;
+  };
+  communityEmail: string;
+  communityJoinLink: string;
+  eventTicketURL: string;
+  registrationExpiryDateTime: string;
+  eventVenue: {
+    imageURL: string;
+    mapsURL: string;
+    name: string;
+  };
+  socialMediaLinks: SOCIAL[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -54,6 +79,7 @@ export class DataService {
     faqs: '/FAQs', //FAQ
     schedule: '/schedule', //schedules
     sponsors: '/sponsors', //sponsors
+    eventDetails: '/eventDetails', //eventDetails
   };
 
   constructor(private db: Database) {}
@@ -131,9 +157,9 @@ export class DataService {
   getAllFAQS() {
     const faqsRef = ref(this.db, this.dbPaths.faqs);
 
-    return new Observable<FAQ[]>((observer) => {
+    return new Observable<{ enabled: boolean; data: FAQ[] }>((observer) => {
       const unsubscribe = onValue(faqsRef, (snapshot) => {
-        const data: FAQ[] = snapshot.val();
+        const data: { enabled: boolean; data: FAQ[] } = snapshot.val();
         observer.next(data);
       });
 
@@ -168,6 +194,23 @@ export class DataService {
     return new Observable<Sponsors[]>((observer) => {
       const unsubscribe = onValue(sponsorsRef, (snapshot) => {
         const data: Sponsors[] = snapshot.val();
+        observer.next(data);
+      });
+
+      // Clean up the subscription when the Observable is unsubscribed
+      return () => {
+        unsubscribe();
+      };
+    });
+  }
+
+  //eventDetails
+  getEventData() {
+    const eventsRef = ref(this.db, this.dbPaths.eventDetails);
+
+    return new Observable<{ enabled: boolean; data: EventData }>((observer) => {
+      const unsubscribe = onValue(eventsRef, (snapshot) => {
+        const data: { enabled: boolean; data: EventData } = snapshot.val();
         observer.next(data);
       });
 

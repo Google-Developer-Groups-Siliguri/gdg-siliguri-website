@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { DataService, EventData } from '../services/data.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-banner',
   standalone: true,
   imports: [],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="grid grid-cols-12 p-4">
       <div class="col-span-1">
@@ -47,4 +50,9 @@ import { Component } from '@angular/core';
   `,
   styles: ``,
 })
-export class BannerComponent {}
+export class BannerComponent {
+  eventData$: Observable<{ enabled: boolean; data: EventData }>;
+  constructor(private firebaseService: DataService) {
+    this.eventData$ = this.firebaseService.getEventData();
+  }
+}

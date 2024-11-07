@@ -1,5 +1,5 @@
 import { NgFor } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { CommingSoonComponent } from 'src/app/components/comming-soon/comming-soon.component';
 import { MemberCardComponent } from 'src/app/components/member-card/member-card.component';
@@ -10,7 +10,8 @@ import { DataService, Members } from 'src/app/services/data.service';
   standalone: true,
   imports: [MemberCardComponent, NgFor, CommingSoonComponent],
   template: `
-    <!-- @if () {} -->
+    @if (sectionEnabled) {
+
     <div class="mt-10 max-w-screen-2xl mx-auto">
       <!-- <app-comming-soon></app-comming-soon> -->
       <div class="mx-[1.5rem]">
@@ -69,6 +70,7 @@ import { DataService, Members } from 'src/app/services/data.service';
         </div> -->
       </div>
     </div>
+    }
   `,
   styles: ``,
 })
