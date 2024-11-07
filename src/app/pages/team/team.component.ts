@@ -103,7 +103,6 @@ export class TeamComponent implements OnInit {
           this.organizers = this.organizersDetails.filter(
             (member) => member.designation === 'Organizer'
           );
-          console.log(this.organizers);
           this.volunteers = this.organizersDetails.filter(
             (member) => member.designation === 'Volunteer'
           );

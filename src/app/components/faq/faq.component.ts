@@ -25,64 +25,62 @@ import { DataService, FAQ } from 'src/app/services/data.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <ng-container *ngIf="faqData as data">
-      <ng-container *ngIf="data.enabled">
-        <div
-          class="grid grid-cols-12 md:gap-10 gap-5 overflow-hidden mx-[1.5rem] mb-[2rem] bg-white lg:p-12 rounded-2xl md:p-5 p-3"
+    @if (faqData; as data) { @if(data.enabled) {
+    <div
+      class="grid grid-cols-12 md:gap-10 gap-5 overflow-hidden mx-[1.5rem] mb-[2rem] bg-white lg:p-12 rounded-2xl md:p-5 p-3"
+    >
+      <div class="col-span-12 md:col-span-6">
+        <h1
+          class="lg:text-7xl md:text-5xl text-4xl font-[600] text-[#3c4043] text-center md:text-left"
         >
-          <div class="col-span-12 md:col-span-6">
-            <h1
-              class="lg:text-7xl md:text-5xl text-4xl font-[600] text-[#3c4043] text-center md:text-left"
+          Frequently asked questions
+        </h1>
+      </div>
+      <div class="col-span-12 md:col-span-6">
+        @for (item of data.data; track $index; let i=$index) {
+        <h2 [id]="'accordion-example-heading-' + (i + 1)" #accordionItem>
+          <button
+            type="button"
+            class="flex items-center justify-between w-full py-5 text-2xl font-semibold text-left text-gray-500 border-b border-gray-200 lg:text-3xl dark:border-gray-700 dark:text-gray-400"
+            aria-expanded="false"
+            [attr.aria-controls]="'accordion-example-body-' + (i + 1)"
+          >
+            <span>{{ item.question }}</span>
+            <svg
+              data-accordion-icon
+              class="w-3 h-3 rotate-180 lg:w-5 lg:h-5 shrink-0"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 10 6"
             >
-              Frequently asked questions
-            </h1>
-          </div>
-          <div class="col-span-12 md:col-span-6">
-            <ng-container *ngFor="let item of data.data; index as i">
-              <h2 [id]="'accordion-example-heading-' + (i + 1)" #accordionItem>
-                <button
-                  type="button"
-                  class="flex items-center justify-between w-full py-5 text-2xl font-semibold text-left text-gray-500 border-b border-gray-200 lg:text-3xl dark:border-gray-700 dark:text-gray-400"
-                  aria-expanded="false"
-                  [attr.aria-controls]="'accordion-example-body-' + (i + 1)"
-                >
-                  <span>{{ item.question }}</span>
-                  <svg
-                    data-accordion-icon
-                    class="w-3 h-3 rotate-180 lg:w-5 lg:h-5 shrink-0"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 10 6"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 5 5 1 1 5"
-                    />
-                  </svg>
-                </button>
-              </h2>
-              <div
-                [id]="'accordion-example-body-' + (i + 1)"
-                class="hidden"
-                [attr.aria-labelledby]="'accordion-example-heading-' + (i + 1)"
-              >
-                <div class="py-5 border-b border-gray-200 dark:border-gray-700">
-                  <p
-                    class="mb-2 text-base font-medium text-gray-500 dark:text-gray-400 lg:text-xl md:text-lg"
-                  >
-                    {{ item.answer }}
-                  </p>
-                </div>
-              </div>
-            </ng-container>
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5 5 1 1 5"
+              />
+            </svg>
+          </button>
+        </h2>
+        <div
+          [id]="'accordion-example-body-' + (i + 1)"
+          class="hidden"
+          [attr.aria-labelledby]="'accordion-example-heading-' + (i + 1)"
+        >
+          <div class="py-5 border-b border-gray-200 dark:border-gray-700">
+            <p
+              class="mb-2 text-base font-medium text-gray-500 dark:text-gray-400 lg:text-xl md:text-lg"
+            >
+              {{ item.answer }}
+            </p>
           </div>
         </div>
-      </ng-container>
-    </ng-container>
+        }
+      </div>
+    </div>
+    } }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

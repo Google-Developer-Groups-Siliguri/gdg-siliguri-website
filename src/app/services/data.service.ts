@@ -90,7 +90,6 @@ export class DataService {
 
     return new Observable<{ enabled: boolean; data: Members[] }>((observer) => {
       const unsubscribe = onValue(teamsRef, (snapshot) => {
-        console.log(snapshot.val());
         const data: { enabled: boolean; data: Members[] } = snapshot.val();
         observer.next(data);
       });
