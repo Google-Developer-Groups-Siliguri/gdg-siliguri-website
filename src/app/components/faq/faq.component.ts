@@ -99,7 +99,7 @@ export class FaqComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.faqSubscription = this.firebaseService
-      .getAllFAQS()
+      .getAllGDGFAQS()
       .subscribe((data) => {
         this.faqData = data;
         this.cd.detectChanges(); // Ensure the view is updated

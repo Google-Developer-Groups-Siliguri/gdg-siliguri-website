@@ -80,6 +80,7 @@ export class DataService {
     schedule: '/schedule', //schedules
     sponsors: '/sponsors', //sponsors
     eventDetails: '/eventDetails', //eventDetails
+    gdgFaqs: '/home/gdgFAQs', //eventDetails
   };
 
   constructor(private db: Database) {}
@@ -155,6 +156,22 @@ export class DataService {
   //faqs
   getAllFAQS() {
     const faqsRef = ref(this.db, this.dbPaths.faqs);
+
+    return new Observable<{ enabled: boolean; data: FAQ[] }>((observer) => {
+      const unsubscribe = onValue(faqsRef, (snapshot) => {
+        const data: { enabled: boolean; data: FAQ[] } = snapshot.val();
+        observer.next(data);
+      });
+
+      // Clean up the subscription when the Observable is unsubscribed
+      return () => {
+        unsubscribe();
+      };
+    });
+  }
+  //faqs
+  getAllGDGFAQS() {
+    const faqsRef = ref(this.db, this.dbPaths.gdgFaqs);
 
     return new Observable<{ enabled: boolean; data: FAQ[] }>((observer) => {
       const unsubscribe = onValue(faqsRef, (snapshot) => {
