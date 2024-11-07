@@ -27,7 +27,7 @@ import { DataService, FAQ } from 'src/app/services/data.service';
   template: `
     @if (faqData; as data) { @if(data.enabled) {
     <div
-      class="grid grid-cols-12 md:gap-10 gap-5 overflow-hidden mx-[1.5rem] mb-[2rem] bg-white lg:p-12 rounded-2xl md:p-5 p-3"
+      class="grid grid-cols-12 md:gap-10 gap-5 overflow-hidden mx-[1.5rem] mb-[2rem] bg-white rounded-2xl md:p-0 p-3"
     >
       <div class="col-span-12 md:col-span-6">
         <h1

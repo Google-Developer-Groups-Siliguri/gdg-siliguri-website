@@ -98,7 +98,7 @@
           <h5
             class="mb-2 text-6xl font-medium tracking-tight text-gray-900 dark:text-white"
           >
-            {{ remainingDays }}
+            {{ (countdown$ | async)?.remainingDays }}
           </h5>
           <p class="text-3xl font-normal text-gray-700 dark:text-gray-400">
             Days
@@ -112,7 +112,7 @@
           <h5
             class="mb-2 text-6xl font-medium tracking-tight text-gray-900 dark:text-white"
           >
-            {{ remainingHours }}
+            {{ (countdown$ | async)?.remainingHours }}
           </h5>
           <p class="text-3xl font-normal text-gray-700 dark:text-gray-400">
             Hours
@@ -126,7 +126,7 @@
           <h5
             class="mb-2 text-6xl font-medium tracking-tight text-gray-900 dark:text-white"
           >
-            {{ remainingMinutes }}
+            {{ (countdown$ | async)?.remainingMinutes }}
           </h5>
           <p class="text-3xl font-normal text-gray-700 dark:text-gray-400">
             Minutes
@@ -140,7 +140,7 @@
           <h5
             class="mb-2 text-6xl font-medium tracking-tight text-gray-900 dark:text-white"
           >
-            {{ remainingSeconds }}
+            {{ (countdown$ | async)?.remainingSeconds }}
           </h5>
           <p class="text-3xl font-normal text-gray-700 dark:text-gray-400">
             Seconds
