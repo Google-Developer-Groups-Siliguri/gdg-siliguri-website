@@ -1,6 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { DataService, EventData } from '../services/data.service';
-import { Observable } from 'rxjs';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-banner',
@@ -51,8 +49,5 @@ import { Observable } from 'rxjs';
   styles: ``,
 })
 export class BannerComponent {
-  eventData$: Observable<{ enabled: boolean; data: EventData }>;
-  constructor(private firebaseService: DataService) {
-    this.eventData$ = this.firebaseService.getEventData();
-  }
+  ticketUrl = input.required<string>();
 }

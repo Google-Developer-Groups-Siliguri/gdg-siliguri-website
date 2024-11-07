@@ -10,6 +10,9 @@ import { TeamComponent } from '../team/team.component';
 import { FaqComponent } from '../../components/faq/faq.component';
 import { GoogleProductsComponent } from '../../components/google-products/google-products.component';
 import { KeepInTouchComponent } from '../../components/keep-in-touch/keep-in-touch.component';
+import { Observable } from 'rxjs';
+import { DataService, EventData } from 'src/app/services/data.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-home-page',
@@ -25,12 +28,15 @@ import { KeepInTouchComponent } from '../../components/keep-in-touch/keep-in-tou
     FaqComponent,
     GoogleProductsComponent,
     KeepInTouchComponent,
+    AsyncPipe,
   ],
   template: `
     <div class="mt-20 w-full">
       <div class="bg-[#f2f3f5] w-full">
         <div class="md:container md:mx-auto md:px-4 ">
-          <app-banner></app-banner>
+          @if (eventData$ | async; as data) {
+          <app-banner [ticketUrl]="data.eventTicketURL"></app-banner>
+          }
         </div>
       </div>
       <div class="w-full">
@@ -72,11 +78,18 @@ import { KeepInTouchComponent } from '../../components/keep-in-touch/keep-in-tou
   styles: ``,
 })
 export class HomePageComponent {
-  constructor(private meta: Meta, private title: Title) {
+  eventData$: Observable<EventData>;
+
+  constructor(
+    private meta: Meta,
+    private title: Title,
+    private firebaseService: DataService
+  ) {
     this.meta.addTag({
       name: 'title',
       content: 'Google Developers Group Siliguri',
     });
     this.title.setTitle('Google Developers Group Siliguri');
+    this.eventData$ = this.firebaseService.getEventData();
   }
 }

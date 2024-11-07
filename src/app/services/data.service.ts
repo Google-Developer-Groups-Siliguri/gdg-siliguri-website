@@ -208,9 +208,9 @@ export class DataService {
   getEventData() {
     const eventsRef = ref(this.db, this.dbPaths.eventDetails);
 
-    return new Observable<{ enabled: boolean; data: EventData }>((observer) => {
+    return new Observable<EventData>((observer) => {
       const unsubscribe = onValue(eventsRef, (snapshot) => {
-        const data: { enabled: boolean; data: EventData } = snapshot.val();
+        const data: EventData = snapshot.val();
         observer.next(data);
       });
 
