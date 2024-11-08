@@ -3,9 +3,8 @@ import { Meta, Title } from '@angular/platform-browser';
 import { AboutUsComponent } from 'src/app/components/about-us.component';
 import { BannerComponent } from 'src/app/components/banner.component';
 import { HeroComponent } from 'src/app/components/hero.component';
-import { OrganizersComponent } from 'src/app/components/organizers/organizers.component';
+import { OrganizersComponent } from 'src/app/components/organizers.component';
 import { WelcomeComponent } from 'src/app/components/welcome/welcome.component';
-import { TeamComponent } from '../team/team.component';
 import { FaqComponent } from '../../components/faq/faq.component';
 import { GoogleProductsComponent } from '../../components/google-products/google-products.component';
 import { KeepInTouchComponent } from '../../components/keep-in-touch/keep-in-touch.component';
@@ -22,7 +21,6 @@ import { AsyncPipe } from '@angular/common';
     AboutUsComponent,
     OrganizersComponent,
     HeroComponent,
-    TeamComponent,
     FaqComponent,
     GoogleProductsComponent,
     KeepInTouchComponent,
@@ -44,7 +42,7 @@ import { AsyncPipe } from '@angular/common';
       </div>
       <div class="w-full">
         <div class="md:container md:mx-auto md:px-4">
-          <app-team></app-team>
+          <app-organizers></app-organizers>
         </div>
       </div>
       <div class=" w-full">

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
@@ -6,6 +6,7 @@ import { register } from 'swiper/element/bundle';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { getDocument, getWindow } from 'ssr-window';
 import { interval, map, Observable } from 'rxjs';
+import { EventData } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-devfest-hero',
@@ -15,10 +16,11 @@ import { interval, map, Observable } from 'rxjs';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class DevfestHeroComponent implements OnInit {
+  eventData = input.required<EventData>();
   title =
     'GDG Siliguri is based out of Siliguri and handles the geographic region of North Bengal and Sikkim. We are a group consisting of both student and professional developers and we conduct a lot of events to empower the local tech community. These include tech talks, hackathons, codelabs, workshops and more.';
 
-  countdownDate = new Date('november 04, 2023 08:00:00').getTime();
+  countdownDate: number = 0;
   countdown$!: Observable<{
     remainingDays: number;
     remainingHours: number;
@@ -29,6 +31,9 @@ export class DevfestHeroComponent implements OnInit {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
+    this.countdownDate = new Date(this.eventData().eventDateTime).getTime();
+
+    console.log(this.eventData());
     if (isPlatformBrowser(this.platformId)) {
       register();
       this.countdown$ = interval(1000).pipe(

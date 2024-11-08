@@ -48,6 +48,7 @@ export interface SOCIAL {
 }
 
 export interface EventData {
+  bannerDescription: string;
   eventDateTime: string;
   bannerImages: {
     large: string;
@@ -65,6 +66,14 @@ export interface EventData {
     name: string;
   };
   socialMediaLinks: SOCIAL[];
+  pointsToNote: {
+    enabled: boolean;
+    data: string[];
+  };
+  perks: {
+    enabled: boolean;
+    data: string[];
+  };
 }
 
 @Injectable({
@@ -106,9 +115,9 @@ export class DataService {
   getAllSpeakers() {
     const speakersRef = ref(this.db, this.dbPaths.speakers);
 
-    return new Observable<Members[]>((observer) => {
+    return new Observable<{ enabled: boolean; data: Members[] }>((observer) => {
       const unsubscribe = onValue(speakersRef, (snapshot) => {
-        const data: Members[] = snapshot.val();
+        const data: { enabled: boolean; data: Members[] } = snapshot.val();
         observer.next(data);
       });
 

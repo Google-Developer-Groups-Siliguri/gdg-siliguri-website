@@ -28,7 +28,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
           inspiring ideas
         </p>
         <a
-          href="https://www.commudle.com/communities/google-developers-group-siliguri/events/devfest-siliguri-2023"
+          [href]="ticketUrl()"
           target="_blank"
           rel="noopener noreferrer"
           type="button"
