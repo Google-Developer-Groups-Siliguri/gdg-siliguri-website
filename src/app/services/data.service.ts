@@ -152,17 +152,19 @@ export class DataService {
   getAllFeedbacks() {
     const feedbacksRef = ref(this.db, this.dbPaths.feedbacks);
 
-    return new Observable<Feedbacks[]>((observer) => {
-      const unsubscribe = onValue(feedbacksRef, (snapshot) => {
-        const data: Feedbacks[] = snapshot.val();
-        observer.next(data);
-      });
+    return new Observable<{ enabled: boolean; data: Feedbacks[] }>(
+      (observer) => {
+        const unsubscribe = onValue(feedbacksRef, (snapshot) => {
+          const data: { enabled: boolean; data: Feedbacks[] } = snapshot.val();
+          observer.next(data);
+        });
 
-      // Clean up the subscription when the Observable is unsubscribed
-      return () => {
-        unsubscribe();
-      };
-    });
+        // Clean up the subscription when the Observable is unsubscribed
+        return () => {
+          unsubscribe();
+        };
+      }
+    );
   }
 
   //faqs

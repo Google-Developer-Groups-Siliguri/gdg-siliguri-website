@@ -39,12 +39,12 @@ import { DataService, EventData } from 'src/app/services/data.service';
         <app-speakers> </app-speakers>
         <app-partners> </app-partners>
         <app-sponsors> </app-sponsors>
+        <app-review></app-review>
         <app-devfest-faq></app-devfest-faq>
         <app-google-products></app-google-products>
         <app-keep-in-touch></app-keep-in-touch>
         <!-- 
     <app-whats-is></app-whats-is>
-    <app-review></app-review>
      -->
       </div>
     </div>
