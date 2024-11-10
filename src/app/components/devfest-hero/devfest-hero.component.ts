@@ -32,8 +32,6 @@ export class DevfestHeroComponent implements OnInit {
 
   ngOnInit(): void {
     this.countdownDate = new Date(this.eventData().eventDateTime).getTime();
-
-    console.log(this.eventData());
     if (isPlatformBrowser(this.platformId)) {
       register();
       this.countdown$ = interval(1000).pipe(

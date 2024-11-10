@@ -54,7 +54,6 @@ export class OrganizersComponent {
     private title: Title,
     private $firebaseDataService: DataService
   ) {
-    this.getSpeakersList();
     this.meta.addTag({
       name: 'title',
       content: 'Team | Devfest Siliguri 2023',
@@ -62,7 +61,9 @@ export class OrganizersComponent {
     this.title.setTitle('Team | Devfest Siliguri 2023');
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getSpeakersList();
+  }
 
   getSpeakersList() {
     const subscription$ = this.$firebaseDataService.getAllTeams().subscribe({

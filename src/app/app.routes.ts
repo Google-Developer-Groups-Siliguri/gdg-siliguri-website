@@ -22,8 +22,10 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: () =>
-          import('./pages/devfest/devfest.module').then((m) => m.DevfestModule),
+        loadComponent: () =>
+          import('./pages/devfest/devfest.component').then(
+            (m) => m.DevfestComponent
+          ),
       },
       {
         path: 'schedule',

@@ -132,17 +132,20 @@ export class DataService {
   getAllCommunityPartners() {
     const partnersRef = ref(this.db, this.dbPaths.partners);
 
-    return new Observable<CommunityPartners[]>((observer) => {
-      const unsubscribe = onValue(partnersRef, (snapshot) => {
-        const data: CommunityPartners[] = snapshot.val();
-        observer.next(data);
-      });
+    return new Observable<{ enabled: boolean; data: CommunityPartners[] }>(
+      (observer) => {
+        const unsubscribe = onValue(partnersRef, (snapshot) => {
+          const data: { enabled: boolean; data: CommunityPartners[] } =
+            snapshot.val();
+          observer.next(data);
+        });
 
-      // Clean up the subscription when the Observable is unsubscribed
-      return () => {
-        unsubscribe();
-      };
-    });
+        // Clean up the subscription when the Observable is unsubscribed
+        return () => {
+          unsubscribe();
+        };
+      }
+    );
   }
 
   //feedbacks
@@ -199,26 +202,38 @@ export class DataService {
   getAllSchedules() {
     const scheduleRef = ref(this.db, this.dbPaths.schedule);
 
-    return new Observable<Schedule[]>((observer) => {
-      const unsubscribe = onValue(scheduleRef, (snapshot) => {
-        const data: Schedule[] = snapshot.val();
-        observer.next(data);
-      });
+    return new Observable<{ enabled: Boolean; data: Schedule[] }>(
+      (observer) => {
+        const unsubscribe = onValue(scheduleRef, (snapshot) => {
+          const data: { enabled: Boolean; data: Schedule[] } = snapshot.val();
+          observer.next(data);
+        });
 
-      // Clean up the subscription when the Observable is unsubscribed
-      return () => {
-        unsubscribe();
-      };
-    });
+        // Clean up the subscription when the Observable is unsubscribed
+        return () => {
+          unsubscribe();
+        };
+      }
+    );
   }
 
   //sponsors
   getAllSponsors() {
     const sponsorsRef = ref(this.db, this.dbPaths.sponsors);
 
-    return new Observable<Sponsors[]>((observer) => {
+    return new Observable<{
+      enabled: boolean;
+      gold: Sponsors[];
+      platinum: Sponsors[];
+      silver: Sponsors[];
+    }>((observer) => {
       const unsubscribe = onValue(sponsorsRef, (snapshot) => {
-        const data: Sponsors[] = snapshot.val();
+        const data: {
+          enabled: boolean;
+          gold: Sponsors[];
+          platinum: Sponsors[];
+          silver: Sponsors[];
+        } = snapshot.val();
         observer.next(data);
       });
 

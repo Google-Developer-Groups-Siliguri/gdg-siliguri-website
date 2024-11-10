@@ -1,5 +1,7 @@
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
+import { Observable } from 'rxjs';
 import { CommingSoonComponent } from 'src/app/components/comming-soon/comming-soon.component';
 import { TimelineComponent } from 'src/app/components/timeline/timeline.component';
 import { DataService, Schedule } from 'src/app/services/data.service';
@@ -7,10 +9,10 @@ import { DataService, Schedule } from 'src/app/services/data.service';
 @Component({
   selector: 'app-schedule',
   standalone: true,
-  imports: [TimelineComponent, CommingSoonComponent],
+  imports: [AsyncPipe, TimelineComponent, CommingSoonComponent],
   template: `
     <div class="mt-20 min-h-[70vh] max-w-screen-2xl mx-auto">
-      <!-- <div class="mx-[1.5rem]">
+      <div class="mx-[1.5rem]">
         <h1
           class="text-[50px] lg:text-[70px] leading-tight tracking-wide font-bold text-[black]"
         >
@@ -43,15 +45,18 @@ import { DataService, Schedule } from 'src/app/services/data.service';
             </li>
           </ul>
         </div>
-        <app-timeline [day]="scheduleData" [hasImage]="hasImage"></app-timeline>
-      </div> -->
-      <app-comming-soon></app-comming-soon>
+        @if (scheduleData$ | async; as data) {
+        <app-timeline [day]="data.data" [hasImage]="hasImage"></app-timeline>
+        } @else {
+        <app-comming-soon></app-comming-soon>
+        }
+      </div>
     </div>
   `,
   styles: ``,
 })
 export class ScheduleComponent {
-  scheduleData: Schedule[] = [];
+  scheduleData$: Observable<{ enabled: Boolean; data: Schedule[] }>;
   hasImage: boolean = false;
   constructor(
     private meta: Meta,
@@ -63,21 +68,7 @@ export class ScheduleComponent {
       content: 'Schedule | Devfest Siliguri 2023',
     });
     this.title.setTitle('Schedule | Devfest Siliguri 2023');
-
-    this.getScheduleList();
-  }
-
-  getScheduleList() {
-    const subscription$ = this.$firebaseDataService
-      .getAllSchedules()
-      .subscribe({
-        next: (result) => {
-          if (result) {
-            this.scheduleData = result;
-            subscription$.unsubscribe();
-          }
-        },
-        error: (err) => console.error(err),
-      });
+    this.scheduleData$ = this.$firebaseDataService.getAllSchedules();
+    // this.getScheduleList();
   }
 }
