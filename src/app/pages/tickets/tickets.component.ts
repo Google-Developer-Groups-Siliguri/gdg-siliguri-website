@@ -70,9 +70,9 @@ export class TicketsComponent {
   ) {
     this.meta.addTag({
       name: 'title',
-      content: 'Tickets | Devfest Siliguri 2023',
+      content: 'Tickets | Devfest Siliguri 2024',
     });
-    this.title.setTitle('Tickets | Devfest Siliguri 2023');
+    this.title.setTitle('Tickets | Devfest Siliguri 2024');
     this.eventData$ = this.firebaseService.getEventData();
   }
 }

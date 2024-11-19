@@ -65,9 +65,9 @@ export class ScheduleComponent {
   ) {
     this.meta.addTag({
       name: 'title',
-      content: 'Schedule | Devfest Siliguri 2023',
+      content: 'Schedule | Devfest Siliguri 2024',
     });
-    this.title.setTitle('Schedule | Devfest Siliguri 2023');
+    this.title.setTitle('Schedule | Devfest Siliguri 2024');
     this.scheduleData$ = this.$firebaseDataService.getAllSchedules();
     // this.getScheduleList();
   }

@@ -60,9 +60,9 @@ export class DevfestComponent {
   ) {
     this.meta.addTag({
       name: 'title',
-      content: 'Home | Devfest Siliguri 2023',
+      content: 'Home | Devfest Siliguri 2024',
     });
-    this.title.setTitle('Home | Devfest Siliguri 2023');
+    this.title.setTitle('Home | Devfest Siliguri 2024');
     this.eventData$ = this.firebaseService.getEventData();
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { DataService, Members } from '../services/data.service';
 import { Meta, Title } from '@angular/platform-browser';
 import { MemberCardComponent } from './member-card/member-card.component';
@@ -26,15 +26,12 @@ import { MemberCardComponent } from './member-card/member-card.component';
             @for (user of organizers; track $index) {
 
             <div class="h-full col-span-12 lg:col-span-3 md:col-span-4">
-              @if (user.name !== 'Subhranil Sarkar') {
-
               <div class="flex items-center justify-center h-full">
                 <app-member-card
                   [item]="user"
                   class="w-full h-full"
                 ></app-member-card>
               </div>
-              }
             </div>
             }
           </div>
@@ -52,7 +49,8 @@ export class OrganizersComponent {
   constructor(
     private meta: Meta,
     private title: Title,
-    private $firebaseDataService: DataService
+    private $firebaseDataService: DataService,
+    private cd: ChangeDetectorRef
   ) {
     this.meta.addTag({
       name: 'title',
@@ -70,6 +68,7 @@ export class OrganizersComponent {
       next: (result) => {
         if (result.data.length > 0) {
           this.organizersDetails = result.data;
+          console.log(result.enabled);
           this.sectionEnabled = result.enabled;
           this.organizers = this.organizersDetails.filter(
             (member) => member.designation === 'Organizer'
@@ -77,6 +76,7 @@ export class OrganizersComponent {
           this.volunteers = this.organizersDetails.filter(
             (member) => member.designation === 'Volunteer'
           );
+          this.cd.detectChanges();
           subscription$.unsubscribe();
         }
       },

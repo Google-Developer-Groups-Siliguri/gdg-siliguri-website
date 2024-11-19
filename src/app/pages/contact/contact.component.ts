@@ -10,8 +10,8 @@ export class ContactComponent {
   constructor(private meta: Meta, private title: Title) {
     this.meta.addTag({
       name: 'title',
-      content: 'Contact Us | Devfest Siliguri 2023',
+      content: 'Contact Us | Devfest Siliguri 2024',
     });
-    this.title.setTitle('Contact Us | Devfest Siliguri 2023');
+    this.title.setTitle('Contact Us | Devfest Siliguri 2024');
   }
 }

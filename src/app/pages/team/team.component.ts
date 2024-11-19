@@ -34,15 +34,12 @@ import { DataService, Members } from 'src/app/services/data.service';
             @for (user of organizers; track $index) {
 
             <div class="h-full col-span-12 lg:col-span-3 md:col-span-4">
-              @if (user.name !== 'Subhranil Sarkar') {
-
               <div class="flex items-center justify-center h-full">
                 <app-member-card
                   [item]="user"
                   class="w-full h-full"
                 ></app-member-card>
               </div>
-              }
             </div>
             }
           </div>
@@ -86,9 +83,9 @@ export class TeamComponent implements OnInit {
     this.getSpeakersList();
     this.meta.addTag({
       name: 'title',
-      content: 'Team | Devfest Siliguri 2023',
+      content: 'Team | Devfest Siliguri 2024',
     });
-    this.title.setTitle('Team | Devfest Siliguri 2023');
+    this.title.setTitle('Team | Devfest Siliguri 2024');
   }
 
   ngOnInit(): void {}
