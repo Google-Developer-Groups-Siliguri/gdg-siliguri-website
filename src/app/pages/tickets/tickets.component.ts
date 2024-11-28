@@ -21,7 +21,7 @@ import { DataService, EventData } from 'src/app/services/data.service';
           Book your ticket to DevFest’24 at {{ data.eventVenue.name }}, and
           experience the community like no other.
         </p>
-        <a
+        <!-- <a
           [href]="data.eventTicketURL"
           target="_blank"
           rel="noopener noreferrer"
@@ -29,7 +29,7 @@ import { DataService, EventData } from 'src/app/services/data.service';
           class=" inline-block text-white bg-[#7c4dff] hover:bg-blue-800 focus:outline-none font-medium rounded-full md:text-xl px-3 py-2 md:px-6 md:py-4 my-3 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 w-fit"
         >
           Grab Your Tickets!
-        </a>
+        </a> -->
         <p class=" text-4xl font-semibold text-black pt-14">
           Points to note 🎯
         </p>

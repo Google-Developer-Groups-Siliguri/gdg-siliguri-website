@@ -39,11 +39,11 @@ import { ComingSoonCardComponent } from '../coming-soon-card/coming-soon-card.co
           </div>
           }
         </div>
-        <p
+        <!-- <p
           class="text-[30px] lg:text-[50px] leading-tight tracking-wide font-semibold text-gray-600 text-center mt-2"
         >
           Gold
-        </p>
+        </p> -->
         <div
           class="grid items-center justify-center grid-cols-12 gap-x-4 gap-y-10 xl:gap-x-15"
         >
@@ -60,11 +60,11 @@ import { ComingSoonCardComponent } from '../coming-soon-card/coming-soon-card.co
           </div>
           }
         </div>
-        <p
+        <!-- <p
           class="text-[30px] lg:text-[50px] leading-tight tracking-wide font-semibold text-gray-600 text-center mt-2"
         >
           Silver
-        </p>
+        </p> -->
         <div
           class="grid items-center justify-center grid-cols-12 gap-x-4 gap-y-10 xl:gap-x-15"
         >
