@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Database, ref, onValue } from '@angular/fire/database';
+import { inject, Injectable } from '@angular/core';
+import { Database } from '@angular/fire/database';
+import { ref, onValue } from 'firebase/database';
 import { Observable } from 'rxjs';
 
 export interface Members {
@@ -110,7 +111,8 @@ export class DataService {
     gdgFaqs: '/home/gdgFAQs', //eventDetails
   };
 
-  constructor(private db: Database) {}
+  // constructor(private db: Database) {}
+  private db = inject(Database);
 
   //organizers and volunteers
   getAllTeams() {
