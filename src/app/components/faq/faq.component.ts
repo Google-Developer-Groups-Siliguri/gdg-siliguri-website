@@ -9,7 +9,7 @@ import {
   OnInit,
   OnDestroy,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { getDocument } from 'ssr-window';
 import {
   Accordion,
@@ -22,7 +22,7 @@ import { DataService, FAQ } from 'src/app/services/data.service';
 
 @Component({
     selector: 'app-faq',
-    imports: [CommonModule],
+    imports: [],
     template: `
     @if (faqData; as data) { @if(data.enabled) {
     <div

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
     selector: 'app-coming-soon-card',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './coming-soon-card.component.html',
     styleUrls: ['./coming-soon-card.component.css']
 })

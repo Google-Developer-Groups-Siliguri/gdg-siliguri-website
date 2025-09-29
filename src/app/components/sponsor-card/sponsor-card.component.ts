@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
     selector: 'app-sponsor-card',
-    imports: [CommonModule, NgOptimizedImage],
+    imports: [NgOptimizedImage],
     templateUrl: './sponsor-card.component.html',
     styleUrls: ['./sponsor-card.component.css']
 })

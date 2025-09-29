@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
     selector: 'app-keep-in-touch',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './keep-in-touch.component.html',
     styleUrls: ['./keep-in-touch.component.css']
 })

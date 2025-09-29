@@ -1,4 +1,4 @@
-import { NgFor } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { CommingSoonComponent } from 'src/app/components/comming-soon/comming-soon.component';
@@ -7,7 +7,7 @@ import { DataService, Members } from 'src/app/services/data.service';
 
 @Component({
     selector: 'app-team',
-    imports: [MemberCardComponent, NgFor, CommingSoonComponent],
+    imports: [MemberCardComponent, CommingSoonComponent],
     template: `
     @if (sectionEnabled) {
 

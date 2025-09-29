@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
     selector: 'app-google-products',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './google-products.component.html',
     styleUrls: ['./google-products.component.css']
 })

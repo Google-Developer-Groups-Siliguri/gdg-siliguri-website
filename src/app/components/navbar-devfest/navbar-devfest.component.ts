@@ -1,5 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { NgFor } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
 import { Collapse } from 'flowbite';
@@ -8,7 +8,7 @@ import { getDocument } from 'ssr-window';
 
 @Component({
     selector: 'app-navbar-devfest',
-    imports: [NgFor, RouterModule, NgOptimizedImage],
+    imports: [RouterModule, NgOptimizedImage],
     templateUrl: './navbar-devfest.component.html',
     styleUrls: ['./navbar-devfest.component.css']
 })

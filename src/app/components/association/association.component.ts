@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
     selector: 'app-association',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './association.component.html',
     styleUrls: ['./association.component.css']
 })
