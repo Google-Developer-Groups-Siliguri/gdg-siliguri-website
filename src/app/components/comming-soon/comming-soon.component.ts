@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-comming-soon',
-  standalone: true,
-  imports: [],
-  template: `
+    selector: 'app-comming-soon',
+    imports: [],
+    template: `
     <div>
       <section
         class="md:mx-[1.5rem] mx-[1.5rem] bg-gray-100 lg:p-10 p-6 rounded-2xl"
@@ -21,6 +20,6 @@ import { Component } from '@angular/core';
       </section>
     </div>
   `,
-  styles: ``,
+    styles: ``
 })
 export class CommingSoonComponent {}

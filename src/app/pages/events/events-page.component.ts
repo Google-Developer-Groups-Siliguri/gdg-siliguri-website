@@ -6,10 +6,9 @@ import { CommunityEventsListComponent } from '../../components/community-events-
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-events-page',
-  standalone: true,
-  imports: [CommunityEventsListComponent, AsyncPipe],
-  template: `
+    selector: 'app-events-page',
+    imports: [CommunityEventsListComponent, AsyncPipe],
+    template: `
     <div class="mt-20 w-full md:container p-4 mx-auto">
       <div class="mb-10">
         <h1
@@ -30,7 +29,7 @@ import { AsyncPipe } from '@angular/common';
       </div>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EventsPageComponent {
   communityEventData$: Observable<{ enabled: boolean; data: Events[] }>;

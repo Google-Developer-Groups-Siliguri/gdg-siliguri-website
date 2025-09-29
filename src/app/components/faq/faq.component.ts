@@ -21,10 +21,9 @@ import { Observable, Subscription } from 'rxjs';
 import { DataService, FAQ } from 'src/app/services/data.service';
 
 @Component({
-  selector: 'app-faq',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
+    selector: 'app-faq',
+    imports: [CommonModule],
+    template: `
     @if (faqData; as data) { @if(data.enabled) {
     <div
       class="grid grid-cols-12 md:gap-10 gap-5 overflow-hidden mx-[1.5rem] mb-[2rem] bg-white rounded-2xl md:p-0 p-3"
@@ -82,7 +81,7 @@ import { DataService, FAQ } from 'src/app/services/data.service';
     </div>
     } }
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaqComponent implements OnInit, OnDestroy {
   accordion: AccordionInterface | undefined;

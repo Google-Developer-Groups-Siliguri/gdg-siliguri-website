@@ -6,10 +6,9 @@ import { CommingSoonComponent } from 'src/app/components/comming-soon/comming-so
 import { DataService, EventData } from 'src/app/services/data.service';
 
 @Component({
-  selector: 'app-tickets',
-  standalone: true,
-  imports: [CommingSoonComponent, AsyncPipe],
-  template: `
+    selector: 'app-tickets',
+    imports: [CommingSoonComponent, AsyncPipe],
+    template: `
     <div class="mt-20 min-h-[70vh] md:container md:mx-auto md:px-4 px-[1.5rem]">
       <!-- <app-comming-soon></app-comming-soon> -->
       @if (eventData$ | async; as data) {
@@ -58,7 +57,7 @@ import { DataService, EventData } from 'src/app/services/data.service';
       }
     </div>
   `,
-  styles: ``,
+    styles: ``
 })
 export class TicketsComponent {
   eventData$: Observable<EventData>;

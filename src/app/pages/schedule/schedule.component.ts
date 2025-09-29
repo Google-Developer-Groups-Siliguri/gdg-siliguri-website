@@ -7,10 +7,9 @@ import { TimelineComponent } from 'src/app/components/timeline/timeline.componen
 import { DataService, Schedule } from 'src/app/services/data.service';
 
 @Component({
-  selector: 'app-schedule',
-  standalone: true,
-  imports: [AsyncPipe, TimelineComponent, CommingSoonComponent],
-  template: `
+    selector: 'app-schedule',
+    imports: [AsyncPipe, TimelineComponent, CommingSoonComponent],
+    template: `
     <div class="mt-20 min-h-[70vh] max-w-screen-2xl mx-auto">
       <div class="mx-[1.5rem]">
         <h1
@@ -53,7 +52,7 @@ import { DataService, Schedule } from 'src/app/services/data.service';
       </div>
     </div>
   `,
-  styles: ``,
+    styles: ``
 })
 export class ScheduleComponent {
   scheduleData$: Observable<{ enabled: Boolean; data: Schedule[] }>;

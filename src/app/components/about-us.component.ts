@@ -2,10 +2,9 @@ import { NgIf } from '@angular/common';
 import { HostListener, Component } from '@angular/core';
 import { getWindow } from 'ssr-window';
 @Component({
-  selector: 'app-about-us',
-  standalone: true,
-  imports: [NgIf],
-  template: `
+    selector: 'app-about-us',
+    imports: [NgIf],
+    template: `
     <div
       class="container flex flex-col justify-center items-center overflow-hidden"
     >
@@ -48,7 +47,7 @@ import { getWindow } from 'ssr-window';
         <!-- </div> -->
       </div>
     </div>
-  `,
+  `
 })
 export class AboutUsComponent {
   public screenWidth: number = 0;

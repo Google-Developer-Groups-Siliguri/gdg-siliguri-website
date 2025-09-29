@@ -15,21 +15,21 @@ import { WhatsIsComponent } from 'src/app/components/whats-is/whats-is.component
 import { DataService, EventData } from 'src/app/services/data.service';
 
 @Component({
-  selector: 'app-devfest',
-  imports: [
-    AsyncPipe,
-    DevfestHeroComponent,
-    ContactMapComponent,
-    SpeakersComponent,
-    SponsorsComponent,
-    PartnersComponent,
-    ReviewComponent,
-    WhatsIsComponent,
-    GoogleProductsComponent,
-    KeepInTouchComponent,
-    DevfestFaqComponent,
-  ],
-  template: `
+    selector: 'app-devfest',
+    imports: [
+        AsyncPipe,
+        DevfestHeroComponent,
+        ContactMapComponent,
+        SpeakersComponent,
+        SponsorsComponent,
+        PartnersComponent,
+        ReviewComponent,
+        WhatsIsComponent,
+        GoogleProductsComponent,
+        KeepInTouchComponent,
+        DevfestFaqComponent,
+    ],
+    template: `
     <div class="mx-auto min-h-[70vh] max-w-screen-2xl">
       <div class="mt-20">
         @if (eventData$ | async; as data) {
@@ -48,8 +48,7 @@ import { DataService, EventData } from 'src/app/services/data.service';
      -->
       </div>
     </div>
-  `,
-  standalone: true,
+  `
 })
 export class DevfestComponent {
   eventData$: Observable<EventData>;

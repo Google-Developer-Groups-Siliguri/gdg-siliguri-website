@@ -3,11 +3,10 @@ import { Events } from '../services/data.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-community-events-list',
-  standalone: true,
-  // Add any necessary imports like CommonModule if required:
-  imports: [CommonModule],
-  template: `
+    selector: 'app-community-events-list',
+    // Add any necessary imports like CommonModule if required:
+    imports: [CommonModule],
+    template: `
     <div class="flex flex-col gap-4">
       <div
         *ngFor="let item of eventsList; trackBy: trackByFn"
@@ -42,9 +41,9 @@ import { CommonModule } from '@angular/common';
       </div>
     </div>
   `,
-  styles: [
+    styles: [
     /* Include component-specific styles here if needed */
-  ],
+    ]
 })
 export class CommunityEventsListComponent {
   @Input({ required: true }) eventsList!: Events[];

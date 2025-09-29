@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 import { NgOptimizedImage } from '@angular/common';
 import { Members } from 'src/app/services/data.service';
 @Component({
-  selector: 'app-member-card',
-  standalone: true,
-  imports: [CommonModule, NgOptimizedImage],
-  templateUrl: './member-card.component.html',
-  styleUrls: ['./member-card.component.css'],
+    selector: 'app-member-card',
+    imports: [CommonModule, NgOptimizedImage],
+    templateUrl: './member-card.component.html',
+    styleUrls: ['./member-card.component.css']
 })
 export class MemberCardComponent {
   @Input() item: Members = {

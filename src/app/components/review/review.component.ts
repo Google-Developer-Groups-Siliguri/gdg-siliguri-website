@@ -6,11 +6,10 @@ import { DataService, Feedbacks } from 'src/app/services/data.service';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-review',
-  standalone: true,
-  imports: [AsyncPipe],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  template: `
+    selector: 'app-review',
+    imports: [AsyncPipe],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    template: `
     <div
       class="grid grid-cols-12 md:gap-10 gap-5 overflow-hidden mx-[1.5rem] mb-[2rem] bg-[#cddef5] lg:p-12 rounded-2xl items-center md:p-5 p-3"
     >
@@ -78,7 +77,7 @@ import { Observable } from 'rxjs';
       <app-coming-soon-card></app-coming-soon-card>
       }
     </div>
-  `,
+  `
 })
 export class ReviewComponent implements OnInit {
   reviewsData$: Observable<{ enabled: boolean; data: Feedbacks[] }>;

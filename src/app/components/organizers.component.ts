@@ -4,10 +4,9 @@ import { Meta, Title } from '@angular/platform-browser';
 import { MemberCardComponent } from './member-card/member-card.component';
 
 @Component({
-  selector: 'app-organizers',
-  standalone: true,
-  imports: [MemberCardComponent],
-  template: `
+    selector: 'app-organizers',
+    imports: [MemberCardComponent],
+    template: `
     @if (sectionEnabled) {
 
     <div class="mt-20 max-w-screen-2xl mx-auto">
@@ -39,7 +38,7 @@ import { MemberCardComponent } from './member-card/member-card.component';
       </div>
     </div>
     }
-  `,
+  `
 })
 export class OrganizersComponent {
   organizersDetails: Members[] = [];

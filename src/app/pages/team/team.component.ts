@@ -6,10 +6,9 @@ import { MemberCardComponent } from 'src/app/components/member-card/member-card.
 import { DataService, Members } from 'src/app/services/data.service';
 
 @Component({
-  selector: 'app-team',
-  standalone: true,
-  imports: [MemberCardComponent, NgFor, CommingSoonComponent],
-  template: `
+    selector: 'app-team',
+    imports: [MemberCardComponent, NgFor, CommingSoonComponent],
+    template: `
     @if (sectionEnabled) {
 
     <div class="mt-20 max-w-screen-2xl mx-auto">
@@ -68,7 +67,7 @@ import { DataService, Members } from 'src/app/services/data.service';
     </div>
     }
   `,
-  styles: ``,
+    styles: ``
 })
 export class TeamComponent implements OnInit {
   organizersDetails: Members[] = [];

@@ -13,15 +13,14 @@ import {
 } from 'lucide-angular';
 import { SeparatorComponent } from '../../components/ui/separator/separator.component';
 @Component({
-  selector: 'app-event-details-page',
-  standalone: true,
-  imports: [
-    LucideAngularModule,
-    CardComponent,
-    CardContentComponent,
-    SeparatorComponent,
-  ],
-  template: `
+    selector: 'app-event-details-page',
+    imports: [
+        LucideAngularModule,
+        CardComponent,
+        CardContentComponent,
+        SeparatorComponent,
+    ],
+    template: `
     <div class="min-h-screen bg-gray-50">
       <header class="bg-white border-b">
         <div class="container px-4 py-4 mx-auto">
@@ -186,7 +185,7 @@ import { SeparatorComponent } from '../../components/ui/separator/separator.comp
         </div>
       </main>
     </div>
-  `,
+  `
 })
 export class EventDetailsPageComponent {
   readonly Users = Users;

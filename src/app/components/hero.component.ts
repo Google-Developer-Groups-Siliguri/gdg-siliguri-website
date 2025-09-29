@@ -2,8 +2,8 @@ import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-hero',
-  template: `
+    selector: 'app-hero',
+    template: `
     <div class="grid grid-cols-12 gap-5 overflow-hidden mx-[1.5rem] mb-[2rem]">
       <div class="col-span-12">
         <div class="hidden w-full bg-cover md:p-4 md:block">
@@ -45,8 +45,7 @@ import { Component } from '@angular/core';
       </div>
     </div>
   `,
-  standalone: true,
-  imports: [],
+    imports: []
 })
 export class HeroComponent {
   title =

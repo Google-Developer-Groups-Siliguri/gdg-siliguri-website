@@ -13,20 +13,19 @@ import { DataService, EventData } from 'src/app/services/data.service';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-home-page',
-  standalone: true,
-  imports: [
-    BannerComponent,
-    WelcomeComponent,
-    AboutUsComponent,
-    OrganizersComponent,
-    HeroComponent,
-    FaqComponent,
-    GoogleProductsComponent,
-    KeepInTouchComponent,
-    AsyncPipe,
-  ],
-  template: `
+    selector: 'app-home-page',
+    imports: [
+        BannerComponent,
+        WelcomeComponent,
+        AboutUsComponent,
+        OrganizersComponent,
+        HeroComponent,
+        FaqComponent,
+        GoogleProductsComponent,
+        KeepInTouchComponent,
+        AsyncPipe,
+    ],
+    template: `
     <div class="mt-20 w-full">
       <div class="bg-[#f2f3f5] w-full">
         <div class="md:container md:mx-auto md:px-4 ">
@@ -62,7 +61,7 @@ import { AsyncPipe } from '@angular/common';
       </div>
     </div>
   `,
-  styles: ``,
+    styles: ``
 })
 export class HomePageComponent {
   eventData$: Observable<EventData>;

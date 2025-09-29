@@ -7,11 +7,10 @@ import type { CollapseOptions, CollapseInterface } from 'flowbite';
 import { getDocument } from 'ssr-window';
 
 @Component({
-  selector: 'app-navbar-devfest',
-  standalone: true,
-  imports: [NgFor, RouterModule, NgOptimizedImage],
-  templateUrl: './navbar-devfest.component.html',
-  styleUrls: ['./navbar-devfest.component.css'],
+    selector: 'app-navbar-devfest',
+    imports: [NgFor, RouterModule, NgOptimizedImage],
+    templateUrl: './navbar-devfest.component.html',
+    styleUrls: ['./navbar-devfest.component.css']
 })
 export class NavbarDevfestComponent implements AfterViewInit {
   options!: CollapseOptions;

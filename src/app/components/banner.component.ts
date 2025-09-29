@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
-  selector: 'app-banner',
-  standalone: true,
-  imports: [],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
+    selector: 'app-banner',
+    imports: [],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    template: `
     <div class="grid grid-cols-12 p-4">
       <div class="col-span-1">
         <img
@@ -46,7 +45,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
       </div>
     </div>
   `,
-  styles: ``,
+    styles: ``
 })
 export class BannerComponent {
   ticketUrl = input.required<string>();

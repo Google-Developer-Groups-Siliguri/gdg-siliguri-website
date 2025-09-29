@@ -16,10 +16,9 @@ import { DataService, FAQ } from '../services/data.service';
 import { getDocument } from 'ssr-window';
 
 @Component({
-  selector: 'app-devfest-faq',
-  standalone: true,
-  imports: [],
-  template: `
+    selector: 'app-devfest-faq',
+    imports: [],
+    template: `
     @if (faqData; as data) { @if(data.enabled) {
     <div
       class="grid grid-cols-12 md:gap-10 gap-5 overflow-hidden mx-[1.5rem] mb-[2rem] bg-white rounded-2xl md:p-0 p-3 mt-10"
@@ -77,7 +76,7 @@ import { getDocument } from 'ssr-window';
     </div>
     } }
   `,
-  styles: ``,
+    styles: ``
 })
 export class DevfestFaqComponent {
   accordion: AccordionInterface | undefined;

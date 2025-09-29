@@ -7,16 +7,15 @@ import { DataService, Members } from 'src/app/services/data.service';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-speakers',
-  standalone: true,
-  imports: [
-    CommonModule,
-    SpeakerCardComponent,
-    ComingSoonCardComponent,
-    MemberCardComponent,
-  ],
-  templateUrl: './speakers.component.html',
-  styleUrls: ['./speakers.component.css'],
+    selector: 'app-speakers',
+    imports: [
+        CommonModule,
+        SpeakerCardComponent,
+        ComingSoonCardComponent,
+        MemberCardComponent,
+    ],
+    templateUrl: './speakers.component.html',
+    styleUrls: ['./speakers.component.css']
 })
 export class SpeakersComponent {
   speakersDetails$: Observable<{ enabled: boolean; data: Members[] }>;

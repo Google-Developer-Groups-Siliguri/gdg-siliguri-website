@@ -6,10 +6,9 @@ import { Observable } from 'rxjs';
 import { ComingSoonCardComponent } from '../coming-soon-card/coming-soon-card.component';
 
 @Component({
-  selector: 'app-sponsors',
-  standalone: true,
-  imports: [AsyncPipe, SponsorCardComponent, ComingSoonCardComponent],
-  template: `
+    selector: 'app-sponsors',
+    imports: [AsyncPipe, SponsorCardComponent, ComingSoonCardComponent],
+    template: `
     <div class="2xl:mx-[8rem] md:mx-[4rem] mx-[1.5rem] mt-10">
       <h1
         class="text-[50px] lg:text-[70px] leading-tight tracking-wide font-semibold text-black text-center mt-6"
@@ -89,7 +88,7 @@ import { ComingSoonCardComponent } from '../coming-soon-card/coming-soon-card.co
         }
       </div>
     </div>
-  `,
+  `
 })
 export class SponsorsComponent {
   sponsorsDetails$: Observable<{

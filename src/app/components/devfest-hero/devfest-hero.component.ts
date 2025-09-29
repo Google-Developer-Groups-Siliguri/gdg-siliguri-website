@@ -9,11 +9,10 @@ import { interval, map, Observable } from 'rxjs';
 import { EventData } from 'src/app/services/data.service';
 
 @Component({
-  selector: 'app-devfest-hero',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './devfest-hero.component.html',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    selector: 'app-devfest-hero',
+    imports: [CommonModule],
+    templateUrl: './devfest-hero.component.html',
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class DevfestHeroComponent implements OnInit {
   eventData = input.required<EventData>();
