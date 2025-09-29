@@ -14,6 +14,25 @@ export const routes: Routes = [
             (m) => m.HomePageComponent
           ),
       },
+      {
+        path: 'events',
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./pages/events/events-page.component').then(
+                (m) => m.EventsPageComponent
+              ),
+          },
+          {
+            path: ':eventId',
+            loadComponent: () =>
+              import('./pages/events/event-details-page.component').then(
+                (m) => m.EventDetailsPageComponent
+              ),
+          },
+        ],
+      },
     ],
   },
   {

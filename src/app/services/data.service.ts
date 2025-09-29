@@ -11,6 +11,23 @@ export interface Members {
   profilePictureURL: string;
   twitterURL: string;
 }
+export interface Events {
+  id: string;
+  description: string;
+  name: string;
+  thumbnail: string;
+  coverImg: string;
+  registrationDate: string;
+  eventDate: string;
+  speakers: EventSpeakers[];
+  tagline: string;
+  registrationLink: string;
+}
+export interface EventSpeakers {
+  name: string;
+  imageUrl: string;
+  description: string;
+}
 export interface CommunityPartners {
   icon: string;
   communityName: string;
@@ -89,6 +106,7 @@ export class DataService {
     schedule: '/schedule', //schedules
     sponsors: '/sponsors', //sponsors
     eventDetails: '/eventDetails', //eventDetails
+    communityEvents: '/events', //eventDetails
     gdgFaqs: '/home/gdgFAQs', //eventDetails
   };
 
@@ -253,6 +271,23 @@ export class DataService {
     return new Observable<EventData>((observer) => {
       const unsubscribe = onValue(eventsRef, (snapshot) => {
         const data: EventData = snapshot.val();
+        observer.next(data);
+      });
+
+      // Clean up the subscription when the Observable is unsubscribed
+      return () => {
+        unsubscribe();
+      };
+    });
+  }
+  //eventDetails
+  getCommunityEventsData() {
+    const eventsRef = ref(this.db, this.dbPaths.communityEvents);
+
+    return new Observable<{ enabled: boolean; data: Events[] }>((observer) => {
+      const unsubscribe = onValue(eventsRef, (snapshot) => {
+        const data: { enabled: boolean; data: Events[] } = snapshot.val();
+        console.log(data);
         observer.next(data);
       });
 
