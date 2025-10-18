@@ -24,13 +24,13 @@ export const routes: Routes = [
                 (m) => m.EventsPageComponent
               ),
           },
-          {
-            path: ':eventId',
-            loadComponent: () =>
-              import('./pages/events/event-details-page.component').then(
-                (m) => m.EventDetailsPageComponent
-              ),
-          },
+          // {
+          //   path: ':eventId',
+          //   loadComponent: () =>
+          //     import('./pages/events/event-details-page.component').then(
+          //       (m) => m.EventDetailsPageComponent
+          //     ),
+          // },
         ],
       },
     ],
