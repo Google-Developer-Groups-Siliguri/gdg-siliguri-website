@@ -1,4 +1,3 @@
-
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { CommingSoonComponent } from 'src/app/components/comming-soon/comming-soon.component';
@@ -6,9 +5,9 @@ import { MemberCardComponent } from 'src/app/components/member-card/member-card.
 import { DataService, Members } from 'src/app/services/data.service';
 
 @Component({
-    selector: 'app-team',
-    imports: [MemberCardComponent, CommingSoonComponent],
-    template: `
+  selector: 'app-team',
+  imports: [MemberCardComponent, CommingSoonComponent],
+  template: `
     @if (sectionEnabled) {
 
     <div class="mt-20 max-w-screen-2xl mx-auto">
@@ -20,7 +19,7 @@ import { DataService, Members } from 'src/app/services/data.service';
           Team
         </h1>
         <h2 class="text-xl text-[#9CA3AF] text-center font-semibold mt-4">
-          Meet our DevFest Siliguri 2024 organisers and volunteers.
+          Meet our DevFest Siliguri 2025 organisers and volunteers.
         </h2>
 
         <div class="w-full my-10">
@@ -67,7 +66,7 @@ import { DataService, Members } from 'src/app/services/data.service';
     </div>
     }
   `,
-    styles: ``
+  styles: ``,
 })
 export class TeamComponent implements OnInit {
   organizersDetails: Members[] = [];
@@ -82,9 +81,9 @@ export class TeamComponent implements OnInit {
     this.getSpeakersList();
     this.meta.addTag({
       name: 'title',
-      content: 'Team | Devfest Siliguri 2024',
+      content: 'Team | Devfest Siliguri 2025',
     });
-    this.title.setTitle('Team | Devfest Siliguri 2024');
+    this.title.setTitle('Team | Devfest Siliguri 2025');
   }
 
   ngOnInit(): void {}

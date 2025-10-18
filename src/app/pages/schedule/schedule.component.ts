@@ -7,9 +7,9 @@ import { TimelineComponent } from 'src/app/components/timeline/timeline.componen
 import { DataService, Schedule } from 'src/app/services/data.service';
 
 @Component({
-    selector: 'app-schedule',
-    imports: [AsyncPipe, TimelineComponent, CommingSoonComponent],
-    template: `
+  selector: 'app-schedule',
+  imports: [AsyncPipe, TimelineComponent, CommingSoonComponent],
+  template: `
     <div class="mt-20 min-h-[70vh] max-w-screen-2xl mx-auto">
       <div class="mx-[1.5rem]">
         <h1
@@ -44,19 +44,17 @@ import { DataService, Schedule } from 'src/app/services/data.service';
             </li>
           </ul>
         </div>
-        @if (scheduleData$ | async; as data) {
-          @if (data.enabled) {
-            <app-timeline [day]="data.data" [hasImage]="hasImage"></app-timeline>
-          } @else {
-            <app-comming-soon></app-comming-soon>
-          }
+        @if (scheduleData$ | async; as data) { @if (data.enabled) {
+        <app-timeline [day]="data.data" [hasImage]="hasImage"></app-timeline>
         } @else {
+        <app-comming-soon></app-comming-soon>
+        } } @else {
         <app-comming-soon></app-comming-soon>
         }
       </div>
     </div>
   `,
-    styles: ``
+  styles: ``,
 })
 export class ScheduleComponent {
   scheduleData$: Observable<{ enabled: Boolean; data: Schedule[] }>;
@@ -68,9 +66,9 @@ export class ScheduleComponent {
   ) {
     this.meta.addTag({
       name: 'title',
-      content: 'Schedule | Devfest Siliguri 2024',
+      content: 'Schedule | Devfest Siliguri 2025',
     });
-    this.title.setTitle('Schedule | Devfest Siliguri 2024');
+    this.title.setTitle('Schedule | Devfest Siliguri 2025');
     this.scheduleData$ = this.$firebaseDataService.getAllSchedules();
     // this.getScheduleList();
   }

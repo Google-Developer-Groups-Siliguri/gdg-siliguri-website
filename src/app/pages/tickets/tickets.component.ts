@@ -6,9 +6,9 @@ import { CommingSoonComponent } from 'src/app/components/comming-soon/comming-so
 import { DataService, EventData } from 'src/app/services/data.service';
 
 @Component({
-    selector: 'app-tickets',
-    imports: [CommingSoonComponent, AsyncPipe],
-    template: `
+  selector: 'app-tickets',
+  imports: [CommingSoonComponent, AsyncPipe],
+  template: `
     <div class="mt-20 min-h-[70vh] md:container md:mx-auto md:px-4 px-[1.5rem]">
       <!-- <app-comming-soon></app-comming-soon> -->
       @if (eventData$ | async; as data) {
@@ -17,8 +17,9 @@ import { DataService, EventData } from 'src/app/services/data.service';
           Book your seat
         </h1>
         <p class="py-4  text-3xl font-normal text-black">
-          Book your ticket to DevFest’24 at {{ data.eventVenue.name }}, and
-          experience the community like no other.
+          Book your ticket to DevFest'{{ currentYear.toString().slice(-2) }} at
+          {{ data.eventVenue.name }}, and experience the community like no
+          other.
         </p>
         <a
           [href]="data.eventTicketURL"
@@ -57,10 +58,11 @@ import { DataService, EventData } from 'src/app/services/data.service';
       }
     </div>
   `,
-    styles: ``
+  styles: ``,
 })
 export class TicketsComponent {
   eventData$: Observable<EventData>;
+  currentYear = new Date().getFullYear();
 
   constructor(
     private meta: Meta,
@@ -69,9 +71,9 @@ export class TicketsComponent {
   ) {
     this.meta.addTag({
       name: 'title',
-      content: 'Tickets | Devfest Siliguri 2024',
+      content: `Tickets | Devfest Siliguri 2025`,
     });
-    this.title.setTitle('Tickets | Devfest Siliguri 2024');
+    this.title.setTitle(`Tickets | Devfest Siliguri 2025`);
     this.eventData$ = this.firebaseService.getEventData();
   }
 }

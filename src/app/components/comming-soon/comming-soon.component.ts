@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'app-comming-soon',
-    imports: [],
-    template: `
+  selector: 'app-comming-soon',
+  imports: [],
+  template: `
     <div>
       <section
         class="md:mx-[1.5rem] mx-[1.5rem] bg-gray-100 lg:p-10 p-6 rounded-2xl"
@@ -14,12 +14,12 @@ import { Component } from '@angular/core';
           <h1
             class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
           >
-            DevFest 2024 Siliguri is coming soon...
+            DevFest 2025 Siliguri is coming soon...
           </h1>
         </div>
       </section>
     </div>
   `,
-    styles: ``
+  styles: ``,
 })
 export class CommingSoonComponent {}

@@ -1,22 +1,22 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
-    selector: 'app-banner',
-    imports: [],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    template: `
+  selector: 'app-banner',
+  imports: [],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
     <div class="grid grid-cols-12 p-4">
       <div class="col-span-1">
         <img
           src="assets/images/left-side-hero.png"
-          alt="devfest2024"
+          alt="devfest2025"
           class="col-span-1"
         />
       </div>
       <div class="col-span-10 flex flex-col justify-center items-center">
         <img
           src="assets/images/header-banner.png"
-          alt="devfest2024"
+          alt="devfest2025"
           width="1520"
           height="180"
           class="w-full mb-3"
@@ -39,13 +39,13 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
       <div class="col-span-1 ">
         <img
           src="assets/images/left-side-hero.png"
-          alt="devfest2024"
+          alt="devfest2025"
           class="-scale-x-100 float-right"
         />
       </div>
     </div>
   `,
-    styles: ``
+  styles: ``,
 })
 export class BannerComponent {
   ticketUrl = input.required<string>();

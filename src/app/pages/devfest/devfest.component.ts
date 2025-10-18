@@ -15,21 +15,21 @@ import { WhatsIsComponent } from 'src/app/components/whats-is/whats-is.component
 import { DataService, EventData } from 'src/app/services/data.service';
 
 @Component({
-    selector: 'app-devfest',
-    imports: [
-        AsyncPipe,
-        DevfestHeroComponent,
-        ContactMapComponent,
-        SpeakersComponent,
-        SponsorsComponent,
-        PartnersComponent,
-        ReviewComponent,
-        WhatsIsComponent,
-        GoogleProductsComponent,
-        KeepInTouchComponent,
-        DevfestFaqComponent,
-    ],
-    template: `
+  selector: 'app-devfest',
+  imports: [
+    AsyncPipe,
+    DevfestHeroComponent,
+    ContactMapComponent,
+    SpeakersComponent,
+    SponsorsComponent,
+    PartnersComponent,
+    ReviewComponent,
+    WhatsIsComponent,
+    GoogleProductsComponent,
+    KeepInTouchComponent,
+    DevfestFaqComponent,
+  ],
+  template: `
     <div class="mx-auto min-h-[70vh] max-w-screen-2xl">
       <div class="mt-20">
         @if (eventData$ | async; as data) {
@@ -48,7 +48,7 @@ import { DataService, EventData } from 'src/app/services/data.service';
      -->
       </div>
     </div>
-  `
+  `,
 })
 export class DevfestComponent {
   eventData$: Observable<EventData>;
@@ -59,9 +59,9 @@ export class DevfestComponent {
   ) {
     this.meta.addTag({
       name: 'title',
-      content: 'Home | Devfest Siliguri 2024',
+      content: 'Home | Devfest Siliguri 2025',
     });
-    this.title.setTitle('Home | Devfest Siliguri 2024');
+    this.title.setTitle('Home | Devfest Siliguri 2025');
     this.eventData$ = this.firebaseService.getEventData();
   }
 }
