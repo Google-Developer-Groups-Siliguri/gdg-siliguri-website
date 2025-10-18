@@ -4,17 +4,23 @@
   Speakers
 </h1>
 <div class="md:mx-[1.5rem] mx-[1.5rem] rounded-2xl">
-  <!-- <app-coming-soon-card> </app-coming-soon-card> -->
-  <div
-    class="grid items-center justify-center grid-cols-12 gap-x-4 gap-y-10 2xl:gap-x-20 md:gap-x-8"
-  >
-    @if (speakersDetails$ | async; as data) { @if (data.enabled) { @for (user of
-    data.data; track $index) {
-    <div class="h-full col-span-12 lg:col-span-3 md:col-span-4 sm:col-span-6">
-      <div class="flex items-center justify-center h-full">
-        <app-member-card [item]="user" class="w-full h-full"></app-member-card>
+  @if (speakersDetails$ | async; as data) {
+    @if (data.enabled) {
+      <div
+        class="grid items-center justify-center grid-cols-12 gap-x-4 gap-y-10 2xl:gap-x-20 md:gap-x-8"
+      >
+        @for (user of data.data; track $index) {
+        <div class="h-full col-span-12 lg:col-span-3 md:col-span-4 sm:col-span-6">
+          <div class="flex items-center justify-center h-full">
+            <app-member-card [item]="user" class="w-full h-full"></app-member-card>
+          </div>
+        </div>
+        }
       </div>
-    </div>
-    } } }
-  </div>
+    } @else {
+      <app-coming-soon-card></app-coming-soon-card>
+    }
+  } @else {
+    <app-coming-soon-card></app-coming-soon-card>
+  }
 </div>

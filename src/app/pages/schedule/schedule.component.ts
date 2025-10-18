@@ -45,7 +45,11 @@ import { DataService, Schedule } from 'src/app/services/data.service';
           </ul>
         </div>
         @if (scheduleData$ | async; as data) {
-        <app-timeline [day]="data.data" [hasImage]="hasImage"></app-timeline>
+          @if (data.enabled) {
+            <app-timeline [day]="data.data" [hasImage]="hasImage"></app-timeline>
+          } @else {
+            <app-comming-soon></app-comming-soon>
+          }
         } @else {
         <app-comming-soon></app-comming-soon>
         }
