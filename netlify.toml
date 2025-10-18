@@ -1,5 +1,5 @@
 [build]
-  command = "pnpm run build:netlify"
+  command = "pnpm run build"
   publish = "dist/gdg-siliguri-website/browser"
   functions = "netlify/functions"
 
