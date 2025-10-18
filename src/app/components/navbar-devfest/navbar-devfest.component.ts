@@ -1,5 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { NgFor } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
 import { Collapse } from 'flowbite';
@@ -7,18 +7,17 @@ import type { CollapseOptions, CollapseInterface } from 'flowbite';
 import { getDocument } from 'ssr-window';
 
 @Component({
-  selector: 'app-navbar-devfest',
-  standalone: true,
-  imports: [NgFor, RouterModule, NgOptimizedImage],
-  templateUrl: './navbar-devfest.component.html',
-  styleUrls: ['./navbar-devfest.component.css'],
+    selector: 'app-navbar-devfest',
+    imports: [RouterModule, NgOptimizedImage],
+    templateUrl: './navbar-devfest.component.html',
+    styleUrls: ['./navbar-devfest.component.css']
 })
 export class NavbarDevfestComponent implements AfterViewInit {
   options!: CollapseOptions;
   collapse!: CollapseInterface;
 
   routes = [
-    { path: '', name: 'Back to Home', exact: true },
+    { path: '/devfest', name: 'Back to Home', exact: true },
     { path: 'schedule', name: 'Schedule', exact: false },
     { path: 'tickets', name: 'Tickets', exact: false },
     { path: 'team', name: 'Team', exact: false },

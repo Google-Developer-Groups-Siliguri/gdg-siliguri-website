@@ -1,41 +1,36 @@
 import {
-  AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
-  ViewChildren,
   QueryList,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  OnInit,
-  OnDestroy,
+  ViewChildren,
 } from '@angular/core';
-
-import { getDocument } from 'ssr-window';
 import {
   Accordion,
   AccordionInterface,
   AccordionItem,
   AccordionOptions,
 } from 'flowbite';
-import { Observable, Subscription } from 'rxjs';
-import { DataService, FAQ } from 'src/app/services/data.service';
+import { Subscription } from 'rxjs';
+import { DataService, FAQ } from '../services/data.service';
+import { getDocument } from 'ssr-window';
 
 @Component({
-    selector: 'app-faq',
+    selector: 'app-devfest-faq',
     imports: [],
     template: `
     @if (faqData; as data) { @if(data.enabled) {
     <div
-      class="grid grid-cols-12 md:gap-10 gap-5 overflow-hidden mx-[1.5rem] mb-[2rem] bg-white rounded-2xl md:p-0 p-3"
+      class="grid grid-cols-12 md:gap-10 gap-5 overflow-hidden mx-[1.5rem] mb-[2rem] bg-white rounded-2xl md:p-0 p-3 mt-10"
     >
-      <div class="col-span-12 md:col-span-6">
+      <div class="col-span-12 flex justify-center">
         <h1
           class="lg:text-7xl md:text-5xl text-4xl font-[600] text-[#3c4043] text-center md:text-left"
         >
           Frequently asked questions
         </h1>
       </div>
-      <div class="col-span-12 md:col-span-6">
+      <div class="col-span-12 md:px-40">
         @for (item of data.data; track $index; let i=$index) {
         <h2 [id]="'accordion-example-heading-' + (i + 1)" #accordionItem>
           <button
@@ -81,9 +76,9 @@ import { DataService, FAQ } from 'src/app/services/data.service';
     </div>
     } }
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush
+    styles: ``
 })
-export class FaqComponent implements OnInit, OnDestroy {
+export class DevfestFaqComponent {
   accordion: AccordionInterface | undefined;
   accordionItems: AccordionItem[] = [];
   options: AccordionOptions = {};
@@ -98,7 +93,7 @@ export class FaqComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.faqSubscription = this.firebaseService
-      .getAllGDGFAQS()
+      .getAllFAQS()
       .subscribe((data) => {
         this.faqData = data;
         this.cd.detectChanges(); // Ensure the view is updated

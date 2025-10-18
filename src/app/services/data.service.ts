@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Database, ref, onValue } from '@angular/fire/database';
+import { inject, Injectable } from '@angular/core';
+import { Database } from '@angular/fire/database';
+import { ref, onValue } from 'firebase/database';
 import { Observable } from 'rxjs';
 
 export interface Members {
@@ -10,6 +11,23 @@ export interface Members {
   name: string;
   profilePictureURL: string;
   twitterURL: string;
+}
+export interface Events {
+  id: string;
+  description: string;
+  name: string;
+  thumbnail: string;
+  coverImg: string;
+  registrationDate: string;
+  eventDate: string;
+  speakers: EventSpeakers[];
+  tagline: string;
+  registrationLink: string;
+}
+export interface EventSpeakers {
+  name: string;
+  imageUrl: string;
+  description: string;
 }
 export interface CommunityPartners {
   icon: string;
@@ -42,6 +60,40 @@ export interface Sponsors {
   socialMediaLink: string;
 }
 
+export interface SOCIAL {
+  name: string;
+  url: string;
+}
+
+export interface EventData {
+  bannerDescription: string;
+  eventDateTime: string;
+  bannerImages: {
+    large: string;
+    long: string;
+    medium: string;
+    small: string;
+  };
+  communityEmail: string;
+  communityJoinLink: string;
+  eventTicketURL: string;
+  registrationExpiryDateTime: string;
+  eventVenue: {
+    imageURL: string;
+    mapsURL: string;
+    name: string;
+  };
+  socialMediaLinks: SOCIAL[];
+  pointsToNote: {
+    enabled: boolean;
+    data: string[];
+  };
+  perks: {
+    enabled: boolean;
+    data: string[];
+  };
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -54,17 +106,21 @@ export class DataService {
     faqs: '/FAQs', //FAQ
     schedule: '/schedule', //schedules
     sponsors: '/sponsors', //sponsors
+    eventDetails: '/eventDetails', //eventDetails
+    communityEvents: '/events', //eventDetails
+    gdgFaqs: '/home/gdgFAQs', //eventDetails
   };
 
-  constructor(private db: Database) {}
+  // constructor(private db: Database) {}
+  private db = inject(Database);
 
   //organizers and volunteers
   getAllTeams() {
     const teamsRef = ref(this.db, this.dbPaths.teams);
 
-    return new Observable<Members[]>((observer) => {
+    return new Observable<{ enabled: boolean; data: Members[] }>((observer) => {
       const unsubscribe = onValue(teamsRef, (snapshot) => {
-        const data: Members[] = snapshot.val();
+        const data: { enabled: boolean; data: Members[] } = snapshot.val();
         observer.next(data);
       });
 
@@ -79,9 +135,9 @@ export class DataService {
   getAllSpeakers() {
     const speakersRef = ref(this.db, this.dbPaths.speakers);
 
-    return new Observable<Members[]>((observer) => {
+    return new Observable<{ enabled: boolean; data: Members[] }>((observer) => {
       const unsubscribe = onValue(speakersRef, (snapshot) => {
-        const data: Members[] = snapshot.val();
+        const data: { enabled: boolean; data: Members[] } = snapshot.val();
         observer.next(data);
       });
 
@@ -96,26 +152,48 @@ export class DataService {
   getAllCommunityPartners() {
     const partnersRef = ref(this.db, this.dbPaths.partners);
 
-    return new Observable<CommunityPartners[]>((observer) => {
-      const unsubscribe = onValue(partnersRef, (snapshot) => {
-        const data: CommunityPartners[] = snapshot.val();
-        observer.next(data);
-      });
+    return new Observable<{ enabled: boolean; data: CommunityPartners[] }>(
+      (observer) => {
+        const unsubscribe = onValue(partnersRef, (snapshot) => {
+          const data: { enabled: boolean; data: CommunityPartners[] } =
+            snapshot.val();
+          observer.next(data);
+        });
 
-      // Clean up the subscription when the Observable is unsubscribed
-      return () => {
-        unsubscribe();
-      };
-    });
+        // Clean up the subscription when the Observable is unsubscribed
+        return () => {
+          unsubscribe();
+        };
+      }
+    );
   }
 
   //feedbacks
   getAllFeedbacks() {
     const feedbacksRef = ref(this.db, this.dbPaths.feedbacks);
 
-    return new Observable<Feedbacks[]>((observer) => {
-      const unsubscribe = onValue(feedbacksRef, (snapshot) => {
-        const data: Feedbacks[] = snapshot.val();
+    return new Observable<{ enabled: boolean; data: Feedbacks[] }>(
+      (observer) => {
+        const unsubscribe = onValue(feedbacksRef, (snapshot) => {
+          const data: { enabled: boolean; data: Feedbacks[] } = snapshot.val();
+          observer.next(data);
+        });
+
+        // Clean up the subscription when the Observable is unsubscribed
+        return () => {
+          unsubscribe();
+        };
+      }
+    );
+  }
+
+  //faqs
+  getAllFAQS() {
+    const faqsRef = ref(this.db, this.dbPaths.faqs);
+
+    return new Observable<{ enabled: boolean; data: FAQ[] }>((observer) => {
+      const unsubscribe = onValue(faqsRef, (snapshot) => {
+        const data: { enabled: boolean; data: FAQ[] } = snapshot.val();
         observer.next(data);
       });
 
@@ -125,14 +203,13 @@ export class DataService {
       };
     });
   }
-
   //faqs
-  getAllFAQS() {
-    const faqsRef = ref(this.db, this.dbPaths.faqs);
+  getAllGDGFAQS() {
+    const faqsRef = ref(this.db, this.dbPaths.gdgFaqs);
 
-    return new Observable<FAQ[]>((observer) => {
+    return new Observable<{ enabled: boolean; data: FAQ[] }>((observer) => {
       const unsubscribe = onValue(faqsRef, (snapshot) => {
-        const data: FAQ[] = snapshot.val();
+        const data: { enabled: boolean; data: FAQ[] } = snapshot.val();
         observer.next(data);
       });
 
@@ -147,9 +224,38 @@ export class DataService {
   getAllSchedules() {
     const scheduleRef = ref(this.db, this.dbPaths.schedule);
 
-    return new Observable<Schedule[]>((observer) => {
-      const unsubscribe = onValue(scheduleRef, (snapshot) => {
-        const data: Schedule[] = snapshot.val();
+    return new Observable<{ enabled: Boolean; data: Schedule[] }>(
+      (observer) => {
+        const unsubscribe = onValue(scheduleRef, (snapshot) => {
+          const data: { enabled: Boolean; data: Schedule[] } = snapshot.val();
+          observer.next(data);
+        });
+
+        // Clean up the subscription when the Observable is unsubscribed
+        return () => {
+          unsubscribe();
+        };
+      }
+    );
+  }
+
+  //sponsors
+  getAllSponsors() {
+    const sponsorsRef = ref(this.db, this.dbPaths.sponsors);
+
+    return new Observable<{
+      enabled: boolean;
+      gold: Sponsors[];
+      platinum: Sponsors[];
+      silver: Sponsors[];
+    }>((observer) => {
+      const unsubscribe = onValue(sponsorsRef, (snapshot) => {
+        const data: {
+          enabled: boolean;
+          gold: Sponsors[];
+          platinum: Sponsors[];
+          silver: Sponsors[];
+        } = snapshot.val();
         observer.next(data);
       });
 
@@ -160,13 +266,30 @@ export class DataService {
     });
   }
 
-  //sponsors
-  getAllSponsors() {
-    const sponsorsRef = ref(this.db, this.dbPaths.sponsors);
+  //eventDetails
+  getEventData() {
+    const eventsRef = ref(this.db, this.dbPaths.eventDetails);
 
-    return new Observable<Sponsors[]>((observer) => {
-      const unsubscribe = onValue(sponsorsRef, (snapshot) => {
-        const data: Sponsors[] = snapshot.val();
+    return new Observable<EventData>((observer) => {
+      const unsubscribe = onValue(eventsRef, (snapshot) => {
+        const data: EventData = snapshot.val();
+        observer.next(data);
+      });
+
+      // Clean up the subscription when the Observable is unsubscribed
+      return () => {
+        unsubscribe();
+      };
+    });
+  }
+  //eventDetails
+  getCommunityEventsData() {
+    const eventsRef = ref(this.db, this.dbPaths.communityEvents);
+
+    return new Observable<{ enabled: boolean; data: Events[] }>((observer) => {
+      const unsubscribe = onValue(eventsRef, (snapshot) => {
+        const data: { enabled: boolean; data: Events[] } = snapshot.val();
+        console.log(data);
         observer.next(data);
       });
 

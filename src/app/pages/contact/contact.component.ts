@@ -5,13 +5,14 @@ import { Meta, Title } from '@angular/platform-browser';
   selector: 'app-contact',
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.css'],
+  standalone: false,
 })
 export class ContactComponent {
   constructor(private meta: Meta, private title: Title) {
     this.meta.addTag({
       name: 'title',
-      content: 'Contact Us | Devfest Siliguri 2023',
+      content: 'Contact Us | Devfest Siliguri 2025',
     });
-    this.title.setTitle('Contact Us | Devfest Siliguri 2023');
+    this.title.setTitle('Contact Us | Devfest Siliguri 2025');
   }
 }

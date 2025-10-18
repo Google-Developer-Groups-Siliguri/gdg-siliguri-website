@@ -4,34 +4,22 @@ import { SpeakerCardComponent } from '../speaker-card/speaker-card.component';
 import { ComingSoonCardComponent } from '../coming-soon-card/coming-soon-card.component';
 import { MemberCardComponent } from '../member-card/member-card.component';
 import { DataService, Members } from 'src/app/services/data.service';
+import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-speakers',
-  standalone: true,
-  imports: [
-    CommonModule,
-    SpeakerCardComponent,
-    ComingSoonCardComponent,
-    MemberCardComponent,
-  ],
-  templateUrl: './speakers.component.html',
-  styleUrls: ['./speakers.component.css'],
+    selector: 'app-speakers',
+    imports: [
+        CommonModule,
+        SpeakerCardComponent,
+        ComingSoonCardComponent,
+        MemberCardComponent,
+    ],
+    templateUrl: './speakers.component.html',
+    styleUrls: ['./speakers.component.css']
 })
 export class SpeakersComponent {
-  speakersDetails: Members[] = [];
+  speakersDetails$: Observable<{ enabled: boolean; data: Members[] }>;
   constructor(private $firebaseDataService: DataService) {
-    this.getSpeakersList();
-  }
-
-  getSpeakersList() {
-    const subscription$ = this.$firebaseDataService.getAllSpeakers().subscribe({
-      next: (result) => {
-        if (result) {
-          this.speakersDetails = result;
-          subscription$.unsubscribe();
-        }
-      },
-      error: (err) => console.error(err),
-    });
+    this.speakersDetails$ = this.$firebaseDataService.getAllSpeakers();
   }
 }

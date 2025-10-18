@@ -1,30 +1,45 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-banner',
-  standalone: true,
   imports: [],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <img
-      src="assets/images/header-banner.png"
-      alt="devfest2024"
-      width="1520"
-      height="180"
-    />
-    <div class="grid grid-cols-12">
-      <img
-        src="assets/images/left-side-hero.png"
-        alt="devfest2024"
-        class="col-span-3"
-      />
-      <h1 class="col-span-6">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Est saepe
-        maxime recusandae facere, fugit ducimus omnis et numquam facilis sequi.
-      </h1>
-      <div class="col-span-3 ">
+    <div class="grid grid-cols-12 p-4">
+      <div class="col-span-1">
         <img
           src="assets/images/left-side-hero.png"
-          alt="devfest2024"
+          alt="devfest2025"
+          class="col-span-1"
+        />
+      </div>
+      <div class="col-span-10 flex flex-col justify-center items-center">
+        <img
+          src="assets/images/header-banner.png"
+          alt="devfest2025"
+          width="1520"
+          height="180"
+          class="w-full mb-3"
+        />
+        <p class="text-center text-sm md:text-base">
+          Dive deep into the latest trends and innovations through talks,
+          workshops, and more. It's a day filled with learning, networking, and
+          inspiring ideas
+        </p>
+        <a
+          [href]="ticketUrl()"
+          target="_blank"
+          rel="noopener noreferrer"
+          type="button"
+          class=" inline-block text-white bg-[#7c4dff] hover:bg-blue-800 focus:outline-none font-medium rounded-full md:text-xl px-3 py-2 md:px-6 md:py-4 my-3 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700"
+        >
+          Grab Your Tickets!
+        </a>
+      </div>
+      <div class="col-span-1 ">
+        <img
+          src="assets/images/left-side-hero.png"
+          alt="devfest2025"
           class="-scale-x-100 float-right"
         />
       </div>
@@ -32,4 +47,6 @@ import { Component } from '@angular/core';
   `,
   styles: ``,
 })
-export class BannerComponent {}
+export class BannerComponent {
+  ticketUrl = input.required<string>();
+}
