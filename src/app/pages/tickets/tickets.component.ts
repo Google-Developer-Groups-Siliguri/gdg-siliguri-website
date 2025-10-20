@@ -2,12 +2,11 @@ import { AsyncPipe } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
-import { CommingSoonComponent } from 'src/app/components/comming-soon/comming-soon.component';
 import { DataService, EventData } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-tickets',
-  imports: [CommingSoonComponent, AsyncPipe],
+  imports: [AsyncPipe],
   template: `
     <div class="mt-20 min-h-[70vh] md:container md:mx-auto md:px-4 px-[1.5rem]">
       <!-- <app-comming-soon></app-comming-soon> -->

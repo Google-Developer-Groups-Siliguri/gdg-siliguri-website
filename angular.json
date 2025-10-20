@@ -64,8 +64,9 @@
             "browser": "src/main.ts",
             "server": "src/main.server.ts",
             "prerender": true,
+            "outputMode": "static",
             "ssr": {
-              "entry": "server.ts"
+              "entry": "src/server.ts"
             }
           },
           "configurations": {
