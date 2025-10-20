@@ -11,7 +11,6 @@ import { PartnersComponent } from 'src/app/components/partners/partners.componen
 import { ReviewComponent } from 'src/app/components/review/review.component';
 import { SpeakersComponent } from 'src/app/components/speakers/speakers.component';
 import { SponsorsComponent } from 'src/app/components/sponsors/sponsors.component';
-import { WhatsIsComponent } from 'src/app/components/whats-is/whats-is.component';
 import { DataService, EventData } from 'src/app/services/data.service';
 
 @Component({
@@ -24,7 +23,6 @@ import { DataService, EventData } from 'src/app/services/data.service';
     SponsorsComponent,
     PartnersComponent,
     ReviewComponent,
-    WhatsIsComponent,
     GoogleProductsComponent,
     KeepInTouchComponent,
     DevfestFaqComponent,

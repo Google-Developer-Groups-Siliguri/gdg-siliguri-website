@@ -1,17 +1,18 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
+import { AsyncPipe } from '@angular/common';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { CommingSoonComponent } from 'src/app/components/comming-soon/comming-soon.component';
 import { MemberCardComponent } from 'src/app/components/member-card/member-card.component';
 import { DataService, Members } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-team',
-  imports: [MemberCardComponent, CommingSoonComponent],
+  imports: [MemberCardComponent, CommingSoonComponent, AsyncPipe],
   template: `
-    @if (sectionEnabled) {
-
+    @if (teamData$ | async; as teamData) { @if (teamData.enabled) {
     <div class="mt-20 max-w-screen-2xl mx-auto">
-      <!-- <app-comming-soon></app-comming-soon> -->
       <div class="mx-[1.5rem]">
         <h1
           class="text-[50px] lg:text-[70px] leading-tight tracking-wide font-bold text-gray-800 text-center"
@@ -29,7 +30,7 @@ import { DataService, Members } from 'src/app/services/data.service';
           <div
             class="grid items-center justify-center grid-cols-12 gap-x-4 gap-y-10 2xl:gap-x-20 md:gap-x-8"
           >
-            @for (user of organizers; track $index) {
+            @for (user of teamData.organizers; track $index) {
 
             <div class="h-full col-span-12 lg:col-span-3 md:col-span-4">
               <div class="flex items-center justify-center h-full">
@@ -50,7 +51,7 @@ import { DataService, Members } from 'src/app/services/data.service';
           <div
             class="grid items-center justify-center grid-cols-12 gap-x-4 gap-y-10 2xl:gap-x-20 md:gap-x-8"
           >
-            @for (user of volunteers; track $index) {
+            @for (user of teamData.volunteers; track $index) {
             <div class="h-full col-span-12 lg:col-span-3 md:col-span-4">
               <div class="flex items-center justify-center h-full">
                 <app-member-card
@@ -64,46 +65,44 @@ import { DataService, Members } from 'src/app/services/data.service';
         </div>
       </div>
     </div>
-    }
+    } @else {
+    <div class="mt-20 min-h-[0vh]">
+      <app-comming-soon></app-comming-soon>
+    </div>
+    } }
   `,
   styles: ``,
 })
 export class TeamComponent implements OnInit {
-  organizersDetails: Members[] = [];
-  organizers: Members[] = [];
-  volunteers: Members[] = [];
-  sectionEnabled: boolean = false;
+  teamData$: Observable<{
+    enabled: boolean;
+    organizers: Members[];
+    volunteers: Members[];
+  }>;
+
   constructor(
     private meta: Meta,
     private title: Title,
     private $firebaseDataService: DataService
   ) {
-    this.getSpeakersList();
     this.meta.addTag({
       name: 'title',
       content: 'Team | Devfest Siliguri 2025',
     });
     this.title.setTitle('Team | Devfest Siliguri 2025');
+
+    this.teamData$ = this.$firebaseDataService.getAllTeams().pipe(
+      map((result) => ({
+        enabled: result.enabled && result.data.length > 0,
+        organizers: result.data.filter(
+          (member) => member.designation === 'Organizer'
+        ),
+        volunteers: result.data.filter(
+          (member) => member.designation === 'Volunteer'
+        ),
+      }))
+    );
   }
 
   ngOnInit(): void {}
-
-  getSpeakersList() {
-    const subscription$ = this.$firebaseDataService.getAllTeams().subscribe({
-      next: (result) => {
-        if (result.data.length > 0) {
-          this.organizersDetails = result.data;
-          this.sectionEnabled = result.enabled;
-          this.organizers = this.organizersDetails.filter(
-            (member) => member.designation === 'Organizer'
-          );
-          this.volunteers = this.organizersDetails.filter(
-            (member) => member.designation === 'Volunteer'
-          );
-          subscription$.unsubscribe();
-        }
-      },
-      error: (err) => console.error(err),
-    });
-  }
 }
