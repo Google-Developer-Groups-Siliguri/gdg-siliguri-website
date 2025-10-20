@@ -59,6 +59,7 @@ const environmentFileContent = `
       storageBucket: '${process.env.storageBucket}',
       messagingSenderId: '${process.env.messagingSenderId}',
       appId: '${process.env.appId}',
+      apiBaseUrl: '${process.env.databaseURL}'
     }
 `;
 

@@ -1,16 +1,16 @@
 import { Component, Inject, input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { register } from 'swiper/element/bundle';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { getDocument, getWindow } from 'ssr-window';
+import { getDocument } from 'ssr-window';
 import { interval, map, Observable } from 'rxjs';
 import { EventData } from 'src/app/services/data.service';
 
 @Component({
     selector: 'app-devfest-hero',
-    imports: [CommonModule],
+    imports: [CommonModule, NgOptimizedImage],
     templateUrl: './devfest-hero.component.html',
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
@@ -63,14 +63,12 @@ export class DevfestHeroComponent implements OnInit {
   }
 
   scrollToSection(id: string) {
-    var element = getDocument().getElementById(id)!;
-    var headerOffset = 100;
-    var elementPosition = element.getBoundingClientRect().top;
-    var offsetPosition = elementPosition + window.scrollY - headerOffset;
-
-    getWindow().scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth',
-    });
+    const element = getDocument().getElementById(id);
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
   }
 }
