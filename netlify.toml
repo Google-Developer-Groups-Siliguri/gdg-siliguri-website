@@ -3,13 +3,3 @@
   publish = "dist/gdg-siliguri-website/browser"
   functions = "netlify/functions"
 
-[build.environment]
-  NODE_VERSION = "20.19.0"
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "no-referrer"
-    X-XSS-Protection = "1; mode=block"
