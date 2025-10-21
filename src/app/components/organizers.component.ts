@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { DataService, Members } from '../services/data.service';
-import { Meta, Title } from '@angular/platform-browser';
 import { MemberCardComponent } from './member-card/member-card.component';
 
 @Component({
@@ -46,17 +45,9 @@ export class OrganizersComponent {
   volunteers: Members[] = [];
   sectionEnabled: boolean = false;
   constructor(
-    private meta: Meta,
-    private title: Title,
     private $firebaseDataService: DataService,
     private cd: ChangeDetectorRef
-  ) {
-    this.meta.addTag({
-      name: 'title',
-      content: 'Team | Devfest Siliguri 2023',
-    });
-    this.title.setTitle('Team | Devfest Siliguri 2023');
-  }
+  ) {}
 
   ngOnInit(): void {
     this.getSpeakersList();
