@@ -23,10 +23,13 @@ import { AsyncPipe } from '@angular/common';
   ],
   template: `
     <div class="mt-20 w-full">
-      <div class="bg-[#f2f3f5] w-full">
+      <div class="bg-[#efefef] w-full">
         <div class="md:container md:mx-auto md:px-4 ">
           @if (eventData$ | async; as data) {
-          <app-banner [ticketUrl]="data.eventTicketURL"></app-banner>
+          <app-banner
+            [ticketUrl]="data.eventTicketURL"
+            [bannerImage]="data.bannerImages.large"
+          ></app-banner>
           }
         </div>
       </div>

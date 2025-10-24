@@ -1,5 +1,5 @@
 import { Component, Inject, input, OnInit } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { register } from 'swiper/element/bundle';
@@ -10,7 +10,7 @@ import { EventData } from 'src/app/services/data.service';
 
 @Component({
     selector: 'app-devfest-hero',
-    imports: [CommonModule, NgOptimizedImage],
+    imports: [CommonModule],
     templateUrl: './devfest-hero.component.html',
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
