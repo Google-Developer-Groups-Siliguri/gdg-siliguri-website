@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
-import { BannerComponent } from 'src/app/components/banner.component';
+// import { BannerComponent } from 'src/app/components/banner.component';
 import { HeroComponent } from 'src/app/components/hero.component';
 import { OrganizersComponent } from 'src/app/components/organizers.component';
 import { FaqComponent } from '../../components/faq/faq.component';
@@ -8,22 +8,22 @@ import { GoogleProductsComponent } from '../../components/google-products/google
 import { KeepInTouchComponent } from '../../components/keep-in-touch/keep-in-touch.component';
 import { Observable } from 'rxjs';
 import { DataService, EventData } from 'src/app/services/data.service';
-import { AsyncPipe } from '@angular/common';
+// import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-home-page',
   imports: [
-    BannerComponent,
+    // BannerComponent,
     OrganizersComponent,
     HeroComponent,
     FaqComponent,
     GoogleProductsComponent,
     KeepInTouchComponent,
-    AsyncPipe,
+    // AsyncPipe,
   ],
   template: `
     <div class="mt-20 w-full">
-      <div class="bg-[#efefef] w-full">
+      <!-- <div class="bg-[#efefef] w-full">
         <div class="md:container md:mx-auto md:px-4 ">
           @if (eventData$ | async; as data) {
           <app-banner
@@ -32,7 +32,7 @@ import { AsyncPipe } from '@angular/common';
           ></app-banner>
           }
         </div>
-      </div>
+      </div> -->
       <div class="w-full">
         <div class="md:container md:mx-auto md:p-4">
           <app-hero></app-hero>
