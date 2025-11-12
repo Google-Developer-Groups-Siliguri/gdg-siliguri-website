@@ -3,8 +3,11 @@
   publish = "dist/gdg-siliguri-website/browser"
   functions = "netlify/functions"
 
+# Redirect rules for Angular routing with prerendered content
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  force = false
+  # This allows prerendered HTML files to be served directly
 
