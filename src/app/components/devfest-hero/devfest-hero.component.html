@@ -1,5 +1,5 @@
 <div
-  class="grid grid-cols-12 gap-5 overflow-hidden mx-2 md:mx-[1.5rem] mb-[2rem]"
+  class="grid grid-cols-12 gap-5 mx-2 md:mx-[1.5rem] mb-[2rem]"
 >
   <div class="col-span-12">
     <div class="w-full bg-cover md:block bg-[#fff3b8] p-2 md:p-6 rounded-3xl">
@@ -112,15 +112,15 @@
     <div class="grid h-full grid-cols-12 mt-2 gap-x-2 md:gap-x-6 md:mt-0">
       <div class="col-span-3">
         <div
-          class="flex max-w-sm p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
+          class="flex max-w-sm p-3 md:p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
         >
           <h5
-            class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 md:font-medium md:text-6xl dark:text-white"
+            class="mb-1 md:mb-2 text-xl md:text-6xl font-semibold tracking-tight text-gray-900 md:font-medium dark:text-white"
           >
             {{ (countdown$ | async)?.remainingDays }}
           </h5>
           <p
-            class="text-base font-normal text-gray-700 md:text-3xl dark:text-gray-400"
+            class="text-sm md:text-3xl font-normal text-gray-700 dark:text-gray-400"
           >
             Days
           </p>
@@ -128,15 +128,15 @@
       </div>
       <div class="col-span-3">
         <div
-          class="flex max-w-sm p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
+          class="flex max-w-sm p-3 md:p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
         >
           <h5
-            class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 md:font-medium md:text-6xl dark:text-white"
+            class="mb-1 md:mb-2 text-xl md:text-6xl font-semibold tracking-tight text-gray-900 md:font-medium dark:text-white"
           >
             {{ (countdown$ | async)?.remainingHours }}
           </h5>
           <p
-            class="text-base font-normal text-gray-700 md:text-3xl dark:text-gray-400"
+            class="text-sm md:text-3xl font-normal text-gray-700 dark:text-gray-400"
           >
             Hours
           </p>
@@ -144,15 +144,15 @@
       </div>
       <div class="col-span-3">
         <div
-          class="flex max-w-sm p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
+          class="flex max-w-sm p-3 md:p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
         >
           <h5
-            class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 md:font-medium md:text-6xl dark:text-white"
+            class="mb-1 md:mb-2 text-xl md:text-6xl font-semibold tracking-tight text-gray-900 md:font-medium dark:text-white"
           >
             {{ (countdown$ | async)?.remainingMinutes }}
           </h5>
           <p
-            class="text-base font-normal text-gray-700 md:text-3xl dark:text-gray-400"
+            class="text-sm md:text-3xl font-normal text-gray-700 dark:text-gray-400"
           >
             Minutes
           </p>
@@ -160,15 +160,15 @@
       </div>
       <div class="col-span-3">
         <div
-          class="flex max-w-sm p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
+          class="flex max-w-sm p-3 md:p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
         >
           <h5
-            class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 md:font-medium md:text-6xl dark:text-white"
+            class="mb-1 md:mb-2 text-xl md:text-6xl font-semibold tracking-tight text-gray-900 md:font-medium dark:text-white"
           >
             {{ (countdown$ | async)?.remainingSeconds }}
           </h5>
           <p
-            class="text-base font-normal text-gray-700 md:text-3xl dark:text-gray-400"
+            class="text-sm md:text-3xl font-normal text-gray-700 dark:text-gray-400"
           >
             Seconds
           </p>
