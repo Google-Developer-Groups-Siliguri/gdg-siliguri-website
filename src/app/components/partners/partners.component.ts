@@ -6,10 +6,10 @@ import { Observable } from 'rxjs';
 import { ComingSoonCardComponent } from '../coming-soon-card/coming-soon-card.component';
 
 @Component({
-    selector: 'app-partners',
-    imports: [CommonModule, PartnerCardComponent, ComingSoonCardComponent],
-    template: `
-    <div class="mx-[1.5rem] mb-12">
+  selector: 'app-partners',
+  imports: [CommonModule, PartnerCardComponent, ComingSoonCardComponent],
+  template: `
+    <div class="md:mx-[1.5rem] mb-12 mt-10">
       <h1
         class="text-[50px] lg:text-[70px] leading-tight tracking-wide font-semibold text-black text-center mt-6"
       >
@@ -39,7 +39,7 @@ import { ComingSoonCardComponent } from '../coming-soon-card/coming-soon-card.co
         } }
       </div>
     </div>
-  `
+  `,
 })
 export class PartnersComponent {
   communityPartnerDetails$: Observable<{
