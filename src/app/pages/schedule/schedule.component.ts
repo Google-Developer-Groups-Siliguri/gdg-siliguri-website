@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { CommingSoonComponent } from 'src/app/components/comming-soon/comming-soon.component';
@@ -56,9 +56,10 @@ import { DataService, Schedule } from 'src/app/services/data.service';
   `,
   styles: ``,
 })
-export class ScheduleComponent {
-  scheduleData$: Observable<{ enabled: Boolean; data: Schedule[] }>;
+export class ScheduleComponent implements OnInit {
+  scheduleData$!: Observable<{ enabled: boolean; data: Schedule[] }>;
   hasImage: boolean = false;
+
   constructor(
     private meta: Meta,
     private title: Title,
@@ -69,7 +70,9 @@ export class ScheduleComponent {
       content: 'Schedule | Devfest Siliguri 2025',
     });
     this.title.setTitle('Schedule | Devfest Siliguri 2025');
+  }
+
+  ngOnInit(): void {
     this.scheduleData$ = this.$firebaseDataService.getAllSchedules();
-    // this.getScheduleList();
   }
 }
