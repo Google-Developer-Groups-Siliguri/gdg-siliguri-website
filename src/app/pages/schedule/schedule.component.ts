@@ -1,14 +1,14 @@
-import { AsyncPipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { CommingSoonComponent } from 'src/app/components/comming-soon/comming-soon.component';
 import { TimelineComponent } from 'src/app/components/timeline/timeline.component';
 import { DataService, Schedule } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-schedule',
-  imports: [AsyncPipe, TimelineComponent, CommingSoonComponent],
+  imports: [TimelineComponent, CommingSoonComponent],
   template: `
     <div class="mt-20 min-h-[70vh] max-w-screen-2xl mx-auto">
       <div class="mx-[1.5rem]">
@@ -44,7 +44,7 @@ import { DataService, Schedule } from 'src/app/services/data.service';
             </li>
           </ul>
         </div>
-        @if (scheduleData$ | async; as data) { @if (data.enabled) {
+        @if (scheduleData(); as data) { @if (data.enabled) {
         <app-timeline [day]="data.data" [hasImage]="hasImage"></app-timeline>
         } @else {
         <app-comming-soon></app-comming-soon>
@@ -56,8 +56,11 @@ import { DataService, Schedule } from 'src/app/services/data.service';
   `,
   styles: ``,
 })
-export class ScheduleComponent implements OnInit {
-  scheduleData$!: Observable<{ enabled: boolean; data: Schedule[] }>;
+export class ScheduleComponent implements OnInit, OnDestroy {
+  private platformId = inject(PLATFORM_ID);
+  private subscription?: Subscription;
+
+  scheduleData = signal<{ enabled: boolean; data: Schedule[] } | null>(null);
   hasImage: boolean = false;
 
   constructor(
@@ -73,6 +76,20 @@ export class ScheduleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.scheduleData$ = this.$firebaseDataService.getAllSchedules();
+    if (isPlatformBrowser(this.platformId)) {
+      this.subscription = this.$firebaseDataService.getAllSchedules().subscribe({
+        next: (data) => {
+          this.scheduleData.set(data);
+        },
+        error: (error) => {
+          console.error('Error loading schedule data:', error);
+          this.scheduleData.set(null);
+        }
+      });
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
   }
 }
