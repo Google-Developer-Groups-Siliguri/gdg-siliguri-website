@@ -174,15 +174,17 @@
       </div>
     </div>
   </div>
-  <div class="flex justify-center col-span-12">
-    <div class="w-full md:w-1/2 bg-cover md:block bg-[#fffff] rounded-3xl">
-      <img
-        [src]="eventData().bannerImages.aisummit"
-        alt="AI Summit"
-        width="600"
-        height="400"
-        class="w-full h-full rounded-2xl md:rounded-3xl"
-      />
+  @if (eventData().bannerImages.aisummit) {
+    <div class="flex justify-center col-span-12">
+      <div class="w-full md:w-1/2 bg-cover md:block bg-[#fffff] rounded-3xl">
+        <img
+          [src]="eventData().bannerImages.aisummit"
+          alt="AI Summit"
+          width="600"
+          height="400"
+          class="w-full h-full rounded-2xl md:rounded-3xl"
+        />
+      </div>
     </div>
-  </div>
+  }
 </div>
