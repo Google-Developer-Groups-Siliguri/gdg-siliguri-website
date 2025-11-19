@@ -3,11 +3,11 @@
 >
   <div class="relative inline-block">
     <div
-      class="mx-auto border-8 rounded-full border-t-[#428fff] border-r-[#fe5145] border-b-[#ffbb01] border-l-[#38a852] w-[10rem] aspect-square"
+      class="mx-auto border-8 rounded-full border-t-[#428fff] border-r-[#fe5145] border-b-[#ffbb01] border-l-[#38a852] w-[10.1rem] aspect-square"
     >
       <img
         [ngSrc]="item.profilePictureURL"
-        class="object-cover w-full h-full rounded-full"
+        class="object-cover w-full rounded-full aspect-square"
         alt="speaker image"
         data-load="lazy"
         height="150"
@@ -15,9 +15,9 @@
       />
     </div>
     <div
-      class="px-3 py-2 rounded-full bg-[#38a852] absolute border-black flex justify-center items-center shadow-2xl bottom-[-7px] right-[34px] mx-auto w-24"
+      class="px-3 py-2 rounded-full bg-[#38a852] absolute border-black flex justify-center items-center shadow-2xl bottom-[-7px] left-1/2 -translate-x-1/2 whitespace-nowrap"
     >
-      <h2 class="text-base font-semibold text-white min-w-[2rem] text-center">
+      <h2 class="text-base font-semibold text-white text-center">
         {{ item.designation }}
       </h2>
     </div>
