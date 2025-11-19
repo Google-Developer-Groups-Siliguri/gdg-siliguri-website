@@ -73,6 +73,7 @@ export interface EventData {
     long: string;
     medium: string;
     small: string;
+    aisummit: string;
   };
   communityEmail: string;
   communityJoinLink: string;

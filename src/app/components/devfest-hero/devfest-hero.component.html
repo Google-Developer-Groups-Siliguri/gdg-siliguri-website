@@ -1,6 +1,4 @@
-<div
-  class="grid grid-cols-12 gap-5 mx-2 md:mx-[1.5rem] mb-[2rem]"
->
+<div class="grid grid-cols-12 gap-5 mx-2 md:mx-[1.5rem] mb-[2rem]">
   <div class="col-span-12">
     <div class="w-full bg-cover md:block bg-[#fff3b8] p-2 md:p-6 rounded-3xl">
       <img
@@ -115,12 +113,12 @@
           class="flex max-w-sm p-3 md:p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
         >
           <h5
-            class="mb-1 md:mb-2 text-xl md:text-6xl font-semibold tracking-tight text-gray-900 md:font-medium dark:text-white"
+            class="mb-1 text-xl font-semibold tracking-tight text-gray-900 md:mb-2 md:text-6xl md:font-medium dark:text-white"
           >
             {{ (countdown$ | async)?.remainingDays }}
           </h5>
           <p
-            class="text-sm md:text-3xl font-normal text-gray-700 dark:text-gray-400"
+            class="text-sm font-normal text-gray-700 md:text-3xl dark:text-gray-400"
           >
             Days
           </p>
@@ -131,12 +129,12 @@
           class="flex max-w-sm p-3 md:p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
         >
           <h5
-            class="mb-1 md:mb-2 text-xl md:text-6xl font-semibold tracking-tight text-gray-900 md:font-medium dark:text-white"
+            class="mb-1 text-xl font-semibold tracking-tight text-gray-900 md:mb-2 md:text-6xl md:font-medium dark:text-white"
           >
             {{ (countdown$ | async)?.remainingHours }}
           </h5>
           <p
-            class="text-sm md:text-3xl font-normal text-gray-700 dark:text-gray-400"
+            class="text-sm font-normal text-gray-700 md:text-3xl dark:text-gray-400"
           >
             Hours
           </p>
@@ -147,12 +145,12 @@
           class="flex max-w-sm p-3 md:p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
         >
           <h5
-            class="mb-1 md:mb-2 text-xl md:text-6xl font-semibold tracking-tight text-gray-900 md:font-medium dark:text-white"
+            class="mb-1 text-xl font-semibold tracking-tight text-gray-900 md:mb-2 md:text-6xl md:font-medium dark:text-white"
           >
             {{ (countdown$ | async)?.remainingMinutes }}
           </h5>
           <p
-            class="text-sm md:text-3xl font-normal text-gray-700 dark:text-gray-400"
+            class="text-sm font-normal text-gray-700 md:text-3xl dark:text-gray-400"
           >
             Minutes
           </p>
@@ -163,17 +161,28 @@
           class="flex max-w-sm p-3 md:p-6 bg-[#80F0AE] rounded-2xl h-full justify-center items-center flex-col"
         >
           <h5
-            class="mb-1 md:mb-2 text-xl md:text-6xl font-semibold tracking-tight text-gray-900 md:font-medium dark:text-white"
+            class="mb-1 text-xl font-semibold tracking-tight text-gray-900 md:mb-2 md:text-6xl md:font-medium dark:text-white"
           >
             {{ (countdown$ | async)?.remainingSeconds }}
           </h5>
           <p
-            class="text-sm md:text-3xl font-normal text-gray-700 dark:text-gray-400"
+            class="text-sm font-normal text-gray-700 md:text-3xl dark:text-gray-400"
           >
             Seconds
           </p>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="flex justify-center col-span-12">
+    <div class="w-1/2 bg-cover md:block bg-[#fffff] rounded-3xl">
+      <img
+        [src]="eventData().bannerImages.aisummit"
+        alt="AI Summit"
+        width="600"
+        height="400"
+        class="w-full h-full rounded-2xl md:rounded-3xl"
+      />
     </div>
   </div>
 </div>
