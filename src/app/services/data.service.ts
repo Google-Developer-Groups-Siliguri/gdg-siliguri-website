@@ -1,7 +1,7 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, makeStateKey, TransferState } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface Members {
@@ -130,6 +130,7 @@ export interface HashnodeResponse {
 })
 export class DataService {
   private http = inject(HttpClient);
+  private transferState = inject(TransferState);
   private apiBaseUrl = environment.apiBaseUrl;
 
   private dbPaths = {
@@ -145,16 +146,44 @@ export class DataService {
     gdgFaqs: '/home/gdgFAQs.json', //eventDetails
   };
 
+  private getWithTransferState<T>(key: string, url: string): Observable<T> {
+    const stateKey = makeStateKey<T>(key);
+
+    const existing = this.transferState.get(stateKey, null);
+    if (existing) {
+      return of(existing);
+    }
+
+    return this.http.get<T>(url).pipe(
+      tap(data => this.transferState.set(stateKey, data))
+    );
+  }
+
+  private postWithTransferState<T>(key: string, url: string, body: any): Observable<T> {
+    const stateKey = makeStateKey<T>(key);
+
+    const existing = this.transferState.get(stateKey, null);
+    if (existing) {
+      return of(existing);
+    }
+
+    return this.http.post<T>(url, body).pipe(
+      tap(data => this.transferState.set(stateKey, data))
+    );
+  }
+
   //organizers and volunteers
   getAllTeams(): Observable<{ enabled: boolean; data: Members[] }> {
-    return this.http.get<{ enabled: boolean; data: Members[] }>(
+    return this.getWithTransferState<{ enabled: boolean; data: Members[] }>(
+      'teams',
       `${this.apiBaseUrl}${this.dbPaths.teams}`
     );
   }
 
   //speakers
   getAllSpeakers(): Observable<{ enabled: boolean; data: Members[] }> {
-    return this.http.get<{ enabled: boolean; data: Members[] }>(
+    return this.getWithTransferState<{ enabled: boolean; data: Members[] }>(
+      'speakers',
       `${this.apiBaseUrl}${this.dbPaths.speakers}`
     );
   }
@@ -164,35 +193,40 @@ export class DataService {
     enabled: boolean;
     data: CommunityPartners[];
   }> {
-    return this.http.get<{ enabled: boolean; data: CommunityPartners[] }>(
+    return this.getWithTransferState<{ enabled: boolean; data: CommunityPartners[] }>(
+      'partners',
       `${this.apiBaseUrl}${this.dbPaths.partners}`
     );
   }
 
   //feedbacks
   getAllFeedbacks(): Observable<{ enabled: boolean; data: Feedbacks[] }> {
-    return this.http.get<{ enabled: boolean; data: Feedbacks[] }>(
+    return this.getWithTransferState<{ enabled: boolean; data: Feedbacks[] }>(
+      'feedbacks',
       `${this.apiBaseUrl}${this.dbPaths.feedbacks}`
     );
   }
 
   //faqs
   getAllFAQS(): Observable<{ enabled: boolean; data: FAQ[] }> {
-    return this.http.get<{ enabled: boolean; data: FAQ[] }>(
+    return this.getWithTransferState<{ enabled: boolean; data: FAQ[] }>(
+      'faqs',
       `${this.apiBaseUrl}${this.dbPaths.faqs}`
     );
   }
 
   //faqs
   getAllGDGFAQS(): Observable<{ enabled: boolean; data: FAQ[] }> {
-    return this.http.get<{ enabled: boolean; data: FAQ[] }>(
+    return this.getWithTransferState<{ enabled: boolean; data: FAQ[] }>(
+      'gdgFaqs',
       `${this.apiBaseUrl}${this.dbPaths.gdgFaqs}`
     );
   }
 
   //schedule
   getAllSchedules(): Observable<{ enabled: boolean; data: Schedule[] }> {
-    return this.http.get<{ enabled: boolean; data: Schedule[] }>(
+    return this.getWithTransferState<{ enabled: boolean; data: Schedule[] }>(
+      'schedule',
       `${this.apiBaseUrl}${this.dbPaths.schedule}`
     );
   }
@@ -204,24 +238,26 @@ export class DataService {
     platinum: Sponsors[];
     silver: Sponsors[];
   }> {
-    return this.http.get<{
+    return this.getWithTransferState<{
       enabled: boolean;
       gold: Sponsors[];
       platinum: Sponsors[];
       silver: Sponsors[];
-    }>(`${this.apiBaseUrl}${this.dbPaths.sponsors}`);
+    }>('sponsors', `${this.apiBaseUrl}${this.dbPaths.sponsors}`);
   }
 
   //eventDetails
   getEventData(): Observable<EventData> {
-    return this.http.get<EventData>(
+    return this.getWithTransferState<EventData>(
+      'eventData',
       `${this.apiBaseUrl}${this.dbPaths.eventDetails}`
     );
   }
 
   //eventDetails
   getCommunityEventsData(): Observable<{ enabled: boolean; data: Events[] }> {
-    return this.http.get<{ enabled: boolean; data: Events[] }>(
+    return this.getWithTransferState<{ enabled: boolean; data: Events[] }>(
+      'communityEvents',
       `${this.apiBaseUrl}${this.dbPaths.communityEvents}`
     );
   }
@@ -255,12 +291,12 @@ export class DataService {
       }
     `;
 
-    return this.http
-      .post<HashnodeResponse>('https://gql.hashnode.com', {
-        query,
-      })
-      .pipe(
-        map((response) => response.data.publication.posts.edges.map((edge) => edge.node))
-      );
+    return this.postWithTransferState<HashnodeResponse>(
+      'hashnodeBlogs',
+      'https://gql.hashnode.com',
+      { query }
+    ).pipe(
+      map((response) => response.data.publication.posts.edges.map((edge) => edge.node))
+    );
   }
 }

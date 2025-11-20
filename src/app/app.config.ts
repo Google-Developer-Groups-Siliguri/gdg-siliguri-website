@@ -6,15 +6,13 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 
 import { routes } from './app.routes';
-import { provideClientHydration, withHttpTransferCacheOptions } from '@angular/platform-browser';
+import { provideClientHydration } from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(withFetch()),
     provideZonelessChangeDetection(),
     provideRouter(routes),
-    provideClientHydration(withHttpTransferCacheOptions({
-      includePostRequests: true
-    })),
+    provideClientHydration(),
   ],
 };
