@@ -1,13 +1,75 @@
-<nav class="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 left-0">
-  <div class="max-w-screen-xl flex flex-wrap items-center justify-between py-4 md:container md:mx-auto md:px-4">
-    <a class="flex items-center" [routerLink]="['/']" routerLinkActive="router-link-active">
-      <img ngSrc="assets/images/logos/GDG_LOGO_HEADER.png" width="167" height="44" priority alt="GDG-SILIGURI" />
+<nav class="fixed top-0 left-0 z-20 w-full bg-white dark:bg-gray-900">
+  <div
+    class="flex flex-wrap items-center justify-between w-full px-2 py-4 max-w-screen-2xl md:mx-auto md:px-4"
+  >
+    <a
+      class="flex items-center"
+      [routerLink]="['/']"
+      routerLinkActive="router-link-active"
+    >
+      <img
+        ngSrc="assets/images/logos/GDG_LOGO_HEADER.png"
+        width="167"
+        height="44"
+        priority
+        alt="GDG-SILIGURI"
+      />
     </a>
-    <div class="flex md:order-2">
-      <button type="button" [routerLink]="['devfest']"
-        class="text-white bg-[#4885ED] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-3xl text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+    <div class="flex items-center md:order-2">
+      <button
+        type="button"
+        [routerLink]="['devfest']"
+        class="md:ml-3 text-white bg-[#4885ED] hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-3xl text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
         {{ buttonTitle }}
       </button>
+      <button
+        #navbarBtn
+        id="navbar-btn"
+        type="button"
+        class="inline-flex items-center justify-center w-10 h-10 p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        aria-expanded="false"
+      >
+        <span class="sr-only">Open main menu</span>
+        <svg
+          class="w-5 h-5"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 17 14"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M1 1h15M1 7h15M1 13h15"
+          />
+        </svg>
+      </button>
+    </div>
+    <div
+      #navbarContainer
+      class="hidden w-full md:block md:w-auto md:order-1"
+      id="navbar-container"
+    >
+      <ul
+        class="flex flex-col p-4 mt-4 font-medium border border-gray-100 rounded-lg md:p-0 bg-gray-50 md:flex-row md:space-x-2 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
+      >
+        @for (route of routes; track route) {
+        <li>
+          <a
+            (click)="collapseNavbarHandler()"
+            [routerLink]="[route.path]"
+            [routerLinkActive]="['link-active']"
+            [routerLinkActiveOptions]="{ exact: route.exact }"
+            class="block px-4 py-2 font-semibold text-gray-600 transition-all duration-300 ease-in-out rounded-full select-none hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:dark:hover:bg-transparent md:rounded-lg"
+            aria-current="page"
+            >{{ route.name }}</a
+          >
+        </li>
+        }
+      </ul>
     </div>
   </div>
 </nav>

@@ -1,10 +1,9 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 
 import { RouterModule } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
 import { Collapse } from 'flowbite';
 import type { CollapseOptions, CollapseInterface } from 'flowbite';
-import { getDocument } from 'ssr-window';
 
 @Component({
     selector: 'app-navbar-devfest',
@@ -13,6 +12,9 @@ import { getDocument } from 'ssr-window';
     styleUrls: ['./navbar-devfest.component.css']
 })
 export class NavbarDevfestComponent implements AfterViewInit {
+  @ViewChild('navbarContainer', { read: ElementRef }) navbarContainer!: ElementRef<HTMLElement>;
+  @ViewChild('navbarBtn', { read: ElementRef }) navbarBtn!: ElementRef<HTMLElement>;
+
   options!: CollapseOptions;
   collapse!: CollapseInterface;
 
@@ -21,26 +23,25 @@ export class NavbarDevfestComponent implements AfterViewInit {
     { path: 'schedule', name: 'Schedule', exact: false },
     { path: 'tickets', name: 'Tickets', exact: false },
     { path: 'team', name: 'Team', exact: false },
+    { path: 'blogs', name: 'Blogs', exact: false },
     { path: 'contact', name: 'Contact Us', exact: false },
   ];
 
   ngAfterViewInit(): void {
     // set the target element that will be collapsed or expanded (eg. navbar menu)
-    const $targetEl = getDocument().getElementById(
-      'navbar-container'!
-    ) as HTMLElement;
-
+    const $targetEl = this.navbarContainer?.nativeElement;
     // optionally set a trigger element (eg. a button, hamburger icon)
-    const $triggerEl = getDocument().getElementById(
-      'navbar-btn'
-    )! as HTMLElement;
+    const $triggerEl = this.navbarBtn?.nativeElement;
 
-    this.options = {};
-
-    this.collapse = new Collapse($targetEl, $triggerEl, this.options);
+    if ($targetEl && $triggerEl) {
+      this.options = {};
+      this.collapse = new Collapse($targetEl, $triggerEl, this.options);
+    }
   }
 
   collapseNavbarHandler() {
-    this.collapse.collapse();
+    if (this.collapse) {
+      this.collapse.collapse();
+    }
   }
 }
