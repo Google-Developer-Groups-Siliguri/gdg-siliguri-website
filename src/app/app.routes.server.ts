@@ -10,6 +10,10 @@ export const serverRoutes: ServerRoute[] = [
     path: 'events',
     renderMode: RenderMode.Prerender,
   },
+  {
+    path: 'blogs',
+    renderMode: RenderMode.Prerender,
+  },
   // {
   //   path: 'events/:eventId',
   //   renderMode: RenderMode.Prerender,

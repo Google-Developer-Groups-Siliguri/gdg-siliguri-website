@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface Members {
@@ -92,6 +93,35 @@ export interface EventData {
   perks: {
     enabled: boolean;
     data: string[];
+  };
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  brief: string;
+  slug: string;
+  coverImage: {
+    url: string;
+  };
+  publishedAt: string;
+  author: {
+    name: string;
+    profilePicture: string;
+  };
+  readTimeInMinutes: number;
+  url: string;
+}
+
+export interface HashnodeResponse {
+  data: {
+    publication: {
+      posts: {
+        edges: Array<{
+          node: BlogPost;
+        }>;
+      };
+    };
   };
 }
 
@@ -194,5 +224,43 @@ export class DataService {
     return this.http.get<{ enabled: boolean; data: Events[] }>(
       `${this.apiBaseUrl}${this.dbPaths.communityEvents}`
     );
+  }
+
+  //hashnode blogs
+  getHashnodeBlogs(): Observable<BlogPost[]> {
+    const query = `
+      query Publication {
+        publication(host: "gdgsiliguri.hashnode.dev") {
+          posts(first: 20) {
+            edges {
+              node {
+                id
+                title
+                brief
+                slug
+                coverImage {
+                  url
+                }
+                publishedAt
+                author {
+                  name
+                  profilePicture
+                }
+                readTimeInMinutes
+                url
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    return this.http
+      .post<HashnodeResponse>('https://gql.hashnode.com', {
+        query,
+      })
+      .pipe(
+        map((response) => response.data.publication.posts.edges.map((edge) => edge.node))
+      );
   }
 }
