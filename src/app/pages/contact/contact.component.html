@@ -1,44 +1,43 @@
-<div class="mt-20 min-h-[70vh] mx-auto max-w-screen-2xl">
-  <div class="mx-[1.5rem] flex text-center flex-col items-center">
-    <h1 class="p-4 text-5xl font-semibold md:text-6xl md:p-7">
-      Google Developers Group, Siliguri
-    </h1>
-    <p class="my-2 text-xl font-semibold md:text-2xl md:mx-5">
-      Of the Developers, By the Developers, For the Developers
+<app-page-header
+  eyebrow="Contact us"
+  title="Google Developer Groups Siliguri"
+  subtitle="Of the developers, by the developers, for the developers."
+/>
+
+<div class="page-container grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+  <section class="flex flex-col gap-5 rounded-m3-xl bg-surface-container-low p-6 text-body-lg text-on-surface-variant md:p-10">
+    <p>
+      Google Developer Group Siliguri is a community-run meetup for developers interested in resources and
+      technology from Google Developers. We engage student developers, fresh graduates and professionals through
+      our hack events and meetups.
     </p>
-    <p
-      class="mt-5 text-base text-gray-500 md:text-xl md:font-semibold md:mt-10"
-    >
-      Google Developer Group Siliguri is a Siliguri community-run meetup for
-      developers interested in resources and technology from Google Developers.
-      We try to engage student developers, fresh graduates and professionals
-      through our hack events & meetups.
+    <p>
+      Our motive is to build a local ecosystem of programmers and hackers in and around Siliguri. We organise tech
+      talks, workshops, bootcamps and Google flagship events where programmers meet to discuss and work with Google
+      developer resources and products.
     </p>
-    <p
-      class="mt-5 text-base text-gray-500 md:text-xl md:font-semibold md:mt-10"
-    >
-      The motive is to create a local ecosystem of programmers & hackers in and
-      around Siliguri. The technology awareness is main goal for first few years
-      of the group. To put it in a nutshell, we are a community that organises
-      tech talks, workshops, bootcamps, Google flagship events where programmers
-      meet to discuss and work with several Google developer resources and
-      products.
-    </p>
-    <a
-      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 px-5 py-2.5 mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 rounded-full w-[10rem] text-lg font-semibold my-5"
-      href="https://gdg.community.dev/gdg-siliguri/"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Contact Us
-    </a>
-    <a 
-      href="mailto:gdgsiliguri@gmail.com" 
-      target="_blank"
-      rel="noopener noreferrer" 
-      class="text-blue-700 hover:underline"
-    >
-      Questions? please email us
-    </a>
-  </div>
+  </section>
+
+  <section class="relative isolate flex flex-col justify-between gap-8 overflow-hidden rounded-m3-xl bg-primary-container p-6 text-on-primary-container md:p-10">
+    <app-m3-shape shape="cookie6" class="absolute -right-10 -top-10 -z-10 w-40 animate-spin-slow text-primary opacity-15" />
+    <div class="flex flex-col gap-3">
+      <h2 class="text-headline-md font-medium">Get in touch</h2>
+      <p class="text-body-lg">Join the community on GDG Community, or drop us a line by email.</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <a
+        class="m3-btn m3-btn-md m3-btn-filled"
+        href="https://gdg.community.dev/gdg-siliguri/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Join the community
+        <span class="material-symbols-rounded" aria-hidden="true">north_east</span>
+      </a>
+      <a class="m3-btn m3-btn-md bg-surface-container-lowest/60 text-on-primary-container" href="mailto:gdgsiliguri@gmail.com">
+        <span class="material-symbols-rounded" aria-hidden="true">mail</span>
+        Email us
+      </a>
+    </div>
+  </section>
 </div>

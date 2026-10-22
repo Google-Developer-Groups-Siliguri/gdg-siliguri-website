@@ -1,25 +1,25 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { M3ShapeComponent } from '../ui/m3-shape/m3-shape';
 
 @Component({
   selector: 'app-comming-soon',
-  imports: [],
+  imports: [M3ShapeComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'block' },
   template: `
-    <div>
-      <section
-        class="md:mx-[1.5rem] mx-[1.5rem] bg-gray-100 lg:p-10 p-6 rounded-2xl"
-      >
-        <div
-          class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12"
-        >
-          <h1
-            class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
-          >
-            DevFest 2025 Siliguri is coming soon...
-          </h1>
-        </div>
-      </section>
-    </div>
+    <section class="relative isolate overflow-hidden rounded-m3-2xl bg-surface-container-low px-6 py-14 text-center md:py-20">
+      <app-m3-shape
+        shape="very-sunny"
+        class="absolute -left-10 -top-10 -z-10 w-40 animate-spin-slow text-g-yellow-container md:w-56"
+      />
+      <app-m3-shape shape="clover4" class="absolute -bottom-12 -right-8 -z-10 w-36 text-g-blue-container md:w-48" />
+      <h2 class="mx-auto max-w-2xl text-headline-md font-medium text-on-surface md:text-display-sm">{{ message() }}</h2>
+      <p class="mx-auto mt-3 max-w-xl text-body-lg text-on-surface-variant">
+        Check back soon — or follow #GDGSiliguri for the announcement.
+      </p>
+    </section>
   `,
-  styles: ``,
 })
-export class CommingSoonComponent {}
+export class CommingSoonComponent {
+  readonly message = input('DevFest Siliguri is coming soon');
+}

@@ -1,80 +1,37 @@
 import { Component } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
-// import { BannerComponent } from 'src/app/components/banner.component';
 import { HeroComponent } from 'src/app/components/hero.component';
 import { OrganizersComponent } from 'src/app/components/organizers.component';
 import { FaqComponent } from '../../components/faq/faq.component';
 import { GoogleProductsComponent } from '../../components/google-products/google-products.component';
 import { KeepInTouchComponent } from '../../components/keep-in-touch/keep-in-touch.component';
-import { Observable } from 'rxjs';
-import { DataService, EventData } from 'src/app/services/data.service';
-// import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-home-page',
   imports: [
-    // BannerComponent,
     OrganizersComponent,
     HeroComponent,
     FaqComponent,
     GoogleProductsComponent,
     KeepInTouchComponent,
-    // AsyncPipe,
   ],
   template: `
-    <div class="mt-20 w-full">
-      <!-- <div class="bg-[#efefef] w-full">
-        <div class="md:container md:mx-auto md:px-4 ">
-          @if (eventData$ | async; as data) {
-          <app-banner
-            [ticketUrl]="data.eventTicketURL"
-            [bannerImage]="data.bannerImages.large"
-          ></app-banner>
-          }
-        </div>
-      </div> -->
-      <div class="w-full">
-        <div class="md:container md:mx-auto md:p-4">
-          <app-hero></app-hero>
-        </div>
-      </div>
-      <div class="w-full">
-        <div class="md:container md:mx-auto md:px-4">
-          <app-organizers></app-organizers>
-        </div>
-      </div>
-      <div class=" w-full">
-        <div class="md:container md:mx-auto md:px-4">
-          <app-faq></app-faq>
-        </div>
-        <div class=" w-full">
-          <div class="md:container md:mx-auto md:px-4">
-            <app-google-products></app-google-products>
-          </div>
-          <div class=" w-full">
-            <div class="md:container md:mx-auto md:px-4">
-              <app-keep-in-touch></app-keep-in-touch>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <app-hero />
+    <app-organizers />
+    <app-faq />
+    <app-google-products />
+    <app-keep-in-touch />
   `,
-  styles: ``,
 })
 export class HomePageComponent {
-  eventData$: Observable<EventData>;
-
   constructor(
     private meta: Meta,
-    private title: Title,
-    private firebaseService: DataService
+    private title: Title
   ) {
     this.meta.addTag({
       name: 'title',
       content: 'Google Developers Group Siliguri',
     });
     this.title.setTitle('Google Developers Group Siliguri');
-    this.eventData$ = this.firebaseService.getEventData();
   }
 }

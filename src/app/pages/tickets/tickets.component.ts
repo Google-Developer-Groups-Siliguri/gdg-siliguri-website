@@ -1,67 +1,71 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
+import { PageHeaderComponent } from 'src/app/components/page-header/page-header.component';
 import { DataService, EventData } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-tickets',
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, PageHeaderComponent],
   template: `
-    <div class="mt-20 min-h-[70vh] md:container md:mx-auto md:px-4 px-[1.5rem]">
-      <!-- <app-comming-soon></app-comming-soon> -->
-      @if (eventData$ | async; as data) {
-      <div class="container flex flex-col">
-        <h1 class="text-gray-800 font-semibold text-7xl py-4">
-          Book your seat
-        </h1>
-        <p class="py-4  text-3xl font-normal text-black">
-          Book your ticket to DevFest'{{ currentYear.toString().slice(-2) }} at
-          {{ data.eventVenue.name }}, and experience the community like no
-          other.
-        </p>
+    @if (eventData$ | async; as data) {
+      <app-page-header
+        eyebrow="DevFest Siliguri"
+        title="Book your seat"
+        [subtitle]="subtitle(data)"
+      />
+      <div class="page-container flex flex-col gap-10">
         <a
           [href]="data.eventTicketURL"
           target="_blank"
           rel="noopener noreferrer"
-          type="button"
-          class=" inline-block text-white bg-[#7c4dff] hover:bg-blue-800 focus:outline-none font-medium rounded-full md:text-xl px-3 py-2 md:px-6 md:py-4 my-3 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 w-fit"
+          class="m3-btn m3-btn-md m3-btn-filled self-start"
         >
-          Grab Your Tickets!
+          Grab your tickets
+          <span class="material-symbols-rounded" aria-hidden="true">confirmation_number</span>
         </a>
-        <p class=" text-4xl font-semibold text-black pt-14">
-          Points to note 🎯
-        </p>
-        @if (data.pointsToNote.enabled) {
 
-        <ul class="py-4  text-xl text-black list-disc md:text-3xl ps-10">
-          @for (item of data.pointsToNote.data; track $index) {
-          <li>
-            {{ item }}
-          </li>
+        <div class="grid gap-4 md:grid-cols-2">
+          @if (data.pointsToNote.enabled) {
+            <section class="rounded-m3-xl bg-g-red-container p-6 text-on-g-red-container md:p-8">
+              <h2 class="mb-5 flex items-center gap-3 text-headline-sm font-medium">
+                <span class="material-symbols-rounded icon-filled" aria-hidden="true">info</span>
+                Points to note
+              </h2>
+              <ul class="flex flex-col gap-3">
+                @for (point of data.pointsToNote.data; track $index) {
+                  <li class="flex gap-3 text-body-lg">
+                    <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-current" aria-hidden="true"></span>
+                    {{ point }}
+                  </li>
+                }
+              </ul>
+            </section>
           }
-        </ul>
-        }
-
-        <p class=" text-4xl font-semibold text-black pt-14">Perks 🚀</p>
-        @if (data.perks.enabled) {
-        <ul class="py-4  text-xl text-black list-disc md:text-3xl ps-10">
-          @for (item of data.perks.data; track $index) {
-          <li>
-            {{ item }}
-          </li>
+          @if (data.perks.enabled) {
+            <section class="rounded-m3-xl bg-g-green-container p-6 text-on-g-green-container md:p-8">
+              <h2 class="mb-5 flex items-center gap-3 text-headline-sm font-medium">
+                <span class="material-symbols-rounded icon-filled" aria-hidden="true">celebration</span>
+                Perks
+              </h2>
+              <ul class="flex flex-col gap-3">
+                @for (perk of data.perks.data; track $index) {
+                  <li class="flex gap-3 text-body-lg">
+                    <span class="material-symbols-rounded !text-xl" aria-hidden="true">check_circle</span>
+                    {{ perk }}
+                  </li>
+                }
+              </ul>
+            </section>
           }
-        </ul>
-        }
+        </div>
       </div>
-      }
-    </div>
+    }
   `,
-  styles: ``,
 })
 export class TicketsComponent {
   eventData$: Observable<EventData>;
-  currentYear = new Date().getFullYear();
 
   constructor(
     private meta: Meta,
@@ -74,5 +78,10 @@ export class TicketsComponent {
     });
     this.title.setTitle(`Tickets | Devfest Siliguri 2025`);
     this.eventData$ = this.firebaseService.getEventData();
+  }
+
+  protected subtitle(data: EventData): string {
+    const shortYear = new Date(data.eventDateTime).getFullYear().toString().slice(-2);
+    return `Book your ticket to DevFest '${shortYear} at ${data.eventVenue.name} and experience the community like no other.`;
   }
 }

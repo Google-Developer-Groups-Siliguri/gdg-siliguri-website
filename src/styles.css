@@ -1,28 +1,38 @@
-/* You can add global styles to this file, and also import other style files */
 @font-face {
   font-family: ProductSans;
   src: url(assets/fonts/google_sans/ProductSans-Thin.ttf) format("truetype");
-  font-weight: 300;
+  font-weight: 100;
+  font-display: swap;
 }
 @font-face {
   font-family: ProductSans;
   src: url(assets/fonts/google_sans/ProductSans-Light.ttf) format("truetype");
-  font-weight: 400;
+  font-weight: 300;
+  font-display: swap;
 }
 @font-face {
   font-family: ProductSans;
   src: url(assets/fonts/google_sans/ProductSans-Regular.ttf) format("truetype");
-  font-weight: 500;
+  font-weight: 400;
+  font-display: swap;
 }
 @font-face {
   font-family: ProductSans;
   src: url(assets/fonts/google_sans/ProductSans-Medium.ttf) format("truetype");
-  font-weight: 600;
+  font-weight: 500;
+  font-display: swap;
 }
 @font-face {
   font-family: ProductSans;
   src: url(assets/fonts/google_sans/ProductSans-Bold.ttf) format("truetype");
   font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: ProductSans;
+  src: url(assets/fonts/google_sans/ProductSans-Black.ttf) format("truetype");
+  font-weight: 900;
+  font-display: swap;
 }
 
 @font-face {
@@ -39,6 +49,133 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    color-scheme: light;
+
+    --md-primary: 11 87 208;
+    --md-on-primary: 255 255 255;
+    --md-primary-container: 211 227 253;
+    --md-on-primary-container: 4 30 73;
+    --md-secondary: 0 99 155;
+    --md-on-secondary: 255 255 255;
+    --md-secondary-container: 194 231 255;
+    --md-on-secondary-container: 0 29 53;
+    --md-tertiary: 20 108 46;
+    --md-on-tertiary: 255 255 255;
+    --md-tertiary-container: 196 238 208;
+    --md-on-tertiary-container: 7 39 17;
+    --md-error: 179 38 30;
+    --md-on-error: 255 255 255;
+    --md-error-container: 249 222 220;
+    --md-on-error-container: 65 14 11;
+
+    --md-surface: 248 250 253;
+    --md-surface-dim: 217 221 228;
+    --md-surface-bright: 248 250 253;
+    --md-surface-container-lowest: 255 255 255;
+    --md-surface-container-low: 242 246 252;
+    --md-surface-container: 236 241 249;
+    --md-surface-container-high: 229 235 244;
+    --md-surface-container-highest: 221 227 236;
+    --md-on-surface: 31 31 31;
+    --md-on-surface-variant: 68 71 70;
+    --md-outline: 116 119 117;
+    --md-outline-variant: 196 199 197;
+    --md-inverse-surface: 48 48 48;
+    --md-inverse-on-surface: 242 242 242;
+    --md-inverse-primary: 168 199 250;
+    --md-scrim: 0 0 0;
+
+    --md-g-blue: 11 87 208;
+    --md-on-g-blue: 255 255 255;
+    --md-g-blue-container: 211 227 253;
+    --md-on-g-blue-container: 4 30 73;
+    --md-g-red: 197 34 31;
+    --md-on-g-red: 255 255 255;
+    --md-g-red-container: 255 218 214;
+    --md-on-g-red-container: 65 0 2;
+    --md-g-yellow: 124 88 0;
+    --md-on-g-yellow: 255 255 255;
+    --md-g-yellow-container: 255 223 158;
+    --md-on-g-yellow-container: 38 26 0;
+    --md-g-green: 20 108 46;
+    --md-on-g-green: 255 255 255;
+    --md-g-green-container: 196 238 208;
+    --md-on-g-green-container: 7 39 17;
+  }
+
+  :root.dark {
+    color-scheme: dark;
+
+    --md-primary: 168 199 250;
+    --md-on-primary: 6 46 111;
+    --md-primary-container: 8 66 160;
+    --md-on-primary-container: 211 227 253;
+    --md-secondary: 127 207 255;
+    --md-on-secondary: 0 51 85;
+    --md-secondary-container: 0 74 119;
+    --md-on-secondary-container: 194 231 255;
+    --md-tertiary: 109 213 140;
+    --md-on-tertiary: 10 56 24;
+    --md-tertiary-container: 15 82 35;
+    --md-on-tertiary-container: 196 238 208;
+    --md-error: 242 184 181;
+    --md-on-error: 96 20 16;
+    --md-error-container: 140 29 24;
+    --md-on-error-container: 249 222 220;
+
+    --md-surface: 19 19 20;
+    --md-surface-dim: 19 19 20;
+    --md-surface-bright: 55 57 59;
+    --md-surface-container-lowest: 14 14 14;
+    --md-surface-container-low: 27 27 27;
+    --md-surface-container: 30 31 32;
+    --md-surface-container-high: 40 42 44;
+    --md-surface-container-highest: 51 53 55;
+    --md-on-surface: 227 227 227;
+    --md-on-surface-variant: 196 199 197;
+    --md-outline: 142 145 143;
+    --md-outline-variant: 68 71 70;
+    --md-inverse-surface: 227 227 227;
+    --md-inverse-on-surface: 48 48 48;
+    --md-inverse-primary: 11 87 208;
+
+    --md-g-blue: 168 199 250;
+    --md-on-g-blue: 6 46 111;
+    --md-g-blue-container: 8 66 160;
+    --md-on-g-blue-container: 211 227 253;
+    --md-g-red: 255 180 171;
+    --md-on-g-red: 105 0 5;
+    --md-g-red-container: 147 0 10;
+    --md-on-g-red-container: 255 218 214;
+    --md-g-yellow: 248 189 42;
+    --md-on-g-yellow: 65 45 0;
+    --md-g-yellow-container: 93 66 0;
+    --md-on-g-yellow-container: 255 223 158;
+    --md-g-green: 109 213 140;
+    --md-on-g-green: 10 56 24;
+    --md-g-green-container: 15 82 35;
+    --md-on-g-green-container: 196 238 208;
+  }
+
+  body {
+    margin: 0;
+    @apply bg-surface font-sans text-on-surface antialiased;
+    transition: background-color 300ms cubic-bezier(0.34, 0.88, 0.34, 1),
+      color 300ms cubic-bezier(0.34, 0.88, 0.34, 1);
+  }
+
+  :focus-visible {
+    outline: 3px solid rgb(var(--md-secondary));
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    @apply bg-primary-container text-on-primary-container;
+  }
+}
+
 @layer components {
   .screen-reader-text {
     border: 0;
@@ -54,9 +191,133 @@
     word-wrap: normal !important;
     word-break: normal;
   }
+
+  .material-symbols-rounded {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    font-size: 1.5rem;
+    line-height: 1;
+    user-select: none;
+  }
+
+  .icon-filled {
+    font-variation-settings: "FILL" 1, "wght" 500, "GRAD" 0, "opsz" 24;
+  }
+
+  .m3-state {
+    @apply relative isolate overflow-hidden;
+  }
+  .m3-state::before {
+    content: "";
+    @apply pointer-events-none absolute inset-0 -z-10 bg-current opacity-0;
+    border-radius: inherit;
+    transition: opacity 150ms cubic-bezier(0.31, 0.94, 0.34, 1);
+  }
+  .m3-state:hover::before {
+    @apply opacity-[0.08];
+  }
+  .m3-state:focus-visible::before,
+  .m3-state:active::before {
+    @apply opacity-[0.1];
+  }
+
+  .m3-btn {
+    @apply m3-state inline-flex h-10 select-none items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-label-lg font-medium;
+    transition: border-radius 350ms cubic-bezier(0.42, 1.67, 0.21, 0.9),
+      background-color 200ms cubic-bezier(0.34, 0.8, 0.34, 1),
+      color 200ms cubic-bezier(0.34, 0.8, 0.34, 1),
+      box-shadow 200ms cubic-bezier(0.34, 0.8, 0.34, 1);
+  }
+  .m3-btn:active {
+    @apply rounded-m3-sm;
+  }
+  .m3-btn .material-symbols-rounded {
+    font-size: 1.25rem;
+  }
+
+  .m3-btn-md {
+    @apply h-14 gap-2 px-6 text-title-md;
+  }
+  .m3-btn-md:active {
+    @apply rounded-m3-md;
+  }
+  .m3-btn-md .material-symbols-rounded {
+    font-size: 1.5rem;
+  }
+
+  .m3-btn-lg {
+    @apply h-24 gap-3 px-12 text-headline-sm;
+  }
+  .m3-btn-lg:active {
+    @apply rounded-m3-lg;
+  }
+  .m3-btn-lg .material-symbols-rounded {
+    font-size: 2rem;
+  }
+
+  .m3-btn-filled {
+    @apply bg-primary text-on-primary;
+  }
+  .m3-btn-filled:hover {
+    @apply shadow-elevation-1;
+  }
+  .m3-btn-tonal {
+    @apply bg-secondary-container text-on-secondary-container;
+  }
+  .m3-btn-outlined {
+    @apply border border-outline-variant text-on-surface-variant;
+  }
+  .m3-btn-text {
+    @apply px-3 text-primary;
+  }
+  .m3-btn-elevated {
+    @apply bg-surface-container-low text-primary shadow-elevation-1;
+  }
+
+  .m3-icon-btn {
+    @apply m3-state inline-flex h-10 w-10 shrink-0 select-none items-center justify-center rounded-full text-on-surface-variant;
+    transition: border-radius 350ms cubic-bezier(0.42, 1.67, 0.21, 0.9),
+      background-color 200ms cubic-bezier(0.34, 0.8, 0.34, 1);
+  }
+  .m3-icon-btn:active {
+    @apply rounded-m3-sm;
+  }
+
+  .m3-card {
+    @apply rounded-m3-lg bg-surface-container;
+  }
+  .m3-card-elevated {
+    @apply rounded-m3-lg bg-surface-container-low shadow-elevation-1;
+  }
+  .m3-card-outlined {
+    @apply rounded-m3-lg border border-outline-variant bg-surface;
+  }
+
+  .m3-chip {
+    @apply inline-flex h-8 items-center gap-2 rounded-m3-sm border border-outline-variant px-4 text-label-lg font-medium text-on-surface-variant;
+  }
+
+  .shape-mask {
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+
+  .m3-link {
+    @apply text-primary underline decoration-1 underline-offset-4 transition-colors duration-effects ease-effects hover:decoration-2;
+  }
+
+  .page-container {
+    @apply mx-auto w-full max-w-page px-4 md:px-6 lg:px-8;
+  }
 }
 
-body {
-  margin: 0;
-  font-family: ProductSans;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

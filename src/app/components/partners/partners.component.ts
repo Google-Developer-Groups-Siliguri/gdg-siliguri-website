@@ -1,53 +1,31 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CommunityPartners, DataService } from 'src/app/services/data.service';
-import { PartnerCardComponent } from '../partner-card/partner-card.component';
-import { Observable } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { DataService } from 'src/app/services/data.service';
 import { ComingSoonCardComponent } from '../coming-soon-card/coming-soon-card.component';
+import { PartnerCardComponent } from '../partner-card/partner-card.component';
+import { SectionHeadingComponent } from '../ui/section-heading/section-heading';
 
 @Component({
   selector: 'app-partners',
-  imports: [CommonModule, PartnerCardComponent, ComingSoonCardComponent],
+  imports: [AsyncPipe, PartnerCardComponent, ComingSoonCardComponent, SectionHeadingComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="md:mx-[1.5rem] mb-12 mt-10">
-      <h1
-        class="text-[50px] lg:text-[70px] leading-tight tracking-wide font-semibold text-black text-center mt-6"
-      >
-        Community Partners
-      </h1>
-      <div class="md:mx-[1.5rem] mx-[1.5rem] py-10 rounded-2xl">
-        @if (communityPartnerDetails$ | async; as data) { @if (data.enabled) {
-        <div
-          class="grid items-center justify-center grid-cols-12 gap-x-4 gap-y-10 xl:gap-x-15"
-        >
-          @for (user of data.data; track $index) {
-
-          <div
-            class="h-full col-span-12 lg:col-span-3 md:col-span-4 sm:col-span-4"
-          >
-            <div class="flex items-center justify-center h-full">
-              <app-partner-card
-                [item]="user"
-                class="w-full h-full"
-              ></app-partner-card>
-            </div>
+    <section class="page-container py-10 md:py-14">
+      <app-section-heading eyebrow="Better together" title="Community partners" />
+      @if (partners$ | async; as partners) {
+        @if (partners.enabled && partners.data.length) {
+          <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+            @for (partner of partners.data; track partner.communityName) {
+              <app-partner-card [name]="partner.communityName" [icon]="partner.icon" [link]="partner.socialMediaLink" />
+            }
           </div>
-          }
-        </div>
         } @else {
-        <app-coming-soon-card> </app-coming-soon-card>
-        } }
-      </div>
-    </div>
+          <app-coming-soon-card hint="Partner communities will be announced soon." />
+        }
+      }
+    </section>
   `,
 })
 export class PartnersComponent {
-  communityPartnerDetails$: Observable<{
-    enabled: boolean;
-    data: CommunityPartners[];
-  }>;
-  constructor(private $firebaseDataService: DataService) {
-    this.communityPartnerDetails$ =
-      this.$firebaseDataService.getAllCommunityPartners();
-  }
+  protected readonly partners$ = inject(DataService).getAllCommunityPartners();
 }

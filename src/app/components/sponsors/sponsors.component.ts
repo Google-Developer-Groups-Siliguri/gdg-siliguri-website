@@ -1,104 +1,62 @@
-import { Component } from '@angular/core';
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { map } from 'rxjs';
 import { DataService, Sponsors } from 'src/app/services/data.service';
-import { SponsorCardComponent } from '../sponsor-card/sponsor-card.component';
-import { Observable } from 'rxjs';
 import { ComingSoonCardComponent } from '../coming-soon-card/coming-soon-card.component';
+import { PartnerCardComponent } from '../partner-card/partner-card.component';
+import { SectionHeadingComponent } from '../ui/section-heading/section-heading';
+
+interface SponsorTier {
+  label: string;
+  chip: string;
+  sponsors: Sponsors[];
+}
 
 @Component({
-    selector: 'app-sponsors',
-    imports: [AsyncPipe, SponsorCardComponent, ComingSoonCardComponent],
-    template: `
-    <div class="2xl:mx-[8rem] md:mx-[4rem] mx-[1.5rem] mt-10">
-      <h1
-        class="text-[50px] lg:text-[70px] leading-tight tracking-wide font-semibold text-black text-center mt-6"
-      >
-        Sponsors
-      </h1>
-      <div class="md:mx-[1.5rem] mx-[1.5rem] py-10 rounded-2xl">
-        @if (sponsorsDetails$ | async; as data) { @if (data.enabled) {
-        <p
-          class="text-[30px] lg:text-[50px] leading-tight tracking-wide font-semibold text-gray-600 text-center mt-2"
-        >
-          Platinum
-        </p>
-        <div
-          class="grid items-center justify-center grid-cols-12 gap-x-4 gap-y-10 xl:gap-x-15"
-        >
-          @for (user of data.platinum; track $index) {
-          <div
-            class="h-full col-span-12 lg:col-span-3 md:col-span-4 sm:col-span-4"
-          >
-            <div class="flex items-center justify-center h-full">
-              <app-sponsor-card
-                [item]="user"
-                class="w-full h-full"
-              ></app-sponsor-card>
-            </div>
+  selector: 'app-sponsors',
+  imports: [AsyncPipe, PartnerCardComponent, ComingSoonCardComponent, SectionHeadingComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <section class="page-container py-10 md:py-14">
+      <app-section-heading eyebrow="Made possible by" title="Sponsors" />
+      @if (tiers$ | async; as tiers) {
+        @if (tiers.length) {
+          <div class="flex flex-col gap-12">
+            @for (tier of tiers; track tier.label) {
+              <div class="flex flex-col gap-5">
+                <h3 class="flex items-center gap-3 text-headline-sm font-medium text-on-surface">
+                  <span class="h-3 w-3 rounded-full" [class]="tier.chip" aria-hidden="true"></span>
+                  {{ tier.label }}
+                </h3>
+                <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                  @for (sponsor of tier.sponsors; track sponsor.sponsorName) {
+                    <app-partner-card [name]="sponsor.sponsorName" [icon]="sponsor.icon" [link]="sponsor.socialMediaLink" />
+                  }
+                </div>
+              </div>
+            }
           </div>
-          }
-        </div>
-        <p
-          class="text-[30px] lg:text-[50px] leading-tight tracking-wide font-semibold text-gray-600 text-center mt-2"
-        >
-          Gold
-        </p>
-        <div
-          class="grid items-center justify-center grid-cols-12 gap-x-4 gap-y-10 xl:gap-x-15"
-        >
-          @for (user of data.gold; track $index) {
-          <div
-            class="h-full col-span-12 lg:col-span-3 md:col-span-4 sm:col-span-4"
-          >
-            <div class="flex items-center justify-center h-full">
-              <app-sponsor-card
-                [item]="user"
-                class="w-full h-full"
-              ></app-sponsor-card>
-            </div>
-          </div>
-          }
-        </div>
-        <p
-          class="text-[30px] lg:text-[50px] leading-tight tracking-wide font-semibold text-gray-600 text-center mt-2"
-        >
-          Silver
-        </p>
-        <div
-          class="grid items-center justify-center grid-cols-12 gap-x-4 gap-y-10 xl:gap-x-15"
-        >
-          @for (user of data.silver; track $index) {
-          <div
-            class="h-full col-span-12 lg:col-span-3 md:col-span-4 sm:col-span-4"
-          >
-            <div class="flex items-center justify-center h-full">
-              <app-sponsor-card
-                [item]="user"
-                class="w-full h-full"
-              ></app-sponsor-card>
-            </div>
-          </div>
-          }
-        </div>
         } @else {
-        <app-coming-soon-card> </app-coming-soon-card>
-        } } @else {
-        <app-coming-soon-card> </app-coming-soon-card>
-
+          <app-coming-soon-card hint="Sponsors will be announced soon." />
         }
-      </div>
-    </div>
-  `
+      }
+    </section>
+  `,
 })
 export class SponsorsComponent {
-  sponsorsDetails$: Observable<{
-    enabled: boolean;
-    gold: Sponsors[];
-    platinum: Sponsors[];
-    silver: Sponsors[];
-  }>;
-
-  constructor(private $firebaseService: DataService) {
-    this.sponsorsDetails$ = this.$firebaseService.getAllSponsors();
-  }
+  protected readonly tiers$ = inject(DataService)
+    .getAllSponsors()
+    .pipe(
+      map((result): SponsorTier[] => {
+        if (!result?.enabled) {
+          return [];
+        }
+        const tiers: SponsorTier[] = [
+          { label: 'Platinum', chip: 'bg-g-blue', sponsors: result.platinum ?? [] },
+          { label: 'Gold', chip: 'bg-brand-yellow', sponsors: result.gold ?? [] },
+          { label: 'Silver', chip: 'bg-outline', sponsors: result.silver ?? [] },
+        ];
+        return tiers.filter((tier) => tier.sponsors.length > 0);
+      })
+    );
 }
