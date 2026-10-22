@@ -1,0 +1,8 @@
+{
+  "/blog-feed.xml": {
+    "target": "https://gdgsiliguri.hashnode.dev",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": { "^/blog-feed.xml": "/rss.xml" }
+  }
+}
