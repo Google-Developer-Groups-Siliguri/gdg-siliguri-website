@@ -1,8 +1,10 @@
-import { inject, Injectable, makeStateKey, TransferState } from '@angular/core';
+import { inject, Injectable, makeStateKey, PLATFORM_ID, TransferState } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { BLOG_FEED_PROXY_PATH, HASHNODE_RSS_URL, parseHashnodeRss } from './hashnode-rss';
 
 export interface Members {
   description: string;
@@ -113,24 +115,13 @@ export interface BlogPost {
   url: string;
 }
 
-export interface HashnodeResponse {
-  data: {
-    publication: {
-      posts: {
-        edges: Array<{
-          node: BlogPost;
-        }>;
-      };
-    };
-  };
-}
-
 @Injectable({
   providedIn: 'root',
 })
 export class DataService {
   private http = inject(HttpClient);
   private transferState = inject(TransferState);
+  private platformId = inject(PLATFORM_ID);
   private apiBaseUrl = environment.apiBaseUrl;
 
   private dbPaths = {
@@ -155,19 +146,6 @@ export class DataService {
     }
 
     return this.http.get<T>(url).pipe(
-      tap(data => this.transferState.set(stateKey, data))
-    );
-  }
-
-  private postWithTransferState<T>(key: string, url: string, body: any): Observable<T> {
-    const stateKey = makeStateKey<T>(key);
-
-    const existing = this.transferState.get(stateKey, null);
-    if (existing) {
-      return of(existing);
-    }
-
-    return this.http.post<T>(url, body).pipe(
       tap(data => this.transferState.set(stateKey, data))
     );
   }
@@ -264,39 +242,19 @@ export class DataService {
 
   //hashnode blogs
   getHashnodeBlogs(): Observable<BlogPost[]> {
-    const query = `
-      query Publication {
-        publication(host: "gdgsiliguri.hashnode.dev") {
-          posts(first: 20) {
-            edges {
-              node {
-                id
-                title
-                brief
-                slug
-                coverImage {
-                  url
-                }
-                publishedAt
-                author {
-                  name
-                  profilePicture
-                }
-                readTimeInMinutes
-                url
-              }
-            }
-          }
-        }
-      }
-    `;
+    const stateKey = makeStateKey<BlogPost[]>('hashnodeBlogs');
 
-    return this.postWithTransferState<HashnodeResponse>(
-      'hashnodeBlogs',
-      'https://gql.hashnode.com',
-      { query }
-    ).pipe(
-      map((response) => response.data.publication.posts.edges.map((edge) => edge.node))
+    const existing = this.transferState.get(stateKey, null);
+    if (existing) {
+      return of(existing);
+    }
+
+    const feedUrl = isPlatformBrowser(this.platformId) ? BLOG_FEED_PROXY_PATH : HASHNODE_RSS_URL;
+
+    return this.http.get(feedUrl, { responseType: 'text' }).pipe(
+      map(parseHashnodeRss),
+      tap((blogs) => this.transferState.set(stateKey, blogs)),
+      catchError(() => of([]))
     );
   }
 }

@@ -25,6 +25,12 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+[[redirects]]
+  from = "/blog-feed.xml"
+  to = "https://gdgsiliguri.hashnode.dev/rss.xml"
+  status = 200
+  force = true
+
 # Redirect rules for Angular routing with prerendered content
 [[redirects]]
   from = "/*"
