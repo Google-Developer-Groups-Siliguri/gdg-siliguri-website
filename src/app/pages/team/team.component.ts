@@ -1,79 +1,53 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Meta, Title } from '@angular/platform-browser';
 import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Meta, Title } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CommingSoonComponent } from 'src/app/components/comming-soon/comming-soon.component';
 import { MemberCardComponent } from 'src/app/components/member-card/member-card.component';
+import { PageHeaderComponent } from 'src/app/components/page-header/page-header.component';
+import { SectionHeadingComponent } from 'src/app/components/ui/section-heading/section-heading';
 import { DataService, Members } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-team',
-  imports: [MemberCardComponent, CommingSoonComponent, AsyncPipe],
+  imports: [MemberCardComponent, CommingSoonComponent, AsyncPipe, PageHeaderComponent, SectionHeadingComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (teamData$ | async; as teamData) { @if (teamData.enabled) {
-    <div class="mt-20 max-w-screen-2xl mx-auto">
-      <div class="mx-[1.5rem]">
-        <h1
-          class="text-[50px] lg:text-[70px] leading-tight tracking-wide font-bold text-gray-800 text-center"
-        >
-          Team
-        </h1>
-        <h2 class="text-xl text-[#9CA3AF] text-center font-semibold mt-4">
-          Meet our DevFest Siliguri 2025 organisers and volunteers.
-        </h2>
-
-        <div class="w-full my-10">
-          <h1 class="text-[40px] text-black text-center font-semibold my-4">
-            Organizers
-          </h1>
-          <div
-            class="grid items-center justify-center grid-cols-12 gap-x-4 gap-y-10 2xl:gap-x-20 md:gap-x-8"
-          >
-            @for (user of teamData.organizers; track $index) {
-
-            <div class="h-full col-span-12 lg:col-span-3 md:col-span-4">
-              <div class="flex items-center justify-center h-full">
-                <app-member-card
-                  [item]="user"
-                  class="w-full h-full"
-                ></app-member-card>
-              </div>
-            </div>
+    <app-page-header
+      eyebrow="DevFest Siliguri"
+      title="Team"
+      subtitle="Meet the organisers and volunteers behind DevFest Siliguri 2025."
+    />
+    @if (teamData$ | async; as team) {
+      @if (team.enabled) {
+        <section class="page-container pb-12">
+          <app-section-heading title="Organizers" />
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            @for (member of team.organizers; track member.name; let i = $index) {
+              <app-member-card [item]="member" [index]="i" />
             }
           </div>
-        </div>
-
-        <div class="my-10">
-          <h1 class="text-[40px] text-black text-center font-semibold my-4">
-            Volunteers
-          </h1>
-          <div
-            class="grid items-center justify-center grid-cols-12 gap-x-4 gap-y-10 2xl:gap-x-20 md:gap-x-8"
-          >
-            @for (user of teamData.volunteers; track $index) {
-            <div class="h-full col-span-12 lg:col-span-3 md:col-span-4">
-              <div class="flex items-center justify-center h-full">
-                <app-member-card
-                  [item]="user"
-                  class="w-full h-full"
-                ></app-member-card>
-              </div>
+        </section>
+        @if (team.volunteers.length) {
+          <section class="page-container py-12">
+            <app-section-heading title="Volunteers" />
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              @for (member of team.volunteers; track member.name; let i = $index) {
+                <app-member-card [item]="member" [index]="i + 2" />
+              }
             </div>
-            }
-          </div>
+          </section>
+        }
+      } @else {
+        <div class="page-container">
+          <app-comming-soon message="The team line-up is coming soon" />
         </div>
-      </div>
-    </div>
-    } @else {
-    <div class="mt-20 min-h-[0vh]">
-      <app-comming-soon></app-comming-soon>
-    </div>
-    } }
+      }
+    }
   `,
-  styles: ``,
 })
-export class TeamComponent implements OnInit {
+export class TeamComponent {
   teamData$: Observable<{
     enabled: boolean;
     organizers: Members[];
@@ -93,16 +67,10 @@ export class TeamComponent implements OnInit {
 
     this.teamData$ = this.$firebaseDataService.getAllTeams().pipe(
       map((result) => ({
-        enabled: result.enabled && result.data.length > 0,
-        organizers: result.data.filter(
-          (member) => member.designation === 'Organizer'
-        ),
-        volunteers: result.data.filter(
-          (member) => member.designation === 'Volunteer'
-        ),
+        enabled: !!result?.enabled && result.data.length > 0,
+        organizers: result?.data.filter((member) => member.designation === 'Organizer') ?? [],
+        volunteers: result?.data.filter((member) => member.designation === 'Volunteer') ?? [],
       }))
     );
   }
-
-  ngOnInit(): void {}
 }

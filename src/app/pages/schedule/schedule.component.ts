@@ -1,67 +1,45 @@
-import { Component, OnInit, OnDestroy, signal, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { Component, OnDestroy, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { CommingSoonComponent } from 'src/app/components/comming-soon/comming-soon.component';
+import { PageHeaderComponent } from 'src/app/components/page-header/page-header.component';
 import { TimelineComponent } from 'src/app/components/timeline/timeline.component';
 import { DataService, Schedule } from 'src/app/services/data.service';
 
 @Component({
   selector: 'app-schedule',
-  imports: [TimelineComponent, CommingSoonComponent],
+  imports: [TimelineComponent, CommingSoonComponent, PageHeaderComponent],
   template: `
-    <div class="mt-20 min-h-[70vh] max-w-screen-2xl mx-auto">
-      <div class="mx-[1.5rem]">
-        <h1
-          class="text-[50px] lg:text-[70px] leading-tight tracking-wide font-bold text-[black]"
-        >
-          Schedule
-        </h1>
-        <h3 class="text-[25px] text-gray-500">
-          Check out the schedule below and don't forget to mark your calendar so
-          that you don't miss out on any sessions.
-        </h3>
-        <br />
-        <div class="mb-4 border-b border-blue-200 dark:border-blue-700">
-          <ul
-            class="flex flex-wrap -mb-px text-sm font-medium text-center"
-            id="schedule"
-            data-tabs-toggle="#schedule"
-            role="tablist"
-          >
-            <li class="mr-2" role="presentation">
-              <button
-                class="inline-block p-4 border-b-2 rounded-t-lg text-blue-600 border-blue-300 dark:hover:text-blue-300 text-[20px]"
-                id="day1"
-                data-tabs-target="#day1"
-                type="button"
-                role="tab"
-                aria-controls="day1"
-                aria-selected="false"
-              >
-                Day 1
-              </button>
-            </li>
-          </ul>
-        </div>
-        @if (scheduleData(); as data) { @if (data.enabled) {
-        <app-timeline [day]="data.data" [hasImage]="hasImage"></app-timeline>
-        } @else {
-        <app-comming-soon></app-comming-soon>
-        } } @else {
-        <app-comming-soon></app-comming-soon>
-        }
+    <app-page-header
+      eyebrow="DevFest Siliguri"
+      title="Schedule"
+      subtitle="Mark your calendar so you don't miss any of the sessions."
+    />
+    <div class="page-container flex flex-col gap-8">
+      <div role="tablist" aria-label="Event days" class="flex gap-2">
+        <button type="button" role="tab" aria-selected="true" class="m3-btn bg-secondary-container font-bold text-on-secondary-container">
+          <span class="material-symbols-rounded" aria-hidden="true">calendar_month</span>
+          Day 1
+        </button>
       </div>
+      @if (scheduleData(); as data) {
+        @if (data.enabled && data.data.length) {
+          <app-timeline [day]="data.data" />
+        } @else {
+          <app-comming-soon message="The schedule is coming soon" />
+        }
+      } @else {
+        <app-comming-soon message="The schedule is coming soon" />
+      }
     </div>
   `,
-  styles: ``,
 })
 export class ScheduleComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private subscription?: Subscription;
 
   scheduleData = signal<{ enabled: boolean; data: Schedule[] } | null>(null);
-  hasImage: boolean = false;
 
   constructor(
     private meta: Meta,
@@ -84,7 +62,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
         error: (error) => {
           console.error('Error loading schedule data:', error);
           this.scheduleData.set(null);
-        }
+        },
       });
     }
   }

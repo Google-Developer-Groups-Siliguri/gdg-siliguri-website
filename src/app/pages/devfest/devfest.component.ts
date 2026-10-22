@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { ContactMapComponent } from 'src/app/components/contact-map/contact-map.component';
-import { DevfestFaqComponent } from 'src/app/components/devfest-faq.component';
 import { DevfestHeroComponent } from 'src/app/components/devfest-hero/devfest-hero.component';
+import { FaqComponent } from 'src/app/components/faq/faq.component';
 import { GoogleProductsComponent } from 'src/app/components/google-products/google-products.component';
 import { KeepInTouchComponent } from 'src/app/components/keep-in-touch/keep-in-touch.component';
 import { PartnersComponent } from 'src/app/components/partners/partners.component';
@@ -25,27 +25,20 @@ import { DataService, EventData } from 'src/app/services/data.service';
     ReviewComponent,
     GoogleProductsComponent,
     KeepInTouchComponent,
-    DevfestFaqComponent,
+    FaqComponent,
   ],
   template: `
-    <div class="mx-auto min-h-[70vh] max-w-screen-2xl">
-      <div class="mt-20">
-        @if (eventData$ | async; as data) {
-        <app-devfest-hero [eventData]="data"></app-devfest-hero>
-        }
-        <app-contact-map> </app-contact-map>
-        <app-speakers> </app-speakers>
-        <app-partners> </app-partners>
-        <app-sponsors> </app-sponsors>
-        <app-review></app-review>
-        <app-devfest-faq></app-devfest-faq>
-        <app-google-products></app-google-products>
-        <app-keep-in-touch></app-keep-in-touch>
-        <!-- 
-    <app-whats-is></app-whats-is>
-     -->
-      </div>
-    </div>
+    @if (eventData$ | async; as data) {
+      <app-devfest-hero [eventData]="data" />
+    }
+    <app-contact-map />
+    <app-speakers />
+    <app-partners />
+    <app-sponsors />
+    <app-review />
+    <app-faq source="devfest" />
+    <app-google-products />
+    <app-keep-in-touch />
   `,
 })
 export class DevfestComponent {

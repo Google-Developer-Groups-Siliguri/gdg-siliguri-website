@@ -1,76 +1,56 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { filter, take } from 'rxjs';
 import { DataService, Members } from '../services/data.service';
 import { MemberCardComponent } from './member-card/member-card.component';
+import { SectionHeadingComponent } from './ui/section-heading/section-heading';
 
 @Component({
-    selector: 'app-organizers',
-    imports: [MemberCardComponent],
-    template: `
+  selector: 'app-organizers',
+  imports: [MemberCardComponent, SectionHeadingComponent],
+  template: `
     @if (sectionEnabled) {
-
-    <div class="mt-20 max-w-screen-2xl mx-auto">
-      <!-- <app-comming-soon></app-comming-soon> -->
-      <div class="mx-[1.5rem]">
-        <h1
-          class="text-[50px] lg:text-[70px] leading-tight tracking-wide font-bold text-gray-800 text-center"
-        >
-          Organizers
-        </h1>
-
-        <div class="w-full my-10">
-          <div
-            class="grid items-center justify-center grid-cols-12 gap-x-4 gap-y-10 2xl:gap-x-20 md:gap-x-8"
-          >
-            @for (user of organizers; track $index) {
-
-            <div class="h-full col-span-12 lg:col-span-3 md:col-span-4">
-              <div class="flex items-center justify-center h-full">
-                <app-member-card
-                  [item]="user"
-                  class="w-full h-full"
-                ></app-member-card>
-              </div>
-            </div>
-            }
-          </div>
+      <section class="page-container py-10 md:py-14">
+        <app-section-heading
+          eyebrow="The people behind it"
+          title="Organizers"
+          description="Volunteers who plan the meetups, wrangle the speakers and keep the community running."
+        />
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          @for (user of organizers; track user.name; let i = $index) {
+            <app-member-card [item]="user" [index]="i" />
+          }
         </div>
-      </div>
-    </div>
+      </section>
     }
-  `
+  `,
 })
-export class OrganizersComponent {
-  organizersDetails: Members[] = [];
+export class OrganizersComponent implements OnInit {
   organizers: Members[] = [];
-  volunteers: Members[] = [];
-  sectionEnabled: boolean = false;
+  sectionEnabled = false;
+
   constructor(
     private $firebaseDataService: DataService,
     private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.getSpeakersList();
+    this.getOrganizers();
   }
 
-  getSpeakersList() {
-    const subscription$ = this.$firebaseDataService.getAllTeams().subscribe({
-      next: (result) => {
-        if (result.data.length > 0) {
-          this.organizersDetails = result.data;
-          console.log(result.enabled);
+  getOrganizers() {
+    this.$firebaseDataService
+      .getAllTeams()
+      .pipe(
+        filter((result) => result.data.length > 0),
+        take(1)
+      )
+      .subscribe({
+        next: (result) => {
           this.sectionEnabled = result.enabled;
-          this.organizers = this.organizersDetails.filter(
-            (member) => member.designation === 'Organizer'
-          );
-          this.volunteers = this.organizersDetails.filter(
-            (member) => member.designation === 'Volunteer'
-          );
+          this.organizers = result.data.filter((member) => member.designation === 'Organizer');
           this.cd.detectChanges();
-          subscription$.unsubscribe();
-        }
-      },
-      error: (err) => console.error(err),
-    });
+        },
+        error: (err) => console.error(err),
+      });
   }
 }

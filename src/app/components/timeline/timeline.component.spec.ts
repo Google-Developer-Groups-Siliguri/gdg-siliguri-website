@@ -12,6 +12,7 @@ describe('TimelineComponent', () => {
     });
     fixture = TestBed.createComponent(TimelineComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('day', []);
     fixture.detectChanges();
   });
 

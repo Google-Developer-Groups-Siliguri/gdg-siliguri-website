@@ -1,12 +1,10 @@
-import { Component } from '@angular/core';
-
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { SectionHeadingComponent } from '../ui/section-heading/section-heading';
 
 @Component({
-    selector: 'app-google-products',
-    imports: [],
-    templateUrl: './google-products.component.html',
-    styleUrls: ['./google-products.component.css']
+  selector: 'app-google-products',
+  imports: [SectionHeadingComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './google-products.component.html',
 })
-export class GoogleProductsComponent {
-
-}
+export class GoogleProductsComponent {}

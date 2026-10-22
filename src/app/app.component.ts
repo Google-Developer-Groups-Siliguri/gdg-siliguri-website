@@ -1,20 +1,11 @@
-import { isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { initFlowbite } from 'flowbite';
 
 @Component({
-    selector: 'app-root',
-    template: ` <router-outlet></router-outlet> `,
-    imports: [RouterOutlet]
+  selector: 'app-root',
+  template: ` <router-outlet></router-outlet> `,
+  imports: [RouterOutlet],
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'gdg-siliguri-website';
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
-
-  ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      initFlowbite();
-    }
-  }
 }
