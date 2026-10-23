@@ -1,8 +1,16 @@
-import { inject, Injectable, makeStateKey, PLATFORM_ID, TransferState } from '@angular/core';
+import {
+  ApplicationRef,
+  inject,
+  Injectable,
+  makeStateKey,
+  PLATFORM_ID,
+  StateKey,
+  TransferState,
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { concat, EMPTY, from, Observable, of } from 'rxjs';
+import { catchError, filter, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { BLOG_FEED_PROXY_PATH, HASHNODE_RSS_URL, parseHashnodeRss } from './hashnode-rss';
 
@@ -122,6 +130,9 @@ export class DataService {
   private http = inject(HttpClient);
   private transferState = inject(TransferState);
   private platformId = inject(PLATFORM_ID);
+  private appRef = inject(ApplicationRef);
+  private isBrowser = isPlatformBrowser(this.platformId);
+  private refreshRequests = new Map<string, Observable<unknown>>();
   private apiBaseUrl = environment.apiBaseUrl;
 
   private dbPaths = {
@@ -138,16 +149,46 @@ export class DataService {
   };
 
   private getWithTransferState<T>(key: string, url: string): Observable<T> {
-    const stateKey = makeStateKey<T>(key);
+    return this.getCachedThenFresh(key, () => this.http.get<T>(url));
+  }
 
-    const existing = this.transferState.get(stateKey, null);
-    if (existing) {
-      return of(existing);
+  private getCachedThenFresh<T>(key: string, fetch: () => Observable<T>): Observable<T> {
+    const stateKey = makeStateKey<T>(key);
+    const fetchAndCache = () =>
+      fetch().pipe(tap((data) => this.transferState.set(stateKey, data)));
+
+    if (!this.transferState.hasKey(stateKey)) {
+      return fetchAndCache();
+    }
+    const cached = this.transferState.get(stateKey, null) as T;
+    if (!this.isBrowser) {
+      return of(cached);
     }
 
-    return this.http.get<T>(url).pipe(
-      tap(data => this.transferState.set(stateKey, data))
+    return concat(
+      of(cached),
+      this.refreshOnceAfterHydration(stateKey, fetchAndCache).pipe(
+        filter((fresh) => JSON.stringify(fresh) !== JSON.stringify(cached))
+      )
     );
+  }
+
+  private refreshOnceAfterHydration<T>(
+    stateKey: StateKey<T>,
+    fetchAndCache: () => Observable<T>
+  ): Observable<T> {
+    const existing = this.refreshRequests.get(stateKey);
+    if (existing) {
+      return existing as Observable<T>;
+    }
+
+    const refresh = from(this.appRef.whenStable()).pipe(
+      switchMap(fetchAndCache),
+      catchError(() => EMPTY),
+      shareReplay(1)
+    );
+    this.refreshRequests.set(stateKey, refresh);
+    return refresh;
   }
 
   //organizers and volunteers
@@ -242,19 +283,10 @@ export class DataService {
 
   //hashnode blogs
   getHashnodeBlogs(): Observable<BlogPost[]> {
-    const stateKey = makeStateKey<BlogPost[]>('hashnodeBlogs');
+    const feedUrl = this.isBrowser ? BLOG_FEED_PROXY_PATH : HASHNODE_RSS_URL;
 
-    const existing = this.transferState.get(stateKey, null);
-    if (existing) {
-      return of(existing);
-    }
-
-    const feedUrl = isPlatformBrowser(this.platformId) ? BLOG_FEED_PROXY_PATH : HASHNODE_RSS_URL;
-
-    return this.http.get(feedUrl, { responseType: 'text' }).pipe(
-      map(parseHashnodeRss),
-      tap((blogs) => this.transferState.set(stateKey, blogs)),
-      catchError(() => of([]))
-    );
+    return this.getCachedThenFresh('hashnodeBlogs', () =>
+      this.http.get(feedUrl, { responseType: 'text' }).pipe(map(parseHashnodeRss))
+    ).pipe(catchError(() => of([])));
   }
 }

@@ -1,5 +1,6 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { filter, take } from 'rxjs';
+import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs';
 import { DataService, Members } from '../services/data.service';
 import { MemberCardComponent } from './member-card/member-card.component';
 import { SectionHeadingComponent } from './ui/section-heading/section-heading';
@@ -27,6 +28,7 @@ import { SectionHeadingComponent } from './ui/section-heading/section-heading';
 export class OrganizersComponent implements OnInit {
   organizers: Members[] = [];
   sectionEnabled = false;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private $firebaseDataService: DataService,
@@ -42,7 +44,7 @@ export class OrganizersComponent implements OnInit {
       .getAllTeams()
       .pipe(
         filter((result) => result.data.length > 0),
-        take(1)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
         next: (result) => {
