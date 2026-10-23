@@ -61,7 +61,7 @@ const TINT_SCROLL_RANGE = 80;
         >
       </a>
 
-      <nav class="hidden min-w-0 flex-1 justify-center gap-0.5 min-[900px]:flex">
+      <nav class="hidden min-w-0 flex-1 justify-center gap-0.5 min-[1000px]:flex">
         @for (item of nav(); track item.path) {
           <a
             [routerLink]="item.path"
@@ -73,7 +73,7 @@ const TINT_SCROLL_RANGE = 80;
           >
         }
       </nav>
-      <span class="flex-1 min-[900px]:hidden"></span>
+      <span class="flex-1 min-[1000px]:hidden"></span>
 
       <button
         type="button"
@@ -111,7 +111,7 @@ const TINT_SCROLL_RANGE = 80;
 
       <a
         [href]="joinUrl()"
-        class="t-press hidden h-12 flex-none items-center rounded-3xl bg-pri px-[22px] font-urbanist text-[15px] font-extrabold text-on-pri no-underline hover:[scale:1.04] hover:text-on-pri active:[scale:.96] min-[900px]:flex"
+        class="t-press hidden h-12 flex-none items-center rounded-3xl bg-pri px-[22px] font-urbanist text-[15px] font-extrabold text-on-pri no-underline hover:[scale:1.04] hover:text-on-pri active:[scale:.96] min-[1000px]:flex"
         >Join</a
       >
       <button
@@ -119,7 +119,7 @@ const TINT_SCROLL_RANGE = 80;
         (click)="menuOpen.set(!menuOpen())"
         aria-label="Menu"
         [attr.aria-expanded]="menuOpen()"
-        class="ms h-12 w-12 flex-none cursor-pointer rounded-3xl border-0 bg-pri text-2xl text-on-pri transition-[scale] duration-500 ease-spring active:[scale:.92] min-[900px]:hidden"
+        class="ms h-12 w-12 flex-none cursor-pointer rounded-3xl border-0 bg-pri text-2xl text-on-pri transition-[scale] duration-500 ease-spring active:[scale:.92] min-[1000px]:hidden"
       >
         {{ menuOpen() ? 'close' : 'menu' }}
       </button>
@@ -127,7 +127,7 @@ const TINT_SCROLL_RANGE = 80;
 
     @if (menuOpen()) {
       <div
-        class="mt-2 flex flex-col gap-0.5 rounded-[32px] bg-srf-2 p-2 shadow-[0_24px_48px_-20px_rgba(0,0,0,.5)] min-[900px]:hidden"
+        class="mt-2 flex flex-col gap-0.5 rounded-[32px] bg-srf-2 p-2 shadow-[0_24px_48px_-20px_rgba(0,0,0,.5)] min-[1000px]:hidden"
       >
         @for (item of nav(); track item.path) {
           <a
@@ -189,7 +189,7 @@ export class SiteHeaderComponent {
           requestAnimationFrame(update);
         }
       };
-      const wide = matchMedia('(min-width: 900px)');
+      const wide = matchMedia('(min-width: 1000px)');
       const closeOnWide = () => wide.matches && this.menuOpen.set(false);
       addEventListener('scroll', onScroll, { passive: true });
       wide.addEventListener('change', closeOnWide);
