@@ -23,6 +23,7 @@ export function navItems(devfestYear: string): NavItem[] {
     { path: '/', label: 'Home' },
     { path: '/devfest', label: devfestYear ? `DevFest ${devfestYear}` : 'DevFest' },
     { path: '/events', label: 'Events' },
+    { path: '/blogs', label: 'Blogs' },
     { path: '/team', label: 'Crew' },
     { path: '/about', label: 'About' },
   ];
