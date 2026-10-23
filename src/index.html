@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="utf-8" />
-    <title>GdgSiliguriWebsite</title>
+    <title>GDG Siliguri</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
@@ -10,24 +10,34 @@
     <link rel="preconnect" href="https://ik.imagekit.io" />
     <link rel="apple-touch-icon" href="favicon.png" />
     <link rel="manifest" href="manifest.webmanifest" />
-    <meta name="theme-color" content="#F8FAFD" />
+    <meta name="theme-color" content="#111411" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_forward,calendar_month,celebration,check_circle,close,confirmation_number,dark_mode,expand_more,info,light_mode,location_on,mail,menu,north_east,schedule&display=block"
+      href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100..900&family=Manrope:wght@200..800&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0..1,0&icon_names=add,arrow_back,arrow_forward,arrow_outward,chevron_right,close,confirmation_number,event_upcoming,group_add,location_on,mail,menu,shop&display=block"
     />
     <script>
       (function () {
+        var root = document.documentElement;
         try {
-          var stored = localStorage.getItem("theme");
-          var dark = stored
-            ? stored === "dark"
-            : window.matchMedia("(prefers-color-scheme: dark)").matches;
-          document.documentElement.classList.toggle("dark", dark);
+          var dark = localStorage.getItem("theme") !== "light";
+          root.classList.toggle("dark", dark);
           document
             .querySelector('meta[name="theme-color"]')
-            .setAttribute("content", dark ? "#131314" : "#F8FAFD");
-        } catch (e) {}
+            .setAttribute("content", dark ? "#111411" : "#F6FBF6");
+        } catch (e) {
+          root.classList.add("dark");
+        }
+        if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          root.classList.add("rv-pending");
+          setTimeout(function () {
+            root.classList.remove("rv-pending");
+          }, 4000);
+        }
       })();
     </script>
     <meta

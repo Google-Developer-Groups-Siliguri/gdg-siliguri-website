@@ -1,25 +1,14 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
-import { DataService, EventData, Members, Sponsors } from '../services/data.service';
 import { combineLatest } from 'rxjs';
+import { DataService } from '../services/data.service';
 
-export interface DevfestData {
-  eventData: EventData;
-  speakers: { enabled: boolean; data: Members[] };
-  sponsors: {
-    enabled: boolean;
-    gold: Sponsors[];
-    platinum: Sponsors[];
-    silver: Sponsors[];
-  };
-}
-
-export const devfestResolver: ResolveFn<DevfestData> = () => {
-  const dataService = inject(DataService);
-
-  return combineLatest({
-    eventData: dataService.getEventData(),
-    speakers: dataService.getAllSpeakers(),
-    sponsors: dataService.getAllSponsors(),
-  });
+export const devfestResolver: ResolveFn<unknown> = () => {
+  const data = inject(DataService);
+  return combineLatest([
+    data.getEventData(),
+    data.getAllSpeakers(),
+    data.getAllSchedules(),
+    data.getAllFAQS(),
+  ]);
 };

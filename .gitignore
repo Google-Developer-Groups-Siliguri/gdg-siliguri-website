@@ -46,3 +46,6 @@ Thumbs.db
 /src/environments
 
 .angular/
+# Design reference and Playwright artifacts
+/new website design/
+/.playwright-mcp/
