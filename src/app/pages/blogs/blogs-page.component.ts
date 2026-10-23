@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
 import { PageHeaderComponent } from 'src/app/components/page-header/page-header.component';
-import { BlogPost } from 'src/app/services/data.service';
+import { DataService } from 'src/app/services/data.service';
 import { BlogCardComponent } from '../../components/blog-card.component';
 
 @Component({
@@ -15,9 +15,9 @@ import { BlogCardComponent } from '../../components/blog-card.component';
       subtitle="Read our latest articles and stories from the community."
     />
     <div class="page-container">
-      @if (blogs.length > 0) {
+      @if (blogs().length > 0) {
         <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          @for (blog of blogs; track blog.id) {
+          @for (blog of blogs(); track blog.id) {
             <app-blog-card [blog]="blog" />
           }
         </div>
@@ -31,11 +31,12 @@ import { BlogCardComponent } from '../../components/blog-card.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BlogsPageComponent {
-  private route = inject(ActivatedRoute);
   private meta = inject(Meta);
   private title = inject(Title);
 
-  blogs: BlogPost[];
+  protected readonly blogs = toSignal(inject(DataService).getHashnodeBlogs(), {
+    initialValue: [],
+  });
 
   constructor() {
     this.meta.addTag({
@@ -43,6 +44,5 @@ export class BlogsPageComponent {
       content: 'Blogs | GDG Siliguri',
     });
     this.title.setTitle('Blogs | GDG Siliguri');
-    this.blogs = (this.route.snapshot.data['data'] as BlogPost[] | null) ?? [];
   }
 }

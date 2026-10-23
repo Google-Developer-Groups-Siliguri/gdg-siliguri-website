@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { DataService, EventData, Members, Sponsors } from '../services/data.service';
-import { forkJoin } from 'rxjs';
+import { combineLatest } from 'rxjs';
 
 export interface DevfestData {
   eventData: EventData;
@@ -17,7 +17,7 @@ export interface DevfestData {
 export const devfestResolver: ResolveFn<DevfestData> = () => {
   const dataService = inject(DataService);
 
-  return forkJoin({
+  return combineLatest({
     eventData: dataService.getEventData(),
     speakers: dataService.getAllSpeakers(),
     sponsors: dataService.getAllSponsors(),
