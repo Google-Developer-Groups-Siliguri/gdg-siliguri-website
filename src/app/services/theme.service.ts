@@ -5,8 +5,8 @@ export type Theme = 'light' | 'dark';
 
 const STORAGE_KEY = 'theme';
 const THEME_COLORS: Record<Theme, string> = {
-  light: '#F8FAFD',
-  dark: '#131314',
+  light: '#F6FBF6',
+  dark: '#111411',
 };
 
 @Injectable({ providedIn: 'root' })
@@ -33,7 +33,7 @@ export class ThemeService {
 
   private initialTheme(): Theme {
     if (!this.isBrowser) {
-      return 'light';
+      return 'dark';
     }
     return this.document.documentElement.classList.contains('dark') ? 'dark' : 'light';
   }

@@ -58,6 +58,7 @@ export interface FAQ {
   answer: string;
 }
 export interface Schedule {
+  durationInMins: string;
   startTime: string;
   endTime: string;
   timeZone: string;
@@ -74,10 +75,12 @@ export interface Sponsors {
 export interface SOCIAL {
   name: string;
   url: string;
+  image: string;
 }
 
 export interface EventData {
   bannerDescription: string;
+  communityDescription: string;
   eventDateTime: string;
   bannerImages: {
     large: string;
@@ -100,10 +103,18 @@ export interface EventData {
     enabled: boolean;
     data: string[];
   };
+  theme?: string;
+  techStack?: string[];
   perks: {
     enabled: boolean;
     data: string[];
   };
+}
+
+export interface PastDevfest {
+  year: string;
+  highlight: string;
+  note?: string;
 }
 
 export interface BlogPost {
@@ -146,6 +157,7 @@ export class DataService {
     eventDetails: '/eventDetails.json', //eventDetails
     communityEvents: '/events.json', //eventDetails
     gdgFaqs: '/home/gdgFAQs.json', //eventDetails
+    pastDevfests: '/home/pastDevfests.json',
   };
 
   private getWithTransferState<T>(key: string, url: string): Observable<T> {
@@ -279,6 +291,13 @@ export class DataService {
       'communityEvents',
       `${this.apiBaseUrl}${this.dbPaths.communityEvents}`
     );
+  }
+
+  getPastDevfests(): Observable<{ enabled: boolean; data: PastDevfest[] } | null> {
+    return this.getWithTransferState<{ enabled: boolean; data: PastDevfest[] } | null>(
+      'pastDevfests',
+      `${this.apiBaseUrl}${this.dbPaths.pastDevfests}`
+    ).pipe(catchError(() => of(null)));
   }
 
   //hashnode blogs
