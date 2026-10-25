@@ -62,19 +62,19 @@ import { toSocials } from 'src/app/shared/content';
 
       <div
         appReveal="0"
-        class="flex flex-wrap items-center justify-between gap-7 rounded-[clamp(40px,6vw,72px)] bg-pri-c p-[clamp(32px,5vw,64px)] text-on-pri-c"
+        class="flex flex-wrap items-center justify-between gap-7 rounded-[clamp(40px,6vw,72px)] bg-pri-c p-[clamp(32px,5vw,64px)] max-sm:p-6 text-on-pri-c"
       >
         <div class="flex flex-[1_1_400px] flex-col gap-5">
           <h2 class="display-md">Say <b class="!font-black">hello</b></h2>
-          <div role="group" class="flex flex-wrap gap-1">
+          <div role="group" class="flex flex-wrap gap-1 max-sm:flex-col">
             <a
               [href]="joinUrl()"
-              class="t-press flex h-[60px] items-center rounded-[30px_10px_10px_30px] bg-pri px-7 font-urbanist text-[17px] font-extrabold text-on-pri no-underline hover:rounded-[30px] hover:text-on-pri"
+              class="t-press flex h-[60px] items-center rounded-[30px_10px_10px_30px] max-sm:justify-center max-sm:rounded-[30px_30px_10px_10px] bg-pri px-7 font-urbanist text-[17px] font-extrabold text-on-pri no-underline hover:rounded-[30px] hover:text-on-pri"
               >Contact Us</a
             >
             <a
               [href]="'mailto:' + email()"
-              class="t-press flex h-[60px] items-center gap-2 rounded-[10px_30px_30px_10px] bg-srf-0 px-6 font-manrope text-base font-bold text-on-srf no-underline hover:rounded-[30px] hover:text-on-srf"
+              class="t-press flex h-[60px] items-center gap-2 rounded-[10px_30px_30px_10px] max-sm:h-auto max-sm:min-h-[60px] max-sm:justify-center max-sm:rounded-[10px_10px_30px_30px] max-sm:px-4 max-sm:py-3 max-sm:text-center max-sm:text-[15px] bg-srf-0 px-6 font-manrope text-base font-bold text-on-srf no-underline hover:rounded-[30px] hover:text-on-srf"
               ><span class="ms text-xl">mail</span>Questions? please email us</a
             >
           </div>

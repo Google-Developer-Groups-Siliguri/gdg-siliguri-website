@@ -73,15 +73,15 @@ const WHAT_WE_DO = [
             <b class="font-extrabold">Developers</b>, For the
             <b class="font-extrabold">Developers</b>
           </p>
-          <div appReveal="3" role="group" class="flex flex-wrap gap-1">
+          <div appReveal="3" role="group" class="flex flex-wrap gap-1 max-sm:flex-col">
             <a
               [href]="joinUrl()"
-              class="t-press flex h-16 items-center gap-2.5 rounded-[32px_10px_10px_32px] bg-pri px-[30px] font-urbanist text-lg font-extrabold text-on-pri no-underline hover:rounded-[32px] hover:text-on-pri"
+              class="t-press flex h-16 items-center gap-2.5 rounded-[32px_10px_10px_32px] max-sm:justify-center max-sm:rounded-[32px_32px_10px_10px] bg-pri px-[30px] font-urbanist text-lg font-extrabold text-on-pri no-underline hover:rounded-[32px] hover:text-on-pri"
               ><span class="ms text-[22px]">group_add</span>Join the community</a
             >
             <a
               routerLink="/events"
-              class="t-press flex h-16 items-center gap-2 rounded-[10px_32px_32px_10px] bg-srf-3 px-7 font-urbanist text-lg font-extrabold text-on-srf no-underline hover:rounded-[32px] hover:bg-srf-4 hover:text-on-srf"
+              class="t-press flex h-16 items-center gap-2 rounded-[10px_32px_32px_10px] max-sm:justify-center max-sm:rounded-[10px_10px_32px_32px] bg-srf-3 px-7 font-urbanist text-lg font-extrabold text-on-srf no-underline hover:rounded-[32px] hover:bg-srf-4 hover:text-on-srf"
               >See events<span class="ms text-[22px]">arrow_forward</span></a
             >
           </div>
@@ -157,18 +157,18 @@ const WHAT_WE_DO = [
                   >
                 </div>
               }
-              <div role="group" class="flex flex-wrap gap-1">
+              <div role="group" class="flex flex-wrap gap-1 max-sm:flex-col">
                 @if (ed.registrationOpen) {
                   <a
                     [href]="ed.ticketUrl"
-                    class="t-press flex h-[60px] flex-[1_1_200px] items-center justify-center gap-2.5 rounded-[30px_10px_10px_30px] bg-pri px-6 font-urbanist text-[17px] font-extrabold text-on-pri no-underline hover:rounded-[30px] hover:text-on-pri"
+                    class="t-press flex h-[60px] flex-[1_1_200px] items-center justify-center gap-2.5 rounded-[30px_10px_10px_30px] max-sm:flex-none max-sm:rounded-[30px_30px_10px_10px] bg-pri px-6 font-urbanist text-[17px] font-extrabold text-on-pri no-underline hover:rounded-[30px] hover:text-on-pri"
                     ><span class="ms text-[22px]">confirmation_number</span>Get your ticket</a
                   >
                 }
                 <a
                   routerLink="/devfest"
-                  class="t-press flex h-[60px] flex-[1_1_160px] items-center justify-center gap-2 bg-srf-0 px-6 font-urbanist text-[17px] font-extrabold text-on-srf no-underline hover:rounded-[30px] hover:text-on-srf"
-                  [class]="ed.registrationOpen ? 'rounded-[10px_30px_30px_10px]' : 'rounded-[30px]'"
+                  class="t-press flex h-[60px] flex-[1_1_160px] max-sm:flex-none items-center justify-center gap-2 bg-srf-0 px-6 font-urbanist text-[17px] font-extrabold text-on-srf no-underline hover:rounded-[30px] hover:text-on-srf"
+                  [class]="ed.registrationOpen ? 'rounded-[10px_30px_30px_10px] max-sm:rounded-[10px_10px_30px_30px]' : 'rounded-[30px]'"
                   >{{ ed.isUpcoming ? "What's on" : 'See how it went'
                   }}<span class="ms text-[22px]">arrow_forward</span></a
                 >

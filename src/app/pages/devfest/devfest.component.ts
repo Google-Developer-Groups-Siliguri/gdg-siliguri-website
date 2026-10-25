@@ -52,9 +52,9 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
               Dev<b class="font-black text-pri">Fest</b><br />Siliguri
             </h1>
             @if (ed.isUpcoming) {
-              <div appReveal="2" role="group" aria-label="Time left" class="flex flex-wrap gap-1">
+              <div appReveal="2" role="group" aria-label="Time left" class="flex flex-wrap gap-1 max-sm:flex-nowrap">
                 <div
-                  class="box-border flex h-[clamp(72px,8vw,88px)] items-center gap-1.5 rounded-[44px_10px_10px_44px] bg-pri-c px-[clamp(16px,2vw,24px)] text-on-pri-c"
+                  class="box-border flex h-[clamp(72px,8vw,88px)] items-center gap-1.5 rounded-[44px_10px_10px_44px] max-sm:flex-[1.5_1_0%] max-sm:min-w-0 max-sm:justify-center max-sm:px-2 bg-pri-c px-[clamp(16px,2vw,24px)] text-on-pri-c"
                 >
                   <b
                     class="font-manrope text-[clamp(38px,4.4vw,52px)] font-black leading-none tracking-[-.04em] tabular-nums"
@@ -63,7 +63,7 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                 </div>
                 @for (unit of hms(); track unit.label) {
                   <div
-                    class="box-border flex h-[clamp(72px,8vw,88px)] items-center gap-1 rounded-[10px] bg-srf-3 px-[clamp(14px,1.6vw,20px)]"
+                    class="box-border flex h-[clamp(72px,8vw,88px)] items-center gap-1 rounded-[10px] max-sm:flex-[1_1_0%] max-sm:min-w-0 max-sm:justify-center max-sm:px-2 bg-srf-3 px-[clamp(14px,1.6vw,20px)]"
                   >
                     <b
                       class="font-manrope text-[clamp(28px,3vw,36px)] font-extrabold leading-none tabular-nums"
@@ -74,7 +74,7 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                   </div>
                 }
                 <div
-                  class="box-border flex h-[clamp(72px,8vw,88px)] items-center gap-1 rounded-[10px_44px_44px_10px] bg-ter-c px-[clamp(14px,1.6vw,22px)] text-on-ter-c"
+                  class="box-border flex h-[clamp(72px,8vw,88px)] items-center gap-1 rounded-[10px_44px_44px_10px] max-sm:flex-[1_1_0%] max-sm:min-w-0 max-sm:justify-center max-sm:px-2 bg-ter-c px-[clamp(14px,1.6vw,22px)] text-on-ter-c"
                 >
                   <b
                     class="font-manrope text-[clamp(28px,3vw,36px)] font-extrabold leading-none tabular-nums"
