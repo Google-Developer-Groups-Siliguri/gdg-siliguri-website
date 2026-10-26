@@ -1,8 +1,6 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
-import { DataService, Members } from '../services/data.service';
+import { SiteContentService } from '../services/site-content.service';
+import { TeamMember } from '../shared/view-models';
 
-export const teamResolver: ResolveFn<{ enabled: boolean; data: Members[] }> = () => {
-  const dataService = inject(DataService);
-  return dataService.getAllTeams();
-};
+export const teamResolver: ResolveFn<TeamMember[]> = () => inject(SiteContentService).team();

@@ -1,0 +1,316 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-26T06:23:34.438Z",
+  "sourceVersions": {
+    "edition-2026": 1,
+    "edition-2026-faqs": 1,
+    "edition-2026-partners": 1,
+    "edition-2026-sessions": 1,
+    "edition-2026-speakers": 1,
+    "edition-2026-sponsors": 1,
+    "modules": 1
+  },
+  "edition": {
+    "year": 2026,
+    "title": "DevFest Siliguri 2026",
+    "summary": "Whether you're passionate about finding new opportunities, elevating your knowledge on the latest Google developer tools, or exploring how to use Google technologies to generate social and economic impact, DevFest offers an amazing platform for developers to connect locally, learn, and build on Google's tools.",
+    "timeZone": "Asia/Kolkata",
+    "startAt": "2026-11-14T02:30:00.000Z",
+    "endAt": "2026-11-14T12:00:00.000Z",
+    "venue": {
+      "name": "ITC Fortune Select Siliguri",
+      "mapsUrl": "https://maps.app.goo.gl/pGy6NBJGr9e4P1cE7",
+      "embedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3563.128427322844!2d88.45560259999999!3d26.7402775!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39e4410045eee279%3A0xffa1d24bc94b527e!2sFortune%20Select%20Siliguri%20-%20Member%20ITC%20Hotels%E2%80%99%20Group!5e0!3m2!1sen!2sin!4v1792922706677!5m2!1sen!2sin",
+      "image": {
+        "url": "https://ik.imagekit.io/gdgsiliguri1/Logos%20and%20Banners/venue.webp",
+        "alt": "ITC Fortune Select Siliguri"
+      }
+    },
+    "banner": {
+      "url": "https://ik.imagekit.io/gdgsiliguri1/Logos%20and%20Banners/devfest2025_banner.png",
+      "alt": "",
+      "variants": {
+        "long": {
+          "url": "https://ik.imagekit.io/gdgsiliguri1/Logos%20and%20Banners/devfest2025_long_banner.png",
+          "alt": ""
+        }
+      }
+    },
+    "badges": [
+      {
+        "url": "https://ik.imagekit.io/gdgsiliguri1/Logos%20and%20Banners/India-AI-Impact-Summit-2026-Logo.png",
+        "alt": ""
+      }
+    ],
+    "perks": [
+      "Hands on workshops",
+      "Interaction with the community",
+      "Network with like minded people",
+      "Participate in our giveaways",
+      "Grow your knowledge on different technologies",
+      "Learn to optimise your resources",
+      "Interact with Industry Experts",
+      "Get a chance to win exciting goodies"
+    ],
+    "notes": [
+      "Each ticket is valid for ONE admission only. If you are bringing a guest, they'll need their own ticket.",
+      "Tickets are non-refundable.",
+      "You have to show your ticket to the volunteers and make sure your entry.",
+      "You can't copy ticket from others because each ticket have their specific QR code.",
+      "Those who will get their tickets only they will attend.",
+      "It's important for us that everyone who attends DevFest 2026 Siliguri is treated equally, respected, and protected. By attending, you agree to abide by our terms."
+    ],
+    "tracks": [
+      {
+        "id": "ai",
+        "label": "AI",
+        "color": "#4285F4",
+        "frame": {
+          "url": "https://ik.imagekit.io/gdgsiliguri1/speakers/ai_frame.png",
+          "alt": ""
+        },
+        "order": 10
+      },
+      {
+        "id": "app",
+        "label": "App",
+        "color": "#34A853",
+        "frame": {
+          "url": "https://ik.imagekit.io/gdgsiliguri1/speakers/mobile_frame.png",
+          "alt": ""
+        },
+        "order": 20
+      },
+      {
+        "id": "cloud",
+        "label": "Cloud",
+        "color": "#FBBC04",
+        "frame": {
+          "url": "https://ik.imagekit.io/gdgsiliguri1/speakers/cloud_frame.png",
+          "alt": ""
+        },
+        "order": 30
+      },
+      {
+        "id": "web",
+        "label": "Web",
+        "color": "#EA4335",
+        "order": 40
+      }
+    ],
+    "sections": {
+      "schedule": false,
+      "speakers": false,
+      "sponsors": false,
+      "partners": true,
+      "faqs": true,
+      "perks": true,
+      "notes": true,
+      "registration": false
+    }
+  },
+  "sessions": [],
+  "speakers": [],
+  "sponsors": [],
+  "partners": [
+    {
+      "id": "gdg-on-campus-jalpaiguri-govt-engineering-college",
+      "name": "GDG on Campus Jalpaiguri Govt. Engineering College",
+      "logo": {
+        "url": "https://ik.imagekit.io/gdgsiliguri1/community%20partners/2025/GDGoCJGEC.jpeg",
+        "alt": "GDG on Campus Jalpaiguri Govt. Engineering College"
+      },
+      "url": "https://gdg.community.dev/gdg-on-campus-jalpaiguri-government-engineering-college-jalpaiguri-india/",
+      "order": 10
+    },
+    {
+      "id": "gdg-on-campus-academy-of-technology",
+      "name": "GDG on campus Academy of Technology",
+      "logo": {
+        "url": "https://ik.imagekit.io/gdgsiliguri1/community%20partners/2025/GDGoCAOT.png",
+        "alt": "GDG on campus Academy of Technology"
+      },
+      "url": "https://gdg.community.dev/gdg-on-campus-academy-of-technology-hooghly-india/",
+      "order": 20
+    },
+    {
+      "id": "flutterflow-students-community-india",
+      "name": "Flutterflow Students Community India",
+      "logo": {
+        "url": "https://ik.imagekit.io/gdgsiliguri1/community%20partners/2025/FFSC.png",
+        "alt": "Flutterflow Students Community India"
+      },
+      "url": "https://www.linkedin.com/company/ffscindia/",
+      "order": 30
+    },
+    {
+      "id": "computer-engineers-society-sit",
+      "name": "Computer Engineers' Society, SIT",
+      "logo": {
+        "url": "https://ik.imagekit.io/gdgsiliguri1/community%20partners/2025/Comuter%20Engineers%20Socity.png",
+        "alt": "Computer Engineers' Society, SIT"
+      },
+      "url": "https://www.sitces.tech/",
+      "order": 40
+    },
+    {
+      "id": "digital-dominators",
+      "name": "Digital Dominators",
+      "logo": {
+        "url": "https://ik.imagekit.io/gdgsiliguri1/community%20partners/2025/Digital%20Dominators.png",
+        "alt": "Digital Dominators"
+      },
+      "url": "https://www.linkedin.com/company/digital-dominators-in/",
+      "order": 50
+    },
+    {
+      "id": "fiem-acm-student-chapter",
+      "name": "FIEM ACM Student Chapter",
+      "logo": {
+        "url": "https://ik.imagekit.io/gdgsiliguri1/community%20partners/2025/FIEMACM.jpg",
+        "alt": "FIEM ACM Student Chapter"
+      },
+      "url": "https://www.linkedin.com/company/acmfiem/",
+      "order": 60
+    },
+    {
+      "id": "sourcify-in",
+      "name": "Sourcify IN",
+      "logo": {
+        "url": "https://ik.imagekit.io/gdgsiliguri1/community%20partners/2025/SourcifyIN.jpg",
+        "alt": "Sourcify IN"
+      },
+      "url": "https://www.linkedin.com/company/sourcifyin/?originalSubdomain=in",
+      "order": 70
+    },
+    {
+      "id": "byte-brigade",
+      "name": "Byte Brigade",
+      "logo": {
+        "url": "https://ik.imagekit.io/gdgsiliguri1/community%20partners/2025/ByteBrigade.png",
+        "alt": "Byte Brigade"
+      },
+      "url": "https://www.linkedin.com/company/byte-brigade2025/?originalSubdomain=in",
+      "order": 80
+    },
+    {
+      "id": "the-venture-catalyst",
+      "name": "The Venture Catalyst",
+      "logo": {
+        "url": "https://ik.imagekit.io/gdgsiliguri1/community%20partners/2025/The%20Venture%20Catalyst.jpeg",
+        "alt": "The Venture Catalyst"
+      },
+      "url": "https://www.instagram.com/the_venture_catalyst/",
+      "order": 90
+    },
+    {
+      "id": "inhub-entrepreneuirship-cell",
+      "name": "Inhub Entrepreneuirship Cell",
+      "logo": {
+        "url": "https://ik.imagekit.io/gdgsiliguri1/community%20partners/2025/InHub.png",
+        "alt": "Inhub Entrepreneuirship Cell"
+      },
+      "url": "https://inspiria.edu.in/inhub/",
+      "order": 100
+    },
+    {
+      "id": "computing-club",
+      "name": "Computing Club",
+      "logo": {
+        "url": "https://ik.imagekit.io/gdgsiliguri1/community%20partners/2025/Computing%20Club.jpg",
+        "alt": "Computing Club"
+      },
+      "url": "https://inspiria.edu.in/computing-club/",
+      "order": 110
+    }
+  ],
+  "faqs": [
+    {
+      "id": "an3Z5FX3TQ5c2G0TuZNk",
+      "question": "What is Devfest Siliguri?",
+      "answer": "Devfest Siliguri is a one-day tech conference organized by Google Developers Group Siliguri. It is a great opportunity for developers of all levels to learn about the latest technologies and trends, and to network with other developers in the community.",
+      "order": 10
+    },
+    {
+      "id": "tnKAa7VuJ1smffk4nh4a",
+      "question": "When is Devfest Siliguri?",
+      "answer": "Devfest Siliguri will be held on November 14, 2026.",
+      "order": 20
+    },
+    {
+      "id": "cqlV09g1plzfOUKMNvJp",
+      "question": "What is the venue for Devfest Siliguri?",
+      "answer": "Devfest Siliguri will be held at ITC Fortune Select Siliguri.",
+      "order": 30
+    },
+    {
+      "id": "poNZHDAdvLXlDPgfMBm8",
+      "question": "How much does it cost to attend Devfest Siliguri?",
+      "answer": "Event tickets were sold in different phases in different price ranges.",
+      "order": 40
+    },
+    {
+      "id": "0hHF2r0QSoYHUPFPYJfy",
+      "question": "Who is organizing Devfest Siliguri?",
+      "answer": "Devfest Siliguri is being organized by Google Developers Group Siliguri.",
+      "order": 50
+    },
+    {
+      "id": "2qg42DB2XRcBKmGNkZAF",
+      "question": "What is the schedule for Devfest Siliguri?",
+      "answer": "A detailed schedule for Devfest Siliguri will be posted on our website closer to the event date.",
+      "order": 60
+    },
+    {
+      "id": "Mnn7faiFJSurZdI7gic8",
+      "question": "What kind of talks and workshops will be happening at Devfest Siliguri?",
+      "answer": "We will have a variety of talks and workshops on a variety of topics, including web development, mobile development, machine learning, and artificial intelligence.",
+      "order": 70
+    },
+    {
+      "id": "HF3hfp9lRgxlcnqsNEF1",
+      "question": "What should I bring to Devfest Siliguri?",
+      "answer": "You should bring your laptop, charger, and a notebook. You may also want to bring a business card to exchange with other attendees.",
+      "order": 80
+    },
+    {
+      "id": "Au9WqB91uJIlD4x2xHp5",
+      "question": "Is there a code of conduct for Devfest Siliguri?",
+      "answer": "Yes, there is a code of conduct for Devfest Siliguri. All attendees are expected to be respectful of each other and to create a welcoming and inclusive environment.",
+      "order": 90
+    },
+    {
+      "id": "cwNIho9TY2lu8oIaXePZ",
+      "question": "What are the benefits of attending the paid version of Devfest Siliguri?",
+      "answer": "The paid version of Devfest Siliguri includes access to all of the talks and workshops, as well as food and drinks. You will also receive a Devfest Siliguri t-shirt and swags.",
+      "order": 100
+    },
+    {
+      "id": "UBRha3ydkQw9hkM2OTPM",
+      "question": "What is included in the ticket price?",
+      "answer": "The ticket price includes access to all of the talks and workshops, as well as food and drinks. You will also receive a Devfest Siliguri t-shirt and a swag bag.",
+      "order": 110
+    },
+    {
+      "id": "xypaoyluPbAIaJoDmQpY",
+      "question": "Will there be food and drinks served at the event?",
+      "answer": "Yes, food and drinks will be served at the event. The ticket price includes all meals and snacks.",
+      "order": 120
+    },
+    {
+      "id": "hep7I3ScVTZusKFWOF19",
+      "question": "Will there be networking opportunities at the event?",
+      "answer": "Yes, there will be plenty of networking opportunities at the event. We will have a dedicated networking session, as well as breaks between talks and workshops where you can meet other attendees.",
+      "order": 130
+    },
+    {
+      "id": "MBN2yhRAwyhBa8fHY3n9",
+      "question": "What is the dress code for Devfest Siliguri?",
+      "answer": "The dress code for Devfest Siliguri is casual.",
+      "order": 140
+    }
+  ],
+  "showcase": [],
+  "modules": [],
+  "id": "edition-2026"
+}

@@ -5,11 +5,8 @@ import { filter, map } from 'rxjs';
 import { AppInstallSheetComponent } from '../components/site/app-install-sheet.component';
 import { SiteFooterComponent } from '../components/site/site-footer.component';
 import { SiteHeaderComponent, navItems } from '../components/site/site-header.component';
-import { istDay, parseIstDate, toSocials } from '../shared/content';
-import { DataService } from '../services/data.service';
-
-const DEFAULT_JOIN_URL = 'https://gdg.community.dev/gdg-siliguri/';
-const DEFAULT_EMAIL = 'gdgsiliguri@gmail.com';
+import { SiteContentService } from '../services/site-content.service';
+import { DEFAULT_EMAIL, DEFAULT_JOIN_URL } from '../shared/content';
 
 @Component({
   selector: 'app-site-layout',
@@ -24,16 +21,14 @@ const DEFAULT_EMAIL = 'gdgsiliguri@gmail.com';
 })
 export class SiteLayoutComponent {
   private readonly router = inject(Router);
-  private readonly eventData = toSignal(inject(DataService).getEventData());
+  private readonly site = toSignal(inject(SiteContentService).site());
 
-  protected readonly joinUrl = computed(
-    () => this.eventData()?.communityJoinLink || DEFAULT_JOIN_URL
-  );
-  protected readonly email = computed(() => this.eventData()?.communityEmail || DEFAULT_EMAIL);
-  protected readonly socials = computed(() => toSocials(this.eventData()?.socialMediaLinks));
+  protected readonly joinUrl = computed(() => this.site()?.joinUrl || DEFAULT_JOIN_URL);
+  protected readonly email = computed(() => this.site()?.email || DEFAULT_EMAIL);
+  protected readonly socials = computed(() => this.site()?.socials ?? []);
   protected readonly nav = computed(() => {
-    const at = parseIstDate(this.eventData()?.eventDateTime);
-    return navItems(Number.isNaN(at) ? '' : istDay(at).year);
+    const site = this.site();
+    return navItems(site?.devfestYear ?? '', site?.sections);
   });
 
   protected readonly isHome = toSignal(

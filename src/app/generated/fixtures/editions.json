@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-26T06:23:34.438Z",
+  "sourceVersions": {
+    "edition-2025": 1,
+    "edition-2026": 1
+  },
+  "items": [
+    {
+      "year": 2026,
+      "title": "DevFest Siliguri 2026",
+      "startAt": "2026-11-14T02:30:00.000Z",
+      "endAt": "2026-11-14T12:00:00.000Z",
+      "banner": {
+        "url": "https://ik.imagekit.io/gdgsiliguri1/Logos%20and%20Banners/devfest2025_banner.png",
+        "alt": "",
+        "variants": {
+          "long": {
+            "url": "https://ik.imagekit.io/gdgsiliguri1/Logos%20and%20Banners/devfest2025_long_banner.png",
+            "alt": ""
+          }
+        }
+      },
+      "venueName": "ITC Fortune Select Siliguri"
+    },
+    {
+      "year": 2025,
+      "title": "DevFest Siliguri 2025",
+      "startAt": "2025-11-16T02:30:00.000Z",
+      "endAt": "2025-11-16T12:00:00.000Z",
+      "banner": {
+        "url": "https://ik.imagekit.io/gdgsiliguri1/Logos%20and%20Banners/devfest2025_banner.png",
+        "alt": "",
+        "variants": {
+          "long": {
+            "url": "https://ik.imagekit.io/gdgsiliguri1/Logos%20and%20Banners/devfest2025_long_banner.png",
+            "alt": ""
+          }
+        }
+      },
+      "venueName": "Royal Sarovar Portico"
+    }
+  ],
+  "id": "editions"
+}

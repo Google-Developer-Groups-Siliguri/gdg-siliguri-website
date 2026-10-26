@@ -1,16 +1,18 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { FaqAccordionComponent } from 'src/app/components/site/faq-accordion.component';
+import { PartnerMarqueeComponent } from 'src/app/components/site/partner-marquee.component';
 import { injectCountdown } from 'src/app/motion/countdown';
 import { ParallaxDirective } from 'src/app/motion/parallax.directive';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
 import { ScrollWeightDirective } from 'src/app/motion/scroll-weight.directive';
 import { ShapeLoaderDirective } from 'src/app/motion/shape-loader.directive';
-import { DataService } from 'src/app/services/data.service';
-import { TRACK_COLORS, toRecap, toScheduleItems, toSpeakerCards } from 'src/app/shared/content';
-import { toDevfestEdition } from 'src/app/shared/devfest-edition';
+import { SiteContentService } from 'src/app/services/site-content.service';
+import { safeMapsEmbedUrl } from 'src/app/shared/content';
+import { ik, srcset } from 'src/app/shared/image';
 
 const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
 
@@ -19,6 +21,7 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
   imports: [
     FaqAccordionComponent,
     ParallaxDirective,
+    PartnerMarqueeComponent,
     RevealDirective,
     RouterLink,
     ScrollWeightDirective,
@@ -42,7 +45,7 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                 ></span>
               }
               DEVFEST {{ ed.year }} · {{ ed.weekday.slice(0, 3).toUpperCase() }} {{ ed.day }}
-              {{ ed.month.toUpperCase() }} · {{ ed.startLabel }} IST
+              {{ ed.month.toUpperCase() }} · {{ ed.startLabel }} {{ ed.zoneLabel }}
             </div>
             <h1
               appScrollWeight
@@ -271,25 +274,31 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                         >{{ slot.title }}</b
                       >
                       <div class="flex flex-wrap items-center gap-2.5">
-                        @if (slot.photo) {
-                          <span
-                            class="relative h-8 w-8 flex-none overflow-hidden [clip-path:var(--s-cookie9)]"
-                            ><img
-                              [src]="slot.photo"
-                              alt=""
-                              loading="lazy"
-                              class="absolute inset-0 h-full w-full object-cover"
-                          /></span>
+                        @for (person of slot.speakers; track person.name) {
+                          @if (person.photo; as photo) {
+                            <span
+                              class="relative h-8 w-8 flex-none overflow-hidden [clip-path:var(--s-cookie9)]"
+                              ><img
+                                [src]="ik(photo.url, { w: 64, h: 64, fit: 'face' })"
+                                alt=""
+                                width="32"
+                                height="32"
+                                loading="lazy"
+                                class="absolute inset-0 h-full w-full object-cover"
+                            /></span>
+                          }
                         }
-                        <span class="font-manrope text-sm font-semibold text-on-srf-v">{{
-                          slot.speaker
-                        }}</span>
+                        @if (slot.speaker) {
+                          <span class="font-manrope text-sm font-semibold text-on-srf-v">{{
+                            slot.speaker
+                          }}</span>
+                        }
                         @if (slot.track; as track) {
                           <span
                             class="grid h-[26px] place-items-center rounded-[13px] px-2.5 font-manrope text-xs font-bold"
-                            [style.background]="trackColors[track].bg"
-                            [style.color]="trackColors[track].fg"
-                            >{{ track }}</span
+                            [style.background]="track.bg"
+                            [style.color]="track.fg"
+                            >{{ track.label }}</span
                           >
                         }
                       </div>
@@ -335,8 +344,12 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                   [style.clip-path]="'var(--s-' + p.shape + ')'"
                 >
                   <img
-                    [src]="p.photo"
-                    [alt]="p.name"
+                    [src]="ik(p.photo.url, { w: 540, h: 540, fit: 'face' })"
+                    [attr.srcset]="srcset(p.photo.url, [270, 540], { fit: 'face', aspect: 1 }) || null"
+                    sizes="270px"
+                    [alt]="p.photo.alt"
+                    [attr.width]="p.photo.width ?? null"
+                    [attr.height]="p.photo.height ?? null"
                     loading="lazy"
                     class="t-zoom absolute inset-0 h-full w-full object-cover group-hover:[scale:1.08]"
                   />
@@ -345,7 +358,7 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                   <div
                     class="flex items-center justify-between font-manrope text-xs font-extrabold tracking-[.14em]"
                   >
-                    <span>{{ p.track }} TRACK</span
+                    <span>{{ p.track ? p.track + ' TRACK' : '' }}</span
                     ><span class="tracking-[.02em]">{{ p.time }}</span>
                   </div>
                   <div class="font-urbanist text-[30px] font-light leading-none tracking-[-.025em]">
@@ -363,6 +376,25 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                   }
                 </div>
               </div>
+            }
+          </div>
+        </section>
+      }
+
+      @if (!schedule().length && perks().length) {
+        <section class="wrap flex flex-wrap gap-10">
+          <h2
+            appReveal="0"
+            class="m-0 flex-[1_1_300px] font-urbanist text-[clamp(44px,6vw,88px)] font-extralight leading-[.88] tracking-[-.05em]"
+          >
+            What you <b class="font-extrabold">get</b>
+          </h2>
+          <div appReveal="1" class="flex min-w-0 flex-[2_1_520px] flex-wrap content-start gap-1.5">
+            @for (perk of perks(); track perk) {
+              <span
+                class="flex h-11 items-center rounded-[22px] bg-srf-2 px-[18px] font-manrope text-[15px] font-semibold"
+                >{{ perk }}</span
+              >
             }
           </div>
         </section>
@@ -395,6 +427,99 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
         </section>
       }
 
+      @if (sponsors().length) {
+        <section class="wrap flex flex-col gap-8">
+          <h2
+            appReveal="0"
+            class="m-0 font-urbanist text-[clamp(44px,6vw,88px)] font-extralight leading-[.88] tracking-[-.05em]"
+          >
+            {{ recap().year }} <b class="font-extrabold">sponsors</b>
+          </h2>
+          @for (group of sponsors(); track group.tier) {
+            <div class="flex flex-col gap-4">
+              <span class="eyebrow">{{ group.label.toUpperCase() }}</span>
+              <div class="flex flex-wrap gap-3">
+                @for (s of group.sponsors; track s.name; let i = $index) {
+                  <a
+                    [appReveal]="i % 4"
+                    [href]="s.url || null"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="t-lift flex min-w-0 flex-[1_1_260px] items-center gap-4 rounded-[32px] bg-srf-2 py-2.5 pl-2.5 pr-5 text-on-srf no-underline hover:bg-srf-3 hover:text-on-srf hover:[translate:0_-4px]"
+                  >
+                    <img
+                      [src]="ik(s.logo.url, { w: 160, h: 160, fit: 'contain' })"
+                      [alt]="s.logo.alt"
+                      [attr.width]="s.logo.width ?? 80"
+                      [attr.height]="s.logo.height ?? 80"
+                      loading="lazy"
+                      class="h-20 w-20 flex-none rounded-[24px] bg-white object-contain p-2"
+                    />
+                    <div class="flex min-w-0 flex-1 flex-col gap-1">
+                      <b class="font-urbanist text-lg font-extrabold">{{ s.name }}</b>
+                      @if (s.host) {
+                        <span class="font-manrope text-[13px] font-semibold text-on-srf-v">{{
+                          s.host
+                        }}</span>
+                      }
+                    </div>
+                  </a>
+                }
+              </div>
+            </div>
+          }
+        </section>
+      }
+
+      @if (partners().length) {
+        <section class="flex flex-col gap-8">
+          <h2
+            appReveal="0"
+            class="wrap m-0 font-urbanist text-[clamp(44px,6vw,88px)] font-extralight leading-[.88] tracking-[-.05em]"
+          >
+            Community <b class="font-extrabold">partners</b>
+          </h2>
+          <app-partner-marquee [partners]="partners()" />
+        </section>
+      }
+
+      @if (venueEmbed(); as embed) {
+        <section class="wrap flex flex-wrap items-center gap-10">
+          <div class="flex min-w-0 flex-[1_1_300px] flex-col gap-4">
+            <h2
+              appReveal="0"
+              class="m-0 font-urbanist text-[clamp(44px,6vw,88px)] font-extralight leading-[.88] tracking-[-.05em]"
+            >
+              Getting <b class="font-extrabold">there</b>
+            </h2>
+            @if (edition()?.venue; as venue) {
+              <p appReveal="1" class="m-0 font-manrope text-[15px] leading-[1.6] text-on-srf-v">
+                {{ venue }}
+              </p>
+            }
+            @if (edition()?.mapsUrl; as mapsUrl) {
+              <a
+                appReveal="2"
+                [href]="mapsUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="pill-btn self-start"
+                >Open in Maps<span class="ms">arrow_outward</span></a
+              >
+            }
+          </div>
+          <iframe
+            appReveal="1"
+            [src]="embed"
+            [title]="'Map of ' + (edition()?.venue || 'the venue')"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+            class="aspect-[4/3] min-w-0 flex-[2_1_480px] rounded-[40px] border-0 bg-srf-2"
+          ></iframe>
+        </section>
+      }
+
       @if (faqs().length) {
         <section class="wrap flex flex-wrap gap-10">
           <h2
@@ -410,14 +535,12 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
   `,
 })
 export class DevfestComponent {
-  private readonly data = inject(DataService);
+  private readonly sanitizer = inject(DomSanitizer);
 
-  protected readonly trackColors = TRACK_COLORS;
+  protected readonly ik = ik;
+  protected readonly srcset = srcset;
 
-  private readonly eventData = toSignal(this.data.getEventData());
-  private readonly speakersResult = toSignal(this.data.getAllSpeakers());
-  private readonly scheduleResult = toSignal(this.data.getAllSchedules());
-  private readonly faqsResult = toSignal(this.data.getAllFAQS());
+  private readonly view = toSignal(inject(SiteContentService).devfest());
 
   protected readonly countdown = injectCountdown(() => this.edition()?.startsAt ?? 0);
   protected readonly hms = computed(() => [
@@ -425,15 +548,7 @@ export class DevfestComponent {
     { label: 'm', value: this.countdown().minutes },
   ]);
 
-  private readonly rawSchedule = computed(() => {
-    const r = this.scheduleResult();
-    return r?.enabled ? r.data : [];
-  });
-  private readonly allSpeakers = computed(() => this.speakersResult()?.data ?? []);
-
-  protected readonly edition = computed(() =>
-    toDevfestEdition(this.eventData(), this.rawSchedule(), Date.now())
-  );
+  protected readonly edition = computed(() => this.view()?.edition ?? null);
   protected readonly themeParts = computed(() => {
     const theme = this.edition()?.theme ?? '';
     const split = theme.indexOf(':');
@@ -442,51 +557,53 @@ export class DevfestComponent {
       : { lead: theme.slice(0, split + 1), rest: theme.slice(split + 1).trim() };
   });
   protected readonly lineupNotice = computed(() => {
-    if (!this.edition()?.isUpcoming) {
+    const pending = this.view()?.pending;
+    if (!this.edition()?.isUpcoming || !pending) {
       return '';
     }
-    const hasSchedule = this.schedule().length > 0;
-    const hasSpeakers = this.speakers().length > 0;
-    if (!hasSchedule && !hasSpeakers) {
+    if (pending.schedule && pending.speakers) {
       return 'Speakers and schedule drop soon';
     }
-    if (!hasSpeakers) {
+    if (pending.speakers) {
       return 'Speakers drop soon';
     }
-    return hasSchedule ? '' : 'Schedule drops soon';
+    return pending.schedule ? 'Schedule drops soon' : '';
   });
 
   protected readonly schedule = computed(() => {
     let talk = 0;
-    return toScheduleItems(this.rawSchedule(), this.allSpeakers()).map((slot) => ({
+    return (this.view()?.schedule ?? []).map((slot) => ({
       ...slot,
       leaf: slot.isTalk ? LEAF_RADII[talk++ % 2] : '',
     }));
   });
-  protected readonly recap = computed(() => {
-    const e = this.eventData();
-    return toRecap(e?.eventDateTime ?? '', e?.eventVenue?.name ?? '', this.rawSchedule());
-  });
+  protected readonly recap = computed(
+    () =>
+      this.view()?.recap ?? {
+        year: '',
+        dateLabel: '',
+        venue: '',
+        firstStart: '',
+        firstTitle: '',
+        lastStart: '',
+        lastTitle: '',
+      }
+  );
   protected readonly scheduleIntro = computed(() => {
     const r = this.recap();
     const verb = this.edition()?.isUpcoming ? 'runs' : 'ran';
     const where = r.venue ? ` at ${r.venue}` : '';
     return `How DevFest ${r.year} ${verb} on ${r.dateLabel}${where}, from ${r.firstTitle} at ${r.firstStart} to the ${r.lastTitle} at ${r.lastStart}.`;
   });
-  protected readonly speakers = computed(() =>
-    this.speakersResult()?.enabled ? toSpeakerCards(this.allSpeakers(), this.rawSchedule()) : []
-  );
-  protected readonly perks = computed(() => {
-    const p = this.eventData()?.perks;
-    return p?.enabled ? p.data : [];
-  });
-  protected readonly points = computed(() => {
-    const p = this.eventData()?.pointsToNote;
-    return p?.enabled ? p.data : [];
-  });
-  protected readonly faqs = computed(() => {
-    const r = this.faqsResult();
-    return r?.enabled ? r.data : [];
+  protected readonly speakers = computed(() => this.view()?.speakers ?? []);
+  protected readonly perks = computed(() => this.view()?.perks ?? []);
+  protected readonly points = computed(() => this.view()?.notes ?? []);
+  protected readonly faqs = computed(() => this.view()?.faqs ?? []);
+  protected readonly sponsors = computed(() => this.view()?.sponsors ?? []);
+  protected readonly partners = computed(() => this.view()?.partners ?? []);
+  protected readonly venueEmbed = computed(() => {
+    const url = safeMapsEmbedUrl(this.view()?.venueEmbedUrl ?? undefined);
+    return url ? this.sanitizer.bypassSecurityTrustResourceUrl(url) : null;
   });
 
   constructor() {

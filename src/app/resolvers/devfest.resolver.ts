@@ -1,14 +1,6 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
-import { combineLatest } from 'rxjs';
-import { DataService } from '../services/data.service';
+import { SiteContentService } from '../services/site-content.service';
+import { DevfestView } from '../shared/view-models';
 
-export const devfestResolver: ResolveFn<unknown> = () => {
-  const data = inject(DataService);
-  return combineLatest([
-    data.getEventData(),
-    data.getAllSpeakers(),
-    data.getAllSchedules(),
-    data.getAllFAQS(),
-  ]);
-};
+export const devfestResolver: ResolveFn<DevfestView> = () => inject(SiteContentService).devfest();

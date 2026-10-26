@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, linkedSignal } from '@angular/core';
-import { FAQ } from 'src/app/services/data.service';
+import { FaqView } from 'src/app/shared/view-models';
 
 @Component({
   selector: 'app-faq-accordion',
@@ -46,7 +46,7 @@ import { FAQ } from 'src/app/services/data.service';
   `,
 })
 export class FaqAccordionComponent {
-  readonly items = input.required<FAQ[]>();
+  readonly items = input.required<FaqView[]>();
   readonly initiallyOpen = input(-1);
 
   protected readonly open = linkedSignal(() => this.initiallyOpen());

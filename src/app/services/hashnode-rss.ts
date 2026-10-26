@@ -1,4 +1,4 @@
-import type { BlogPost } from './data.service';
+import type { BlogPost } from './legacy-data.service';
 
 export const HASHNODE_RSS_URL = 'https://gdgsiliguri.hashnode.dev/rss.xml';
 export const BLOG_FEED_PROXY_PATH = '/blog-feed.xml';

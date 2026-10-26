@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
 import { ScrollWeightDirective } from 'src/app/motion/scroll-weight.directive';
-import { DataService } from 'src/app/services/data.service';
+import { SiteContentService } from 'src/app/services/site-content.service';
 import { BlogCardComponent } from '../../components/blog-card.component';
 
 @Component({
@@ -42,7 +42,7 @@ import { BlogCardComponent } from '../../components/blog-card.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BlogsPageComponent {
-  protected readonly blogs = toSignal(inject(DataService).getHashnodeBlogs(), {
+  protected readonly blogs = toSignal(inject(SiteContentService).blogs(), {
     initialValue: [],
   });
 
