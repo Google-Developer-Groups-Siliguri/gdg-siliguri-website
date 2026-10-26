@@ -190,6 +190,9 @@ export interface DevfestEdition {
   stack: string[];
   calendarUrl: string;
   bannerUrl: string;
+  startIso: string;
+  endIso: string;
+  address: string;
 }
 
 export interface EditionSections {

@@ -44,7 +44,14 @@ import {
   Testimonial,
   TrackChip,
 } from './view-models';
-import { MONTHS } from './zoned-date';
+import {
+  isoWithOffset,
+  parseWallTime,
+  zonedDate,
+  zonedDay,
+  zonedParts,
+  zonedTime,
+} from './zoned-date';
 
 export type Track = 'AI' | 'App' | 'Cloud' | 'Web';
 
@@ -65,27 +72,16 @@ export interface LegacySponsors {
   silver?: Sponsors[];
 }
 
-const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
+const LEGACY_TIME_ZONE = 'Asia/Kolkata';
 const LEGACY_PLAY_STORE_URL = 'https://play.google.com/store/search?q=GDG%20Siliguri&c=apps';
+const DEFAULT_EVENT_HOURS_MS = 10 * 60 * 60 * 1000;
 
-export function parseIstDate(value: string | undefined): number {
-  if (!value) {
-    return NaN;
-  }
-  const iso = value.trim().replace(' ', 'T');
-  const hasZone = /[zZ]|[+-]\d\d:?\d\d$/.test(iso);
-  const withTime = iso.includes('T') ? iso : `${iso}T00:00:00`;
-  return new Date(hasZone ? withTime : `${withTime}+05:30`).getTime();
+export function parseLegacyDate(value: string | undefined): number {
+  return parseWallTime(value, LEGACY_TIME_ZONE);
 }
 
-export function istDay(ms: number): { day: string; mon: string; year: string } {
-  const d = new Date(ms + IST_OFFSET_MS);
-  return {
-    day: String(d.getUTCDate()).padStart(2, '0'),
-    mon: MONTHS[d.getUTCMonth()],
-    year: String(d.getUTCFullYear()),
-  };
+export function legacyDay(ms: number): { day: string; mon: string; year: string } {
+  return zonedDay(ms, LEGACY_TIME_ZONE);
 }
 
 export function venueName(fullAddress: string | undefined): string {
@@ -107,12 +103,11 @@ function enabled<T>(toggle: Toggle<T> | null | undefined): T[] {
 }
 
 function sessionInstant(eventDateTime: string | undefined, time: string): number {
-  const startsAt = parseIstDate(eventDateTime);
+  const startsAt = parseLegacyDate(eventDateTime);
   if (Number.isNaN(startsAt)) {
     return NaN;
   }
-  const date = new Date(startsAt + IST_OFFSET_MS).toISOString().slice(0, 10);
-  return parseIstDate(`${date} ${to24h(time)}`);
+  return parseLegacyDate(`${zonedDate(startsAt, LEGACY_TIME_ZONE)} ${to24h(time)}`);
 }
 
 export function toScheduleItems(
@@ -181,7 +176,7 @@ export function toTeamMember(m: Members): TeamMember {
 }
 
 export function toRecap(eventDateTime: string, venue: string, schedule: Schedule[]): Recap {
-  const { day, mon, year } = istDay(parseIstDate(eventDateTime));
+  const { day, mon, year } = legacyDay(parseLegacyDate(eventDateTime));
   const first = schedule[0];
   const last = schedule[schedule.length - 1];
   return {
@@ -255,15 +250,15 @@ export function toSocials(links: SOCIAL[] | undefined): SocialView[] {
 export function toEventRows(events: Events[]): EventRow[] {
   return events
     .map((e) => {
-      const at = parseIstDate(e.eventDate);
+      const at = parseLegacyDate(e.eventDate);
       return {
-        ...istDay(at),
+        ...legacyDay(at),
         title: e.name,
         where: e.tagline,
         tag: 'Meetup',
         url: e.registrationLink,
         at,
-        closesAt: parseIstDate(e.registrationDate),
+        closesAt: parseLegacyDate(e.registrationDate),
         cover: e.coverImg ?? '',
       };
     })
@@ -272,24 +267,15 @@ export function toEventRows(events: Events[]): EventRow[] {
 
 function endOfDay(startsAt: number, schedule: Schedule[]): number {
   const last = schedule[schedule.length - 1];
-  const date = new Date(startsAt + IST_OFFSET_MS).toISOString().slice(0, 10);
-  const end = last ? parseIstDate(`${date} ${to24h(last.endTime)}`) : NaN;
-  return Number.isNaN(end) || end <= startsAt ? startsAt + 10 * 60 * 60 * 1000 : end;
-}
-
-function istTimeLabel(ms: number): string {
-  const d = new Date(ms + IST_OFFSET_MS);
-  const hours = d.getUTCHours();
-  const minutes = d.getUTCMinutes();
-  const suffix = hours < 12 ? 'AM' : 'PM';
-  const hour12 = hours % 12 || 12;
-  return minutes ? `${hour12}:${String(minutes).padStart(2, '0')} ${suffix}` : `${hour12} ${suffix}`;
+  const date = zonedDate(startsAt, LEGACY_TIME_ZONE);
+  const end = last ? parseLegacyDate(`${date} ${to24h(last.endTime)}`) : NaN;
+  return Number.isNaN(end) || end <= startsAt ? startsAt + DEFAULT_EVENT_HOURS_MS : end;
 }
 
 function hoursLabel(startsAt: number, schedule: Schedule[]): string {
   const first = schedule[0]?.startTime.replace(/^0/, '');
   const last = schedule[schedule.length - 1]?.endTime.replace(/^0/, '');
-  return first && last ? `${first} to ${last} IST` : `From ${istTimeLabel(startsAt)} IST`;
+  return first && last ? `${first} to ${last} IST` : `From ${zonedTime(startsAt, LEGACY_TIME_ZONE).short} IST`;
 }
 
 function to24h(time: string): string {
@@ -309,15 +295,15 @@ export function toDevfestEdition(
   schedule: Schedule[],
   now: number
 ): DevfestEdition | null {
-  const startsAt = parseIstDate(event?.eventDateTime);
+  const startsAt = parseLegacyDate(event?.eventDateTime);
   if (!event || Number.isNaN(startsAt)) {
     return null;
   }
-  const { day, mon, year } = istDay(startsAt);
+  const { day, mon, year } = legacyDay(startsAt);
   const month = mon.charAt(0) + mon.slice(1).toLowerCase();
   const name = `DevFest Siliguri ${year}`;
   const venue = venueName(event.eventVenue?.name);
-  const registrationEnds = parseIstDate(event.registrationExpiryDateTime);
+  const registrationEnds = parseLegacyDate(event.registrationExpiryDateTime);
   const isUpcoming = startsAt > now;
   const endsAt = endOfDay(startsAt, schedule);
   return {
@@ -326,9 +312,9 @@ export function toDevfestEdition(
     startsAt,
     day,
     month,
-    weekday: WEEKDAYS[new Date(startsAt + IST_OFFSET_MS).getUTCDay()],
+    weekday: zonedParts(startsAt, LEGACY_TIME_ZONE).weekday,
     dateLabel: `${Number(day)} ${month}`,
-    startLabel: istTimeLabel(startsAt),
+    startLabel: zonedTime(startsAt, LEGACY_TIME_ZONE).short,
     hoursLabel: hoursLabel(startsAt, schedule),
     zoneLabel: 'IST',
     endsAt,
@@ -346,6 +332,9 @@ export function toDevfestEdition(
     stack: event.techStack ?? [],
     calendarUrl: calendarLink(name, startsAt, endsAt, event.eventVenue?.name ?? ''),
     bannerUrl: event.bannerImages?.large ?? '',
+    startIso: isoWithOffset(startsAt, LEGACY_TIME_ZONE),
+    endIso: isoWithOffset(endsAt, LEGACY_TIME_ZONE),
+    address: '',
   };
 }
 
@@ -355,7 +344,7 @@ function legacyEmbedUrl(event: LegacyEventData | null | undefined): string | nul
 }
 
 export function toLegacySiteView(event: LegacyEventData | null | undefined): SiteView {
-  const at = parseIstDate(event?.eventDateTime);
+  const at = parseLegacyDate(event?.eventDateTime);
   return {
     name: 'GDG Siliguri',
     tagline: '',
@@ -364,7 +353,7 @@ export function toLegacySiteView(event: LegacyEventData | null | undefined): Sit
     email: event?.communityEmail || DEFAULT_EMAIL,
     socials: toSocials(event?.socialMediaLinks),
     sections: toSiteSections(undefined),
-    devfestYear: Number.isNaN(at) ? '' : istDay(at).year,
+    devfestYear: Number.isNaN(at) ? '' : legacyDay(at).year,
     pages: [],
     appLinks: { android: LEGACY_PLAY_STORE_URL },
   };

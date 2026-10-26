@@ -58,6 +58,7 @@ const projectId =
 const firestoreBaseUrl = emulatorHost
   ? `http://${emulatorHost}/v1/projects/${projectId}/databases/(default)/documents`
   : `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
+const siteUrl = (process.env.SITE_URL || 'https://gdgsiliguri.com').replace(/\/+$/, '');
 const dataSource = process.env.DATA_SOURCE || 'firestore';
 
 if (!DATA_SOURCES.includes(dataSource)) {
@@ -81,7 +82,8 @@ const environmentFileContent = `
       apiBaseUrl: '${process.env.databaseURL}',
       projectId: '${projectId}',
       firestoreBaseUrl: '${firestoreBaseUrl}',
-      dataSource: '${dataSource}' as 'firestore' | 'rtdb' | 'fixture'
+      dataSource: '${dataSource}' as 'firestore' | 'rtdb' | 'fixture',
+      siteUrl: '${siteUrl}'
     }
 `;
 

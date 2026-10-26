@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Meta, Title } from '@angular/platform-browser';
+import { SeoService } from 'src/app/services/seo.service';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
 import { ScrollWeightDirective } from 'src/app/motion/scroll-weight.directive';
 import { SiteContentService } from 'src/app/services/site-content.service';
@@ -89,10 +89,10 @@ export class BlogsPageComponent {
   }
 
   constructor() {
-    inject(Title).setTitle('Blogs | GDG Siliguri');
-    inject(Meta).updateTag({
-      name: 'description',
-      content: 'Articles and stories from the GDG Siliguri community.',
+    inject(SeoService).update({
+      title: 'Blog · GDG Siliguri',
+      description: 'Articles and stories from the GDG Siliguri community.',
+      path: '/blogs',
     });
   }
 }

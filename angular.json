@@ -56,7 +56,8 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/manifest.webmanifest"
+              "src/manifest.webmanifest",
+              "src/robots.txt"
             ],
             "styles": ["src/m3e-tokens.css", "src/styles.css"],
             "scripts": [],

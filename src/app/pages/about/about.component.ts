@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Meta, Title } from '@angular/platform-browser';
+import { SeoService } from 'src/app/services/seo.service';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
 import { ScrollWeightDirective } from 'src/app/motion/scroll-weight.directive';
 import { SiteContentService } from 'src/app/services/site-content.service';
@@ -103,11 +103,11 @@ export class AboutComponent {
   protected readonly socials = computed(() => this.site()?.socials ?? []);
 
   constructor() {
-    inject(Title).setTitle('About | GDG Siliguri');
-    inject(Meta).updateTag({
-      name: 'description',
-      content:
+    inject(SeoService).update({
+      title: 'About · GDG Siliguri',
+      description:
         'Google Developer Group Siliguri is a community-run meetup for developers in North Bengal and Sikkim.',
+      path: '/about',
     });
   }
 }

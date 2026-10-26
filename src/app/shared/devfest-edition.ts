@@ -1,6 +1,13 @@
 import type { EditionInfo } from '../services/bundle-types';
 import { DevfestEdition } from './view-models';
-import { titleMonth, zoneLabel, zonedDay, zonedParts, zonedTime } from './zoned-date';
+import {
+  isoWithOffset,
+  titleMonth,
+  zoneLabel,
+  zonedDay,
+  zonedParts,
+  zonedTime,
+} from './zoned-date';
 
 function compactUtc(ms: number): string {
   return new Date(ms).toISOString().replace(/[-:]|\.\d{3}/g, '');
@@ -84,5 +91,8 @@ export function toDevfestEdition(
     stack: edition.techStack ?? [],
     calendarUrl: calendarLink(name, startsAt, endsAt, venue),
     bannerUrl: edition.banner?.url ?? '',
+    startIso: isoWithOffset(startsAt, zone),
+    endIso: isoWithOffset(endsAt, zone),
+    address: edition.venue?.address?.trim() ?? '',
   };
 }

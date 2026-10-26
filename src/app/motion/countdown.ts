@@ -26,3 +26,23 @@ export function injectCountdown(target: () => number): Signal<Countdown> {
     };
   });
 }
+
+function plural(value: number, unit: string): string {
+  return `${value} ${unit}${value === 1 ? '' : 's'}`;
+}
+
+export function countdownLabel(target: number, now: number): string {
+  const minutes = Math.max(0, Math.floor((target - now) / 60000));
+  if (!minutes) {
+    return 'Starting now';
+  }
+  const days = Math.floor(minutes / 1440);
+  const hours = Math.floor((minutes % 1440) / 60);
+  const mins = minutes % 60;
+  const parts = [
+    days ? plural(days, 'day') : '',
+    hours ? plural(hours, 'hour') : '',
+    mins ? plural(mins, 'minute') : '',
+  ].filter(Boolean);
+  return `${parts.join(', ')} to go`;
+}

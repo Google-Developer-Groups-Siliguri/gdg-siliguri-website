@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Meta, Title } from '@angular/platform-browser';
+import { SITE_NAME, SeoService } from 'src/app/services/seo.service';
+import { ik } from 'src/app/shared/image';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
 import { ModuleHostComponent } from 'src/app/components/modules/module-host.component';
@@ -31,6 +32,7 @@ import { ShowcasePageComponent } from '../showcase/showcase-page.component';
             </p>
           }
         </div>
+        <h2 class="sr-only">{{ m.title }}</h2>
         <app-module-host [module]="m" />
       </main>
     }
@@ -51,16 +53,17 @@ export class ModulePageComponent {
   });
 
   constructor() {
-    const page = this.page();
-    const heading =
-      page?.kind === 'showcase' ? page.showcase.title : page?.kind === 'module' ? page.page.module.title : '';
-    const summary =
-      page?.kind === 'showcase'
-        ? page.showcase.subtitle
-        : page?.kind === 'module'
-          ? page.page.module.subtitle
-          : '';
-    inject(Title).setTitle(`${heading} · GDG Siliguri`);
-    inject(Meta).updateTag({ name: 'description', content: summary || heading });
+    const seo = inject(SeoService);
+    const route = inject(ActivatedRoute);
+    const showcase = this.showcase();
+    const module = this.module();
+    const heading = showcase?.title ?? module?.title ?? SITE_NAME;
+    const image = showcase?.items.find((item) => item.images.length)?.images[0]?.url;
+    seo.update({
+      title: showcase ? heading : `${heading} · ${SITE_NAME}`,
+      description: (showcase?.subtitle ?? module?.subtitle) || heading,
+      path: module?.path || `/${route.snapshot.url.map((s) => s.path).join('/')}`,
+      image: image ? ik(image, { w: 1200, h: 630 }) : '',
+    });
   }
 }

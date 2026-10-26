@@ -48,6 +48,7 @@ import { ShowcaseView } from 'src/app/shared/view-models';
           }
         </div>
       }
+      <h2 class="sr-only">Projects from {{ year() }}</h2>
       @if (items().length) {
         <app-showcase-grid [items]="items()" />
       } @else {

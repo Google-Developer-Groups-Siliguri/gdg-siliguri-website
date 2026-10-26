@@ -4,12 +4,18 @@ import {
   ElementRef,
   afterNextRender,
   computed,
+  effect,
   inject,
   signal,
   viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Meta, Title } from '@angular/platform-browser';
+import {
+  DEFAULT_IMAGE_PATH,
+  SITE_NAME,
+  SeoService,
+} from 'src/app/services/seo.service';
+import { organizationJsonLd } from 'src/app/shared/structured-data';
 import { RouterLink } from '@angular/router';
 import { BlogCardComponent } from 'src/app/components/blog-card.component';
 import { ModuleSectionComponent } from 'src/app/components/modules/module-section.component';
@@ -17,7 +23,8 @@ import { ShowcaseGridComponent } from 'src/app/components/showcase/showcase-grid
 import { FaqAccordionComponent } from 'src/app/components/site/faq-accordion.component';
 import { HeroIllustrationComponent } from 'src/app/components/site/hero-illustration.component';
 import { PartnerMarqueeComponent } from 'src/app/components/site/partner-marquee.component';
-import { injectCountdown } from 'src/app/motion/countdown';
+import { countdownLabel, injectCountdown } from 'src/app/motion/countdown';
+import { injectMinuteClock } from 'src/app/motion/minute-clock';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
 import { ScrollWeightDirective } from 'src/app/motion/scroll-weight.directive';
 import { SiteContentService } from 'src/app/services/site-content.service';
@@ -37,6 +44,8 @@ const TESTIMONIAL_COLORS = [
   { bg: 'var(--srf-3)', fg: 'var(--on-srf)' },
   { bg: 'var(--pri-c)', fg: 'var(--on-pri-c)' },
 ];
+const HOME_DESCRIPTION =
+  'GDG Siliguri is the Google Developer Group for North Bengal and Sikkim: tech talks, hackathons, codelabs, workshops and DevFest Siliguri.';
 const TIER_DOTS: Partial<Record<string, string>> = {
   platinum: '#4285F4',
   gold: '#F9AB00',
@@ -141,7 +150,8 @@ const WHAT_WE_DO = [
             </div>
             <div class="relative flex min-w-0 flex-[1_1_360px] flex-col gap-4">
               @if (ed.isUpcoming) {
-                <div role="group" aria-label="Time left" class="grid grid-cols-4 gap-1">
+                <p class="sr-only" aria-live="polite">{{ countdownText() }}</p>
+                <div aria-hidden="true" class="grid grid-cols-4 gap-1">
                   @for (
                     unit of countdownUnits();
                     track unit.label;
@@ -590,6 +600,10 @@ export class HomePageComponent {
     this.view()?.eventMode ? this.edition() : null
   );
   private readonly countdown = injectCountdown(() => this.edition()?.startsAt ?? 0);
+  private readonly minute = injectMinuteClock();
+  protected readonly countdownText = computed(() =>
+    countdownLabel(this.edition()?.startsAt ?? 0, this.minute() || Date.now())
+  );
   protected readonly countdownUnits = computed(() => {
     const c = this.countdown();
     return [
@@ -638,11 +652,19 @@ export class HomePageComponent {
 
   constructor() {
     afterNextRender(() => this.now.set(Date.now()));
-    inject(Title).setTitle('GDG Siliguri | Google Developer Groups Siliguri');
-    inject(Meta).updateTag({
-      name: 'description',
-      content:
-        'GDG Siliguri is the Google Developer Group for North Bengal and Sikkim: tech talks, hackathons, codelabs, workshops and DevFest Siliguri.',
+    const seo = inject(SeoService);
+    effect(() => {
+      const site = this.site();
+      const banner = this.edition()?.bannerUrl;
+      seo.update({
+        title: SITE_NAME,
+        description: site?.tagline || site?.description || HOME_DESCRIPTION,
+        path: '/',
+        image: banner ? ik(banner, { w: 1200, h: 630 }) : '',
+        jsonLd: site
+          ? organizationJsonLd(site, seo.absoluteUrl('/'), seo.absoluteUrl(DEFAULT_IMAGE_PATH))
+          : null,
+      });
     });
   }
 

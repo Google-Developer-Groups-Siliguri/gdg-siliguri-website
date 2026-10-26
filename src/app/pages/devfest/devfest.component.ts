@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { SeoService } from 'src/app/services/seo.service';
+import { eventJsonLd } from 'src/app/shared/structured-data';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ModuleSectionComponent } from 'src/app/components/modules/module-section.component';
 import { injectMinuteClock } from 'src/app/motion/minute-clock';
 import { ScheduleItem } from 'src/app/shared/view-models';
 import { FaqAccordionComponent } from 'src/app/components/site/faq-accordion.component';
 import { PartnerMarqueeComponent } from 'src/app/components/site/partner-marquee.component';
-import { injectCountdown } from 'src/app/motion/countdown';
+import { countdownLabel, injectCountdown } from 'src/app/motion/countdown';
 import { ParallaxDirective } from 'src/app/motion/parallax.directive';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
 import { ScrollWeightDirective } from 'src/app/motion/scroll-weight.directive';
@@ -61,7 +62,8 @@ const DEFAULT_LOGO_SIZE = 64;
               Dev<b class="font-black text-pri">Fest</b><br />Siliguri
             </h1>
             @if (ed.isUpcoming) {
-              <div appReveal="2" role="group" aria-label="Time left" class="flex flex-wrap gap-1 max-sm:flex-nowrap">
+              <p class="sr-only" aria-live="polite">{{ countdownText() }}</p>
+              <div appReveal="2" aria-hidden="true" class="flex flex-wrap gap-1 max-sm:flex-nowrap">
                 <div
                   class="box-border flex h-[clamp(72px,8vw,88px)] items-center gap-1.5 rounded-[44px_10px_10px_44px] max-sm:flex-[1.5_1_0%] max-sm:min-w-0 max-sm:justify-center max-sm:px-2 bg-pri-c px-[clamp(16px,2vw,24px)] text-on-pri-c"
                 >
@@ -617,6 +619,9 @@ export class DevfestComponent {
   private readonly now = injectMinuteClock();
 
   protected readonly countdown = injectCountdown(() => this.edition()?.startsAt ?? 0);
+  protected readonly countdownText = computed(() =>
+    countdownLabel(this.edition()?.startsAt ?? 0, this.now() || Date.now())
+  );
   protected readonly hms = computed(() => [
     { label: 'h', value: this.countdown().hours },
     { label: 'm', value: this.countdown().minutes },
@@ -698,17 +703,22 @@ export class DevfestComponent {
   }
 
   constructor() {
-    const title = inject(Title);
-    const meta = inject(Meta);
+    const seo = inject(SeoService);
     effect(() => {
+      const view = this.view();
       const ed = this.edition();
-      const name = ed?.name ?? 'DevFest Siliguri';
-      title.setTitle(`${name} | GDG Siliguri`);
-      meta.updateTag({
-        name: 'description',
-        content: ed
-          ? `${name} on ${ed.weekday} ${ed.dateLabel} ${ed.year}${ed.venue ? ` at ${ed.venue}` : ''}. Talks, codelabs and workshops by GDG Siliguri.`
-          : 'DevFest Siliguri: talks, codelabs and workshops by GDG Siliguri.',
+      const path = !view || view.isActive ? '/devfest' : `/devfest/${ed?.year ?? this.year}`;
+      const image = ed?.bannerUrl ? ik(ed.bannerUrl, { w: 1200, h: 630 }) : '';
+      seo.update({
+        title: ed?.name ?? 'DevFest Siliguri',
+        description:
+          ed?.summary ||
+          (ed
+            ? `${ed.name} on ${ed.weekday} ${ed.dateLabel} ${ed.year}${ed.venue ? ` at ${ed.venue}` : ''}.`
+            : 'DevFest Siliguri: talks, codelabs and workshops by GDG Siliguri.'),
+        path,
+        image,
+        jsonLd: ed ? eventJsonLd(ed, seo.absoluteUrl(path), seo.absoluteUrl('/'), image) : null,
       });
     });
   }

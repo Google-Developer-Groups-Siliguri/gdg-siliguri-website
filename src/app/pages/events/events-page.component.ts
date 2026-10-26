@@ -3,11 +3,13 @@ import {
   Component,
   afterNextRender,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Meta, Title } from '@angular/platform-browser';
+import { SeoService } from 'src/app/services/seo.service';
+import { ik } from 'src/app/shared/image';
 import { RouterLink } from '@angular/router';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
 import { ScrollWeightDirective } from 'src/app/motion/scroll-weight.directive';
@@ -237,10 +239,16 @@ export class EventsPageComponent {
 
   constructor() {
     afterNextRender(() => this.now.set(Date.now()));
-    inject(Title).setTitle('Events | GDG Siliguri');
-    inject(Meta).updateTag({
-      name: 'description',
-      content: 'Upcoming meetups, workshops and DevFest Siliguri, plus every past GDG Siliguri event.',
+    const seo = inject(SeoService);
+    effect(() => {
+      const next = this.events().upcoming.find((e) => !!e.cover);
+      seo.update({
+        title: 'Events · GDG Siliguri',
+        description:
+          'Upcoming meetups, workshops and DevFest Siliguri, plus every past GDG Siliguri event.',
+        path: '/events',
+        image: next ? ik(next.cover, { w: 1200, h: 630 }) : '',
+      });
     });
   }
 }
