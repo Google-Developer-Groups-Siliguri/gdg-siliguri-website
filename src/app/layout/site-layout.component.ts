@@ -16,19 +16,23 @@ import { DEFAULT_EMAIL, DEFAULT_JOIN_URL } from '../shared/content';
     <app-site-header [joinUrl]="joinUrl()" [nav]="nav()" />
     <router-outlet />
     <app-site-footer [socials]="socials()" [email]="email()" [nav]="nav()" />
-    <app-install-sheet [enabled]="isHome()" />
+    <app-install-sheet
+      [enabled]="isHome()"
+      [android]="site()?.appLinks?.android ?? ''"
+      [ios]="site()?.appLinks?.ios ?? ''"
+    />
   `,
 })
 export class SiteLayoutComponent {
   private readonly router = inject(Router);
-  private readonly site = toSignal(inject(SiteContentService).site());
+  protected readonly site = toSignal(inject(SiteContentService).site());
 
   protected readonly joinUrl = computed(() => this.site()?.joinUrl || DEFAULT_JOIN_URL);
   protected readonly email = computed(() => this.site()?.email || DEFAULT_EMAIL);
   protected readonly socials = computed(() => this.site()?.socials ?? []);
   protected readonly nav = computed(() => {
     const site = this.site();
-    return navItems(site?.devfestYear ?? '', site?.sections);
+    return navItems(site?.devfestYear ?? '', site?.sections, site?.pages);
   });
 
   protected readonly isHome = toSignal(

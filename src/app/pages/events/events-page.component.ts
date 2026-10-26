@@ -1,11 +1,19 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  afterNextRender,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
 import { ScrollWeightDirective } from 'src/app/motion/scroll-weight.directive';
 import { SiteContentService } from 'src/app/services/site-content.service';
-import { DEFAULT_JOIN_URL, splitEventRows } from 'src/app/shared/content';
+import { DEFAULT_JOIN_URL, isRegistrationOpen, splitEventRows } from 'src/app/shared/content';
+import { EventRow } from 'src/app/shared/view-models';
 
 type Filter = 'All' | 'Upcoming' | 'Past';
 
@@ -79,12 +87,13 @@ const PAST_SHAPES = ['cookie9', 'clover4', 'arch', 'cookie6'];
           @if (meetupsShown()) {
             <div class="flex flex-col">
               @for (m of events().upcoming; track m.title + m.at; let i = $index) {
+                @let open = isOpen(m);
                 <a
                   [appReveal]="i"
-                  [href]="m.url || null"
+                  [href]="open ? m.url : null"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="flex cursor-pointer flex-wrap items-center gap-x-7 gap-y-4 border-t border-solid border-out-v px-2 py-6 text-on-srf no-underline transition-[translate] duration-[600ms] ease-bounce hover:text-on-srf hover:[translate:12px_0]"
+                  class="flex flex-wrap items-center gap-x-7 gap-y-4 border-t border-solid border-out-v px-2 py-6 text-on-srf no-underline transition-[translate] duration-[600ms] ease-bounce hover:text-on-srf hover:[translate:12px_0]"
                 >
                   <div class="flex w-[140px] items-baseline gap-2.5">
                     <b class="font-manrope text-[64px] font-black leading-[.8] tracking-[-.06em]">{{
@@ -107,6 +116,12 @@ const PAST_SHAPES = ['cookie9', 'clover4', 'arch', 'cookie6'];
                     class="grid h-9 place-items-center rounded-[18px] bg-sec-c px-4 font-manrope text-[13px] font-bold text-on-sec-c"
                     >{{ m.tag }}</span
                   >
+                  @if (open) {
+                    <span
+                      class="flex h-9 items-center gap-1 rounded-[18px] bg-pri px-4 font-manrope text-[13px] font-bold text-on-pri"
+                      >Register<span class="ms text-lg">arrow_outward</span></span
+                    >
+                  }
                 </a>
               } @empty {
                 <p
@@ -155,7 +170,11 @@ const PAST_SHAPES = ['cookie9', 'clover4', 'arch', 'cookie6'];
           <span class="eyebrow">PAST DEVFESTS</span>
           <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,260px),1fr))] gap-5">
             @for (e of pastDevfests(); track e.year; let i = $index) {
-              <div [appReveal]="i" class="flex flex-col gap-3.5">
+              <a
+                [appReveal]="i"
+                [routerLink]="e.link ?? null"
+                class="flex flex-col gap-3.5 text-on-srf no-underline hover:text-on-srf"
+              >
                 <div
                   class="relative flex aspect-square w-full flex-col items-center justify-center gap-1.5 transition-[scale] duration-[800ms] ease-bounce hover:[scale:1.04]"
                   [style.clip-path]="'var(--s-' + e.shape + ')'"
@@ -177,7 +196,7 @@ const PAST_SHAPES = ['cookie9', 'clover4', 'arch', 'cookie6'];
                     >
                   }
                 </div>
-              </div>
+              </a>
             }
           </div>
           }
@@ -199,7 +218,8 @@ export class EventsPageComponent {
 
   protected readonly joinUrl = computed(() => this.view()?.site.joinUrl || DEFAULT_JOIN_URL);
 
-  protected readonly events = computed(() => splitEventRows(this.view()?.events ?? [], Date.now()));
+  private readonly now = signal(Date.now());
+  protected readonly events = computed(() => splitEventRows(this.view()?.events ?? [], this.now()));
 
   protected readonly edition = computed(() => this.view()?.edition ?? null);
   protected readonly meetupsShown = computed(() => this.view()?.site.sections.events ?? true);
@@ -211,7 +231,12 @@ export class EventsPageComponent {
     }))
   );
 
+  protected isOpen(row: EventRow): boolean {
+    return isRegistrationOpen(row, this.now());
+  }
+
   constructor() {
+    afterNextRender(() => this.now.set(Date.now()));
     inject(Title).setTitle('Events | GDG Siliguri');
     inject(Meta).updateTag({
       name: 'description',

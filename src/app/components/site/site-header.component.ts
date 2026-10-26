@@ -19,7 +19,11 @@ export interface NavItem {
   label: string;
 }
 
-export function navItems(devfestYear: string, sections?: SiteSections): NavItem[] {
+export function navItems(
+  devfestYear: string,
+  sections?: SiteSections,
+  pages: NavItem[] = []
+): NavItem[] {
   const shown = (key: keyof SiteSections) => sections?.[key] ?? true;
   return [
     { path: '/', label: 'Home', visible: true },
@@ -34,7 +38,8 @@ export function navItems(devfestYear: string, sections?: SiteSections): NavItem[
     { path: '/about', label: 'About', visible: true },
   ]
     .filter((item) => item.visible)
-    .map(({ path, label }) => ({ path, label }));
+    .map(({ path, label }) => ({ path, label }))
+    .concat(pages);
 }
 
 const TINT_SCROLL_RANGE = 80;
@@ -141,6 +146,7 @@ const TINT_SCROLL_RANGE = 80;
           <a
             [routerLink]="item.path"
             routerLinkActive="!bg-sec-c !text-on-sec-c"
+            ariaCurrentWhenActive="page"
             [routerLinkActiveOptions]="{ exact: item.path === '/' }"
             class="flex h-14 items-center rounded-[28px] px-6 font-urbanist text-lg font-bold text-on-srf no-underline transition-[background-color] duration-300 hover:text-on-srf"
             >{{ item.label }}</a

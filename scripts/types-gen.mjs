@@ -12,6 +12,7 @@ for (const file of files) {
     await compileFromFile(join(schemaDir, file), {
       bannerComment: '',
       additionalProperties: false,
+      ignoreMinAndMaxItems: true,
       cwd: schemaDir,
       format: true,
       style: { singleQuote: true, printWidth: 100 },

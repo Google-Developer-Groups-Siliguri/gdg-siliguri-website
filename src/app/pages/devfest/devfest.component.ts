@@ -2,7 +2,10 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@a
 import { DomSanitizer } from '@angular/platform-browser';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ModuleSectionComponent } from 'src/app/components/modules/module-section.component';
+import { injectMinuteClock } from 'src/app/motion/minute-clock';
+import { ScheduleItem } from 'src/app/shared/view-models';
 import { FaqAccordionComponent } from 'src/app/components/site/faq-accordion.component';
 import { PartnerMarqueeComponent } from 'src/app/components/site/partner-marquee.component';
 import { injectCountdown } from 'src/app/motion/countdown';
@@ -15,11 +18,14 @@ import { safeMapsEmbedUrl } from 'src/app/shared/content';
 import { ik, srcset } from 'src/app/shared/image';
 
 const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
+const LOGO_SIZES: Partial<Record<string, number>> = { platinum: 112, gold: 88 };
+const DEFAULT_LOGO_SIZE = 64;
 
 @Component({
   selector: 'app-devfest',
   imports: [
     FaqAccordionComponent,
+    ModuleSectionComponent,
     ParallaxDirective,
     PartnerMarqueeComponent,
     RevealDirective,
@@ -84,6 +90,42 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                     >{{ countdown().seconds }}</b
                   ><span class="font-manrope text-[13px] font-semibold">s</span>
                 </div>
+              </div>
+            } @else if (ed.isPast && (highlight() || recapStats().length || recapLinks().length)) {
+              <div
+                appReveal="2"
+                class="flex flex-col gap-4 self-start rounded-[40px] bg-pri-c p-[clamp(20px,2.4vw,32px)] text-on-pri-c"
+              >
+                @if (highlight()) {
+                  <b class="font-urbanist text-[clamp(20px,2.2vw,28px)] font-extrabold">{{
+                    highlight()
+                  }}</b>
+                }
+                @if (recapStats().length) {
+                  <div class="flex flex-wrap gap-6">
+                    @for (stat of recapStats(); track stat.label) {
+                      <span class="flex items-baseline gap-2"
+                        ><b class="font-manrope text-[40px] font-black leading-none">{{
+                          stat.value
+                        }}</b
+                        ><span class="font-manrope text-sm font-bold">{{ stat.label }}</span></span
+                      >
+                    }
+                  </div>
+                }
+                @if (recapLinks().length) {
+                  <div class="flex flex-wrap gap-1">
+                    @for (link of recapLinks(); track link.path) {
+                      <a
+                        [href]="link.path"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="pill-btn"
+                        >{{ link.label }}<span class="ms">arrow_outward</span></a
+                      >
+                    }
+                  </div>
+                }
               </div>
             } @else {
               <div
@@ -301,8 +343,28 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                             >{{ track.label }}</span
                           >
                         }
+                        @if (isLive(slot)) {
+                          <span
+                            class="flex h-[26px] items-center gap-1.5 rounded-[13px] bg-pri px-2.5 font-manrope text-xs font-extrabold text-on-pri"
+                            ><span
+                              class="h-2 w-2 rounded bg-current [animation:pulse_1.6s_ease-in-out_infinite]"
+                            ></span
+                            >Happening now</span
+                          >
+                        }
                       </div>
                     </div>
+                    @if (slot.calendarUrl && edition()?.isUpcoming) {
+                      <a
+                        [href]="slot.calendarUrl"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        [attr.aria-label]="'Add ' + slot.title + ' to calendar'"
+                        title="Add to calendar"
+                        class="ms grid h-11 w-11 flex-none place-items-center rounded-[22px] bg-srf-3 text-xl text-on-srf no-underline hover:bg-srf-4 hover:text-on-srf"
+                        >event_upcoming</a
+                      >
+                    }
                   </div>
                 } @else {
                   <div
@@ -312,6 +374,9 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                       slot.start
                     }}</b>
                     <span class="font-urbanist text-[17px] font-bold">{{ slot.title }}</span>
+                    @if (isLive(slot)) {
+                      <span class="font-manrope text-xs font-extrabold text-pri">Happening now</span>
+                    }
                     <span class="ml-auto font-manrope text-xs font-semibold text-on-srf-v">{{
                       slot.mins
                     }}</span>
@@ -447,13 +512,16 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                     rel="noopener noreferrer"
                     class="t-lift flex min-w-0 flex-[1_1_260px] items-center gap-4 rounded-[32px] bg-srf-2 py-2.5 pl-2.5 pr-5 text-on-srf no-underline hover:bg-srf-3 hover:text-on-srf hover:[translate:0_-4px]"
                   >
+                    @let size = logoSize(group.tier);
                     <img
-                      [src]="ik(s.logo.url, { w: 160, h: 160, fit: 'contain' })"
+                      [src]="ik(s.logo.url, { w: size * 2, h: size * 2, fit: 'contain' })"
                       [alt]="s.logo.alt"
-                      [attr.width]="s.logo.width ?? 80"
-                      [attr.height]="s.logo.height ?? 80"
+                      [attr.width]="size"
+                      [attr.height]="size"
+                      [style.width.px]="size"
+                      [style.height.px]="size"
                       loading="lazy"
-                      class="h-20 w-20 flex-none rounded-[24px] bg-white object-contain p-2"
+                      class="flex-none rounded-[24px] bg-white object-contain p-2"
                     />
                     <div class="flex min-w-0 flex-1 flex-col gap-1">
                       <b class="font-urbanist text-lg font-extrabold">{{ s.name }}</b>
@@ -520,6 +588,10 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
         </section>
       }
 
+      @for (module of modules(); track module.id) {
+        <app-module-section [module]="module" />
+      }
+
       @if (faqs().length) {
         <section class="wrap flex flex-wrap gap-10">
           <h2
@@ -540,7 +612,9 @@ export class DevfestComponent {
   protected readonly ik = ik;
   protected readonly srcset = srcset;
 
-  private readonly view = toSignal(inject(SiteContentService).devfest());
+  private readonly year = Number(inject(ActivatedRoute).snapshot.paramMap.get('year')) || undefined;
+  private readonly view = toSignal(inject(SiteContentService).devfest(this.year));
+  private readonly now = injectMinuteClock();
 
   protected readonly countdown = injectCountdown(() => this.edition()?.startsAt ?? 0);
   protected readonly hms = computed(() => [
@@ -593,7 +667,9 @@ export class DevfestComponent {
     const r = this.recap();
     const verb = this.edition()?.isUpcoming ? 'runs' : 'ran';
     const where = r.venue ? ` at ${r.venue}` : '';
-    return `How DevFest ${r.year} ${verb} on ${r.dateLabel}${where}, from ${r.firstTitle} at ${r.firstStart} to the ${r.lastTitle} at ${r.lastStart}.`;
+    const zone = this.edition()?.zoneLabel;
+    const times = zone ? ` All times ${zone}.` : '';
+    return `How DevFest ${r.year} ${verb} on ${r.dateLabel}${where}, from ${r.firstTitle} at ${r.firstStart} to the ${r.lastTitle} at ${r.lastStart}.${times}`;
   });
   protected readonly speakers = computed(() => this.view()?.speakers ?? []);
   protected readonly perks = computed(() => this.view()?.perks ?? []);
@@ -601,10 +677,25 @@ export class DevfestComponent {
   protected readonly faqs = computed(() => this.view()?.faqs ?? []);
   protected readonly sponsors = computed(() => this.view()?.sponsors ?? []);
   protected readonly partners = computed(() => this.view()?.partners ?? []);
+  protected readonly modules = computed(() => this.view()?.modules ?? []);
+  protected readonly highlight = computed(() => this.view()?.highlight ?? '');
+  protected readonly recapStats = computed(() => this.view()?.recapStats ?? []);
+  protected readonly recapLinks = computed(() => this.view()?.recapLinks ?? []);
   protected readonly venueEmbed = computed(() => {
     const url = safeMapsEmbedUrl(this.view()?.venueEmbedUrl ?? undefined);
     return url ? this.sanitizer.bypassSecurityTrustResourceUrl(url) : null;
   });
+
+  protected isLive(slot: ScheduleItem): boolean {
+    const now = this.now();
+    return (
+      !!now && !!this.view()?.isActive && slot.startsAt > 0 && now >= slot.startsAt && now < slot.endsAt
+    );
+  }
+
+  protected logoSize(tier: string): number {
+    return LOGO_SIZES[tier] ?? DEFAULT_LOGO_SIZE;
+  }
 
   constructor() {
     const title = inject(Title);

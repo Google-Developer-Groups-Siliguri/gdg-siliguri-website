@@ -35,14 +35,27 @@ export interface SiteSections {
   pastEditions: boolean;
 }
 
+export interface PageLink {
+  path: string;
+  label: string;
+}
+
+export interface AppLinks {
+  android?: string;
+  ios?: string;
+}
+
 export interface SiteView {
   name: string;
+  tagline: string;
   description: string;
   joinUrl: string;
   email: string;
   socials: SocialView[];
   sections: SiteSections;
   devfestYear: string;
+  pages: PageLink[];
+  appLinks: AppLinks;
 }
 
 export interface ScheduleSpeaker {
@@ -60,6 +73,9 @@ export interface ScheduleItem {
   speakers: ScheduleSpeaker[];
   track: TrackChip | null;
   isTalk: boolean;
+  startsAt: number;
+  endsAt: number;
+  calendarUrl: string;
 }
 
 export interface SpeakerCard {
@@ -140,12 +156,15 @@ export interface EventRow {
   tag: string;
   url: string;
   at: number;
+  closesAt: number;
+  cover: string;
 }
 
 export interface PastDevfestView {
   year: string;
   highlight: string;
   note?: string;
+  link?: string;
 }
 
 export interface DevfestEdition {
@@ -159,7 +178,9 @@ export interface DevfestEdition {
   startLabel: string;
   hoursLabel: string;
   zoneLabel: string;
+  endsAt: number;
   isUpcoming: boolean;
+  isPast: boolean;
   registrationOpen: boolean;
   ticketUrl: string;
   venue: string;
@@ -168,6 +189,7 @@ export interface DevfestEdition {
   theme: string;
   stack: string[];
   calendarUrl: string;
+  bannerUrl: string;
 }
 
 export interface EditionSections {
@@ -195,6 +217,11 @@ export interface HomeView {
   sponsors: SponsorGroup[];
   partners: PartnerView[];
   events: EventRow[];
+  modules: ModuleView[];
+  showcase: ShowcaseCard[];
+  showcasePath: string;
+  blogs: BlogPost[];
+  pastDevfests: PastDevfestView[];
 }
 
 export interface EventsView {
@@ -218,6 +245,93 @@ export interface DevfestView {
   recap: Recap;
   venueEmbedUrl: string | null;
   pending: LineupPending;
+  isActive: boolean;
+  highlight: string;
+  recapStats: RecapStat[];
+  recapLinks: PageLink[];
+  modules: ModuleView[];
+}
+
+export interface RecapStat {
+  value: string;
+  label: string;
+}
+
+export interface CardItem {
+  title: string;
+  body: string;
+  image: ImageView | null;
+  url: string;
+  tags: string[];
+}
+
+export interface GalleryItem {
+  image: ImageView;
+  caption: string;
+}
+
+export interface LinkItem {
+  label: string;
+  url: string;
+  description: string;
+  icon: string;
+}
+
+export interface ShowcaseCard {
+  id: string;
+  title: string;
+  summary: string;
+  body: string;
+  tags: string[];
+  team: string[];
+  repo: string;
+  demo: string;
+  video: string;
+  images: ImageView[];
+  edition: number | null;
+}
+
+export type ModuleKind = 'cards' | 'gallery' | 'links' | 'richText' | 'showcase' | 'blogs';
+
+export interface ModuleView {
+  id: string;
+  type: ModuleKind;
+  title: string;
+  subtitle: string;
+  icon: string;
+  slot: string;
+  order: number;
+  path: string;
+  edition: number | null;
+  body: string;
+  cards: CardItem[];
+  gallery: GalleryItem[];
+  links: LinkItem[];
+  showcase: ShowcaseCard[];
+  blogs: BlogPost[];
+}
+
+export interface ShowcaseView {
+  site: SiteView;
+  title: string;
+  subtitle: string;
+  years: number[];
+  year: number;
+  items: ShowcaseCard[];
+}
+
+export interface ModulePageView {
+  site: SiteView;
+  module: ModuleView;
+}
+
+export type ContentPage =
+  | { kind: 'showcase'; showcase: ShowcaseView }
+  | { kind: 'module'; page: ModulePageView };
+
+export interface BlogsView {
+  posts: BlogPost[];
+  pageable: boolean;
 }
 
 export interface BlogPost {

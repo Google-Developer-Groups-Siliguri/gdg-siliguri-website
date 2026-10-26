@@ -3,10 +3,10 @@ import { combineLatest, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import {
-  toBlogPosts,
   toDevfestView,
   toEventsView,
   toHomeView,
+  toShowcaseItems,
   toSiteView,
   toTeam,
 } from '../shared/content';
@@ -18,15 +18,31 @@ import {
   toLegacyTeam,
 } from '../shared/legacy-content';
 import {
+  findPageModule,
+  modulePageParams,
+  showcasePageModule,
+  showcasePath,
+  toBlogPosts,
+  toModuleView,
+} from '../shared/modules';
+import {
   BlogPost,
+  BlogsView,
+  ContentPage,
   DevfestView,
   EventsView,
   HomeView,
+  ModulePageView,
+  ShowcaseCard,
+  ShowcaseView,
   SiteView,
   TeamMember,
 } from '../shared/view-models';
+import type { HomeBundle } from './bundle-types';
 import { DataService } from './data.service';
 import { LegacyDataService } from './legacy-data.service';
+
+const HOME_BLOGS_PAGE = 10;
 
 @Injectable({
   providedIn: 'root',
@@ -34,14 +50,16 @@ import { LegacyDataService } from './legacy-data.service';
 export class SiteContentService {
   private readonly data = inject(DataService);
   private readonly legacy = inject(LegacyDataService);
-  private readonly useRtdb = environment.dataSource === 'rtdb';
+  readonly useRtdb = environment.dataSource === 'rtdb';
   private readonly useFixtures = environment.dataSource === 'fixture';
 
   site(): Observable<SiteView> {
     if (this.useRtdb) {
       return this.legacy.getEventData().pipe(map(toLegacySiteView));
     }
-    return this.data.getHomeBundle().pipe(map((home) => toSiteView(home.site, home.edition.year)));
+    return this.data
+      .getHomeBundle()
+      .pipe(map((home) => toSiteView(home.site, home.edition.year, home.modules)));
   }
 
   home(): Observable<HomeView> {
@@ -78,7 +96,7 @@ export class SiteContentService {
     return this.data.getHomeBundle().pipe(map((home) => toEventsView(home, Date.now())));
   }
 
-  devfest(): Observable<DevfestView> {
+  devfest(year?: number): Observable<DevfestView> {
     if (this.useRtdb) {
       return combineLatest({
         event: this.legacy.getEventData(),
@@ -89,24 +107,131 @@ export class SiteContentService {
         partners: this.legacy.getAllCommunityPartners(),
       }).pipe(map((sources) => toLegacyDevfestView(sources, Date.now())));
     }
-    return combineLatest([this.data.getHomeBundle(), this.data.getActiveEdition()]).pipe(
-      map(([home, edition]) => toDevfestView(home, edition, Date.now()))
+    const edition = year ? this.data.getEditionBundle(year) : this.data.getActiveEdition();
+    return combineLatest([this.data.getHomeBundle(), edition]).pipe(
+      map(([home, bundle]) => toDevfestView(home, bundle, Date.now()))
     );
   }
 
-  blogs(): Observable<BlogPost[]> {
+  archiveYears(): Observable<number[]> {
     if (this.useRtdb) {
-      return this.legacy.getHashnodeBlogs();
+      return of([]);
+    }
+    return this.data.getEditionsBundle().pipe(map((bundle) => bundle.items.map((e) => e.year)));
+  }
+
+  showcase(year?: number): Observable<ShowcaseView | null> {
+    if (this.useRtdb) {
+      return of(null);
     }
     return this.data.getHomeBundle().pipe(
       switchMap((home) => {
-        if (!home.site.sections.blogs) {
-          return of([]);
+        const path = showcasePath(home.site, home.modules);
+        if (!path) {
+          return of(null);
         }
-        return home.blogs.length || this.useFixtures
-          ? of(toBlogPosts(home.blogs))
-          : this.legacy.getHashnodeBlogs();
+        const module = showcasePageModule(home.modules);
+        const source = module?.source.kind === 'showcase' ? module.source : undefined;
+        const selected = year ?? source?.edition ?? home.site.activeEdition;
+        return combineLatest([this.archiveYears(), this.showcaseItems(selected)]).pipe(
+          map(([years, items]) => ({
+            site: toSiteView(home.site, home.edition.year, home.modules),
+            title: module?.title ?? 'Showcase',
+            subtitle: module?.subtitle ?? 'Projects built by the GDG Siliguri community',
+            years,
+            year: selected,
+            items: source?.limit ? items.slice(0, source.limit) : items,
+          }))
+        );
       })
     );
+  }
+
+  showcaseItems(year: number): Observable<ShowcaseCard[]> {
+    if (this.useRtdb) {
+      return of([]);
+    }
+    return this.data.getEditionBundle(year).pipe(map(toShowcaseItems));
+  }
+
+  modulePage(key: string): Observable<ModulePageView | null> {
+    if (this.useRtdb) {
+      return of(null);
+    }
+    return this.data.getHomeBundle().pipe(
+      switchMap((home) => {
+        const module = findPageModule(home.modules, key);
+        if (!module) {
+          return of(null);
+        }
+        const source = module.source;
+        const showcase =
+          source.kind === 'showcase'
+            ? this.data
+                .getEditionBundle(source.edition ?? home.site.activeEdition)
+                .pipe(map((bundle) => bundle.showcase))
+            : of(home.showcaseFeatured);
+        return showcase.pipe(
+          map((items) => {
+            const view = toModuleView(module, { showcase: items, blogs: home.blogs });
+            return view
+              ? { site: toSiteView(home.site, home.edition.year, home.modules), module: view }
+              : null;
+          })
+        );
+      })
+    );
+  }
+
+  modulePageParams(): Observable<{ ids: string[]; paths: string[] }> {
+    if (this.useRtdb) {
+      return of({ ids: [], paths: [] });
+    }
+    return this.data
+      .getHomeBundle()
+      .pipe(map((home) => modulePageParams(home.site, home.modules)));
+  }
+
+  contentPage(path: string): Observable<ContentPage | null> {
+    if (this.useRtdb) {
+      return of(null);
+    }
+    return this.data.getHomeBundle().pipe(
+      switchMap((home) =>
+        path === showcasePath(home.site, home.modules)
+          ? this.showcase().pipe(
+              map((showcase): ContentPage | null => (showcase ? { kind: 'showcase', showcase } : null))
+            )
+          : this.modulePage(path).pipe(
+              map((page): ContentPage | null => (page ? { kind: 'module', page } : null))
+            )
+      )
+    );
+  }
+
+  blogs(): Observable<BlogsView> {
+    if (this.useRtdb) {
+      return this.legacy.getHashnodeBlogs().pipe(map((posts) => ({ posts, pageable: false })));
+    }
+    return this.data.getHomeBundle().pipe(switchMap((home) => this.homeBlogs(home)));
+  }
+
+  blogsPage(pageToken?: string): Observable<{ posts: BlogPost[]; next?: string }> {
+    return this.data
+      .getBlogsPage(pageToken)
+      .pipe(map((page) => ({ posts: toBlogPosts(page.items), next: page.next })));
+  }
+
+  private homeBlogs(home: HomeBundle): Observable<BlogsView> {
+    if (!home.site.sections.blogs) {
+      return of({ posts: [], pageable: false });
+    }
+    if (home.blogs.length || this.useFixtures) {
+      return of({
+        posts: toBlogPosts(home.blogs),
+        pageable: !this.useFixtures && home.blogs.length >= HOME_BLOGS_PAGE,
+      });
+    }
+    return this.legacy.getHashnodeBlogs().pipe(map((posts) => ({ posts, pageable: false })));
   }
 }

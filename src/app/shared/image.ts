@@ -1,3 +1,6 @@
+import type { Media } from '../services/bundle-types';
+import { ImageView } from './view-models';
+
 export type ImageFit = 'cover' | 'contain' | 'face';
 
 export interface ImageSize {
@@ -62,4 +65,13 @@ export function srcset(
   return widths
     .map((w) => `${ik(url, { w, h: aspect ? w / aspect : undefined, fit })} ${w}w`)
     .join(', ');
+}
+
+export function toImage(media: Media | undefined, fallbackAlt = ''): ImageView {
+  return {
+    url: media?.url ?? '',
+    alt: media?.alt || fallbackAlt,
+    ...(media?.width ? { width: media.width } : {}),
+    ...(media?.height ? { height: media.height } : {}),
+  };
 }

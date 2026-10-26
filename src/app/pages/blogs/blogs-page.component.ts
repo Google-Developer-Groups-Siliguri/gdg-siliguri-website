@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
 import { ScrollWeightDirective } from 'src/app/motion/scroll-weight.directive';
 import { SiteContentService } from 'src/app/services/site-content.service';
+import { BlogPost } from 'src/app/shared/view-models';
 import { BlogCardComponent } from '../../components/blog-card.component';
 
 @Component({
@@ -30,6 +31,16 @@ import { BlogCardComponent } from '../../components/blog-card.component';
             <app-blog-card [appReveal]="i % 3" [blog]="blog" />
           }
         </div>
+        @if (canLoadMore()) {
+          <button
+            type="button"
+            (click)="loadMore()"
+            [disabled]="loading()"
+            class="pill-btn cursor-pointer self-center border-0"
+          >
+            {{ loading() ? 'Loading…' : 'Load more' }}
+          </button>
+        }
       } @else {
         <p
           class="m-0 rounded-[36px] bg-srf-2 p-10 text-center font-manrope text-base text-on-srf-v"
@@ -42,9 +53,40 @@ import { BlogCardComponent } from '../../components/blog-card.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BlogsPageComponent {
-  protected readonly blogs = toSignal(inject(SiteContentService).blogs(), {
-    initialValue: [],
+  private readonly content = inject(SiteContentService);
+  private readonly view = toSignal(this.content.blogs());
+  private readonly more = signal<BlogPost[]>([]);
+  private readonly nextToken = signal<string | undefined>(undefined);
+  private readonly exhausted = signal(false);
+  protected readonly loading = signal(false);
+
+  protected readonly blogs = computed(() => {
+    const seen = new Set<string>();
+    return [...(this.view()?.posts ?? []), ...this.more()].filter(
+      (post) => !seen.has(post.id) && !!seen.add(post.id)
+    );
   });
+  protected readonly canLoadMore = computed(() => !!this.view()?.pageable && !this.exhausted());
+
+  protected loadMore(): void {
+    this.loading.set(true);
+    const before = this.blogs().length;
+    this.content.blogsPage(this.nextToken()).subscribe({
+      next: ({ posts, next }) => {
+        this.more.set([...this.more(), ...posts]);
+        this.nextToken.set(next);
+        this.exhausted.set(!next);
+        this.loading.set(false);
+        if (next && this.blogs().length === before) {
+          this.loadMore();
+        }
+      },
+      error: () => {
+        this.loading.set(false);
+        this.exhausted.set(true);
+      },
+    });
+  }
 
   constructor() {
     inject(Title).setTitle('Blogs | GDG Siliguri');

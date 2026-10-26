@@ -67,6 +67,7 @@ export interface LegacySponsors {
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
+const LEGACY_PLAY_STORE_URL = 'https://play.google.com/store/search?q=GDG%20Siliguri&c=apps';
 
 export function parseIstDate(value: string | undefined): number {
   if (!value) {
@@ -105,10 +106,27 @@ function enabled<T>(toggle: Toggle<T> | null | undefined): T[] {
   return toggle?.enabled ? (toggle.data ?? []) : [];
 }
 
-export function toScheduleItems(schedule: Schedule[], speakers: Members[]): ScheduleItem[] {
+function sessionInstant(eventDateTime: string | undefined, time: string): number {
+  const startsAt = parseIstDate(eventDateTime);
+  if (Number.isNaN(startsAt)) {
+    return NaN;
+  }
+  const date = new Date(startsAt + IST_OFFSET_MS).toISOString().slice(0, 10);
+  return parseIstDate(`${date} ${to24h(time)}`);
+}
+
+export function toScheduleItems(
+  schedule: Schedule[],
+  speakers: Members[],
+  event?: EventData | null
+): ScheduleItem[] {
+  const venue = event?.eventVenue?.name?.trim() ?? '';
   return schedule.map((s) => {
     const [time, meridiem = ''] = s.startTime.trim().split(/\s+/);
     const speaker = speakers.find((p) => p.name === s.subTitle);
+    const startsAt = sessionInstant(event?.eventDateTime, s.startTime);
+    const endsAt = sessionInstant(event?.eventDateTime, s.endTime);
+    const timed = !Number.isNaN(startsAt) && !Number.isNaN(endsAt) && endsAt > startsAt;
     return {
       time,
       meridiem,
@@ -121,6 +139,9 @@ export function toScheduleItems(schedule: Schedule[], speakers: Members[]): Sche
         : [],
       track: legacyTrackChip(speaker?.designation),
       isTalk: !!s.subTitle,
+      startsAt: timed ? startsAt : 0,
+      endsAt: timed ? endsAt : 0,
+      calendarUrl: timed ? calendarLink(s.title, startsAt, endsAt, venue, s.subTitle) : '',
     };
   });
 }
@@ -242,6 +263,8 @@ export function toEventRows(events: Events[]): EventRow[] {
         tag: 'Meetup',
         url: e.registrationLink,
         at,
+        closesAt: parseIstDate(e.registrationDate),
+        cover: e.coverImg ?? '',
       };
     })
     .filter((e) => !Number.isNaN(e.at));
@@ -296,6 +319,7 @@ export function toDevfestEdition(
   const venue = venueName(event.eventVenue?.name);
   const registrationEnds = parseIstDate(event.registrationExpiryDateTime);
   const isUpcoming = startsAt > now;
+  const endsAt = endOfDay(startsAt, schedule);
   return {
     name,
     year,
@@ -307,7 +331,9 @@ export function toDevfestEdition(
     startLabel: istTimeLabel(startsAt),
     hoursLabel: hoursLabel(startsAt, schedule),
     zoneLabel: 'IST',
+    endsAt,
     isUpcoming,
+    isPast: endsAt <= now,
     registrationOpen:
       !!event.eventTicketURL &&
       isUpcoming &&
@@ -318,7 +344,8 @@ export function toDevfestEdition(
     summary: event.bannerDescription ?? '',
     theme: event.theme ?? '',
     stack: event.techStack ?? [],
-    calendarUrl: calendarLink(name, startsAt, endOfDay(startsAt, schedule), event.eventVenue?.name ?? ''),
+    calendarUrl: calendarLink(name, startsAt, endsAt, event.eventVenue?.name ?? ''),
+    bannerUrl: event.bannerImages?.large ?? '',
   };
 }
 
@@ -331,12 +358,15 @@ export function toLegacySiteView(event: LegacyEventData | null | undefined): Sit
   const at = parseIstDate(event?.eventDateTime);
   return {
     name: 'GDG Siliguri',
+    tagline: '',
     description: event?.communityDescription ?? '',
     joinUrl: event?.communityJoinLink || DEFAULT_JOIN_URL,
     email: event?.communityEmail || DEFAULT_EMAIL,
     socials: toSocials(event?.socialMediaLinks),
     sections: toSiteSections(undefined),
     devfestYear: Number.isNaN(at) ? '' : istDay(at).year,
+    pages: [],
+    appLinks: { android: LEGACY_PLAY_STORE_URL },
   };
 }
 
@@ -359,6 +389,11 @@ export function toLegacyHomeView(sources: LegacyHomeSources, now: number): HomeV
     sponsors: toSponsorGroups(sources.sponsors),
     partners: toPartners(enabled(sources.partners)),
     events: toEventRows(enabled(sources.events)),
+    modules: [],
+    showcase: [],
+    showcasePath: '',
+    blogs: [],
+    pastDevfests: [],
   };
 }
 
@@ -429,7 +464,7 @@ export function toLegacyDevfestView(sources: LegacyDevfestSources, now: number):
     site: toLegacySiteView(event),
     edition: toDevfestEdition(event, schedule, now),
     sections,
-    schedule: toScheduleItems(schedule, allSpeakers),
+    schedule: toScheduleItems(schedule, allSpeakers, event),
     speakers,
     sponsors: toSponsorGroups(sources.sponsors),
     partners: toPartners(enabled(sources.partners)),
@@ -439,5 +474,10 @@ export function toLegacyDevfestView(sources: LegacyDevfestSources, now: number):
     recap: toRecap(event?.eventDateTime ?? '', event?.eventVenue?.name ?? '', schedule),
     venueEmbedUrl: legacyEmbedUrl(event),
     pending: { schedule: !schedule.length, speakers: !speakers.length },
+    isActive: true,
+    highlight: '',
+    recapStats: [],
+    recapLinks: [],
+    modules: [],
   };
 }

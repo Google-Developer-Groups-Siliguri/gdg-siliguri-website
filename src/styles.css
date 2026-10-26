@@ -125,6 +125,36 @@
     transition: scale 1200ms var(--e-emph);
   }
 
+  .md {
+    font-family: Manrope, ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .md p,
+  .md ul,
+  .md ol {
+    margin: 0 0 0.75em;
+  }
+  .md > div > :last-child {
+    margin-bottom: 0;
+  }
+  .md h1,
+  .md h2,
+  .md h3 {
+    margin: 1em 0 0.4em;
+    font-family: Urbanist, ui-sans-serif, system-ui, sans-serif;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .md img {
+    max-width: 100%;
+    border-radius: 16px;
+  }
+  .md code {
+    border-radius: 6px;
+    background: var(--srf-3);
+    padding: 0 4px;
+  }
   .pill-btn {
     height: 48px;
     padding: 0 16px 0 22px;

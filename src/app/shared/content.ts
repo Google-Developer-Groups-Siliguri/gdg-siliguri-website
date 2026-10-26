@@ -1,11 +1,11 @@
 import type {
-  BlogDoc,
   CommunityEventDoc,
   EditionBundle,
   EditionInfo,
   FaqDoc,
+  FullEdition,
   HomeBundle,
-  Media,
+  ModuleDoc,
   PartnerDoc,
   PastEditionDoc,
   SessionDoc,
@@ -17,10 +17,19 @@ import type {
   TestimonialDoc,
   TrackDoc,
 } from '../services/bundle-types';
-import { toDevfestEdition } from './devfest-edition';
+import { calendarLink, toDevfestEdition } from './devfest-edition';
 import { isEventMode } from './event-mode';
+import { toImage } from './image';
 import {
-  BlogPost,
+  ModuleSources,
+  showcasePath,
+  toBlogPosts,
+  toModuleViews,
+  toPageLinks,
+  toShowcaseCards,
+} from './modules';
+import {
+  AppLinks,
   DevfestEdition,
   DevfestView,
   EditionSections,
@@ -28,12 +37,14 @@ import {
   EventsView,
   FaqView,
   HomeView,
-  ImageView,
   MemberLink,
+  PageLink,
+  RecapStat,
   PartnerView,
   PastDevfestView,
   Recap,
   ScheduleItem,
+  ShowcaseView,
   SiteSections,
   SiteView,
   SocialView,
@@ -50,7 +61,6 @@ import { DEFAULT_TIME_ZONE, titleMonth, zonedDay, zonedTime } from './zoned-date
 
 export const DEFAULT_JOIN_URL = 'https://gdg.community.dev/gdg-siliguri/';
 export const DEFAULT_EMAIL = 'gdgsiliguri@gmail.com';
-const DEFAULT_AUTHOR_PHOTO = 'assets/images/gdg.png';
 
 export const TRACK_COLORS: Record<string, TrackColors> = {
   AI: { bg: '#F8D8D8', fg: '#5C1A1A' },
@@ -132,14 +142,6 @@ export function safeMapsEmbedUrl(url: string | undefined): string | null {
   return MAPS_EMBED.test(trimmed) && !/["'<>\s]/.test(trimmed) ? trimmed : null;
 }
 
-export function toImage(media: Media | undefined, fallbackAlt = ''): ImageView {
-  return {
-    url: media?.url ?? '',
-    alt: media?.alt || fallbackAlt,
-    ...(media?.width ? { width: media.width } : {}),
-    ...(media?.height ? { height: media.height } : {}),
-  };
-}
 
 export function splitEventRows(
   rows: EventRow[],
@@ -164,16 +166,35 @@ export function toSocials(links: SiteLinks | undefined): SocialView[] {
   });
 }
 
-export function toSiteView(site: SiteInfo | undefined, devfestYear?: number): SiteView {
+export function toSiteView(
+  site: SiteInfo | undefined,
+  devfestYear?: number,
+  modules: ModuleDoc[] = []
+): SiteView {
+  const activeYear = site?.activeEdition ? String(site.activeEdition) : '';
   return {
     name: site?.name || 'GDG Siliguri',
+    tagline: site?.tagline ?? '',
     description: site?.description ?? '',
     joinUrl: site?.joinUrl || DEFAULT_JOIN_URL,
     email: site?.email || DEFAULT_EMAIL,
     socials: toSocials(site?.links),
     sections: toSiteSections(site?.sections),
-    devfestYear: devfestYear ? String(devfestYear) : site?.activeEdition ? String(site.activeEdition) : '',
+    devfestYear: devfestYear ? String(devfestYear) : activeYear,
+    pages: toPageLinks(site, modules),
+    appLinks: toAppLinks(site?.appLinks),
   };
+}
+
+function httpsOnly(url: string | undefined): string | undefined {
+  const trimmed = url?.trim();
+  return trimmed && /^https:\/\//.test(trimmed) ? trimmed : undefined;
+}
+
+export function toAppLinks(links: SiteInfo['appLinks']): AppLinks {
+  const android = httpsOnly(links?.android);
+  const ios = httpsOnly(links?.ios);
+  return { ...(android ? { android } : {}), ...(ios ? { ios } : {}) };
 }
 
 export function trackChip(tracks: TrackDoc[] | undefined, trackId: string | undefined): TrackChip | null {
@@ -209,12 +230,21 @@ function minutesBetween(startAt: string, endAt: string): number {
   return Number.isFinite(mins) && mins > 0 ? mins : 0;
 }
 
+export interface SessionContext {
+  eventName: string;
+  venue: string;
+}
+
 export function toScheduleItems(
   sessions: SessionDoc[],
   tracks: TrackDoc[],
-  timeZone: string
+  timeZone: string,
+  context: SessionContext = { eventName: '', venue: '' }
 ): ScheduleItem[] {
   return sessions.map((s) => {
+    const startsAt = Date.parse(s.startAt);
+    const endsAt = Date.parse(s.endAt);
+    const timed = !Number.isNaN(startsAt) && !Number.isNaN(endsAt) && endsAt > startsAt;
     const clock = sessionClock(s, timeZone);
     const speakers = (s.speakers ?? []).map((p) => ({
       name: p.name,
@@ -231,6 +261,17 @@ export function toScheduleItems(
       speakers,
       track: trackChip(tracks, s.trackId),
       isTalk: speakers.length > 0 || TALK_TYPES.has(s.type),
+      startsAt: timed ? startsAt : 0,
+      endsAt: timed ? endsAt : 0,
+      calendarUrl: timed
+        ? calendarLink(
+            s.title,
+            startsAt,
+            endsAt,
+            [s.room, context.venue].filter(Boolean).join(', '),
+            [context.eventName, speakers.map((p) => p.name).join(', ')].filter(Boolean).join(' · ')
+          )
+        : '',
     };
   });
 }
@@ -332,9 +373,15 @@ export function toEventRows(events: CommunityEventDoc[]): EventRow[] {
         tag: e.tags?.[0] ?? 'Meetup',
         url: e.registration?.url ?? '',
         at,
+        closesAt: Date.parse(e.registration?.closesAt ?? ''),
+        cover: e.cover?.url ?? '',
       };
     })
     .filter((e) => !Number.isNaN(e.at));
+}
+
+export function isRegistrationOpen(row: EventRow, now: number): boolean {
+  return !!row.url && row.at >= now && (Number.isNaN(row.closesAt) || now < row.closesAt);
 }
 
 export function toPastDevfests(
@@ -345,10 +392,17 @@ export function toPastDevfests(
   if (!shown) {
     return [];
   }
-  const latest = active && !active.isUpcoming ? [{ year: active.year, highlight: active.venue }] : [];
+  const latest =
+    active && !active.isUpcoming
+      ? [{ year: active.year, highlight: active.venue, link: '/devfest' }]
+      : [];
   const archive = pastEditions
     .filter((p) => String(p.year) !== active?.year)
-    .map((p) => ({ year: String(p.year), highlight: p.highlight ?? '' }));
+    .map((p) => ({
+      year: String(p.year),
+      highlight: p.highlight ?? '',
+      link: `/devfest/${p.year}`,
+    }));
   return [...latest, ...archive].sort((a, b) => Number(b.year) - Number(a.year));
 }
 
@@ -375,25 +429,35 @@ export function toRecap(edition: EditionInfo, sessions: SessionDoc[]): Recap {
   };
 }
 
+function moduleSources(home: HomeBundle, showcase = home.showcaseFeatured): ModuleSources {
+  return { showcase, blogs: home.blogs };
+}
+
 export function toHomeView(home: HomeBundle, now: number): HomeView {
   const { site, edition } = home;
   const sections = edition.sections;
+  const active = toDevfestEdition(edition, now);
   return {
-    site: toSiteView(site, edition.year),
-    edition: toDevfestEdition(edition, now),
+    site: toSiteView(site, edition.year, home.modules),
+    edition: active,
     eventMode: isEventMode(site, edition, now),
     faqs: site.sections.faqs ? toFaqs(home.faqs) : [],
     testimonials: site.sections.testimonials ? toTestimonials(home.testimonials) : [],
     sponsors: sections.sponsors ? toSponsorGroups(home.sponsors) : [],
     partners: sections.partners ? toPartners(home.partners) : [],
     events: site.sections.events ? toEventRows(home.events) : [],
+    modules: toModuleViews(home.modules, moduleSources(home), 'homeSection'),
+    showcase: toShowcaseCards(home.showcaseFeatured),
+    showcasePath: showcasePath(site, home.modules),
+    blogs: site.sections.blogs ? toBlogPosts(home.blogs.slice(0, 3)) : [],
+    pastDevfests: toPastDevfests(home.pastEditions, active, site.sections.pastEditions),
   };
 }
 
 export function toEventsView(home: HomeBundle, now: number): EventsView {
   const edition = toDevfestEdition(home.edition, now);
   return {
-    site: toSiteView(home.site, home.edition.year),
+    site: toSiteView(home.site, home.edition.year, home.modules),
     edition,
     events: home.site.sections.events ? toEventRows(home.events) : [],
     pastDevfests: toPastDevfests(home.pastEditions, edition, home.site.sections.pastEditions),
@@ -414,17 +478,34 @@ export function toEditionSections(sections: Partial<EditionSections> | undefined
   };
 }
 
+function toRecapStats(recap: FullEdition['recap']): RecapStat[] {
+  return [
+    { value: recap?.attendees, label: 'attendees' },
+    { value: recap?.sessions, label: 'sessions' },
+  ]
+    .filter((stat) => typeof stat.value === 'number' && stat.value > 0)
+    .map((stat) => ({ value: (stat.value as number).toLocaleString('en-IN'), label: stat.label }));
+}
+
+function toRecapLinks(recap: FullEdition['recap']): PageLink[] {
+  return [
+    { path: recap?.photosUrl ?? '', label: 'Photos' },
+    { path: recap?.videoUrl ?? '', label: 'Videos' },
+  ].filter((link) => /^https:\/\//.test(link.path));
+}
+
 export function toDevfestView(home: HomeBundle, bundle: EditionBundle, now: number): DevfestView {
   const edition = bundle.edition;
   const sections = toEditionSections(edition.sections);
   const zone = edition.timeZone || DEFAULT_TIME_ZONE;
   const sessions = sections.schedule ? bundle.sessions : [];
   const speakers = sections.speakers ? bundle.speakers : [];
+  const venue = edition.venue?.name?.trim() ?? '';
   return {
-    site: toSiteView(home.site, edition.year),
+    site: toSiteView(home.site, home.edition.year, home.modules),
     edition: toDevfestEdition(edition, now),
     sections,
-    schedule: toScheduleItems(sessions, edition.tracks, zone),
+    schedule: toScheduleItems(sessions, edition.tracks, zone, { eventName: edition.title, venue }),
     speakers: toSpeakerCards(speakers, bundle.sessions, edition.tracks, zone),
     sponsors: sections.sponsors ? toSponsorGroups(bundle.sponsors) : [],
     partners: sections.partners ? toPartners(bundle.partners) : [],
@@ -437,19 +518,20 @@ export function toDevfestView(home: HomeBundle, bundle: EditionBundle, now: numb
       schedule: sections.schedule && !sessions.length,
       speakers: sections.speakers && !speakers.length,
     },
+    isActive: edition.year === home.site.activeEdition,
+    highlight: edition.highlight ?? '',
+    recapStats: toRecapStats(edition.recap),
+    recapLinks: toRecapLinks(edition.recap),
+    modules: toModuleViews(
+      bundle.modules,
+      { showcase: bundle.showcase, blogs: home.blogs },
+      'devfestSection',
+      edition.year
+    ),
   };
 }
 
-export function toBlogPosts(blogs: BlogDoc[]): BlogPost[] {
-  return blogs.map((b) => ({
-    id: b.id,
-    title: b.title,
-    brief: b.brief,
-    slug: b.id,
-    coverImage: { url: b.cover?.url ?? '' },
-    publishedAt: b.publishedAt,
-    author: { name: b.author?.name || 'GDG Siliguri', profilePicture: b.author?.photoUrl || DEFAULT_AUTHOR_PHOTO },
-    readTimeInMinutes: b.readMinutes ?? 1,
-    url: b.url,
-  }));
+export function toShowcaseItems(bundle: EditionBundle): ShowcaseView['items'] {
+  return toShowcaseCards(bundle.showcase);
 }
+

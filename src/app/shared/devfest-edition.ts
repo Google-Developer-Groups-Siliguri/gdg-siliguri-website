@@ -6,13 +6,19 @@ function compactUtc(ms: number): string {
   return new Date(ms).toISOString().replace(/[-:]|\.\d{3}/g, '');
 }
 
-export function calendarLink(name: string, startsAt: number, endsAt: number, venue: string): string {
+export function calendarLink(
+  name: string,
+  startsAt: number,
+  endsAt: number,
+  venue: string,
+  details = `${name} by GDG Siliguri`
+): string {
   const params = new URLSearchParams({
     action: 'TEMPLATE',
     text: name,
     dates: `${compactUtc(startsAt)}/${compactUtc(endsAt)}`,
     location: venue,
-    details: `${name} by GDG Siliguri`,
+    details,
   });
   return `https://calendar.google.com/calendar/render?${params}`;
 }
@@ -61,7 +67,9 @@ export function toDevfestEdition(
         ? `${start.label} to ${end.label} ${zoneName}`
         : `From ${start.short} ${zoneName}`,
     zoneLabel: zoneName,
+    endsAt,
     isUpcoming,
+    isPast: endsAt <= now,
     registrationOpen:
       !!edition.sections?.registration &&
       !!ticketUrl &&
@@ -75,5 +83,6 @@ export function toDevfestEdition(
     theme: edition.theme ?? '',
     stack: edition.techStack ?? [],
     calendarUrl: calendarLink(name, startsAt, endsAt, venue),
+    bannerUrl: edition.banner?.url ?? '',
   };
 }

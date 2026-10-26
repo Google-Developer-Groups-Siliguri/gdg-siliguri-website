@@ -13,7 +13,10 @@ import type {
 } from '../services/bundle-types';
 import { exampleBundle } from '../services/firestore-rest.testing';
 import {
+  isRegistrationOpen,
   safeMapsEmbedUrl,
+  toAppLinks,
+  toPastDevfests,
   splitEventRows,
   toDevfestView,
   toEventRows,
@@ -402,6 +405,73 @@ describe('content mappers (v2)', () => {
         ['Next meetup', '25', 'OCT', 'Workshop'],
       ]);
       expect(earlier.map((e) => e.title)).toEqual(['Past meetup']);
+    });
+  });
+  describe('archive and PR 2 additions', () => {
+    it('marks a past edition as an archive with per-session calendar links', () => {
+      const view = toDevfestView(home, edition2025, AFTER_2025);
+      expect(view.isActive).toBeFalse();
+      expect(view.edition?.isPast).toBeTrue();
+      expect(view.edition?.registrationOpen).toBeFalse();
+      expect(view.schedule[1].startsAt).toBe(Date.parse('2025-11-16T04:30:00Z'));
+      expect(view.schedule[1].calendarUrl).toContain('dates=20251116T043000Z%2F20251116T051500Z');
+      expect(view.schedule[1].calendarUrl).toContain('Royal+Sarovar+Portico');
+      expect(view.site.devfestYear).toBe('2026');
+    });
+
+    it('maps recap stats and links when present', () => {
+      const withRecap = {
+        ...edition2025,
+        edition: {
+          ...edition2025.edition,
+          highlight: '12 sessions on AI, Cloud and Android',
+          recap: { attendees: 1200, sessions: 12, photosUrl: 'https://photos.example.com/a', videoUrl: 'http://insecure' },
+        },
+      };
+      const view = toDevfestView(home, withRecap, AFTER_2025);
+      expect(view.highlight).toBe('12 sessions on AI, Cloud and Android');
+      expect(view.recapStats).toEqual([
+        { value: '1,200', label: 'attendees' },
+        { value: '12', label: 'sessions' },
+      ]);
+      expect(view.recapLinks).toEqual([{ path: 'https://photos.example.com/a', label: 'Photos' }]);
+    });
+
+    it('links past editions to their archive pages', () => {
+      const active = toDevfestEdition(edition2025.edition, AFTER_2025);
+      expect(
+        toPastDevfests(
+          [{ year: 2024, title: 'DevFest Siliguri 2024', banner: { url: '', alt: '' }, startAt: '2024-11-10T03:30:00Z' }],
+          active,
+          true
+        )
+      ).toEqual([
+        { year: '2025', highlight: 'Royal Sarovar Portico', link: '/devfest' },
+        { year: '2024', highlight: '', link: '/devfest/2024' },
+      ]);
+    });
+
+    it('keeps registration CTAs only while open', () => {
+      const [row] = toEventRows([
+        {
+          id: 'e',
+          title: 'Meetup',
+          startAt: '2026-11-01T04:30:00.000Z',
+          timeZone: 'Asia/Kolkata',
+          registration: { url: 'https://example.com/r', closesAt: '2026-10-30T00:00:00.000Z' },
+        },
+      ]);
+      expect(isRegistrationOpen(row, BEFORE_2026)).toBeTrue();
+      expect(isRegistrationOpen(row, Date.parse('2026-10-31T00:00:00Z'))).toBeFalse();
+      expect(isRegistrationOpen({ ...row, url: '' }, BEFORE_2026)).toBeFalse();
+    });
+
+    it('keeps only https app links', () => {
+      expect(toAppLinks({ android: 'https://play.google.com/x', ios: 'http://apps.apple.com/x' })).toEqual({
+        android: 'https://play.google.com/x',
+      });
+      expect(toAppLinks(undefined)).toEqual({});
+      expect(toHomeView(home, BEFORE_2026).site.appLinks).toEqual({});
     });
   });
 });

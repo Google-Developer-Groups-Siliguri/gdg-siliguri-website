@@ -2,9 +2,10 @@ import { Routes } from '@angular/router';
 import { SiteLayoutComponent } from './layout/site-layout.component';
 import { aboutResolver } from './resolvers/about.resolver';
 import { blogsResolver } from './resolvers/blogs.resolver';
-import { devfestResolver } from './resolvers/devfest.resolver';
+import { devfestResolver, devfestYearResolver } from './resolvers/devfest.resolver';
 import { eventsResolver } from './resolvers/events.resolver';
 import { homeResolver } from './resolvers/home.resolver';
+import { contentPageMatch, modulePageResolver } from './resolvers/module-page.resolver';
 import { teamResolver } from './resolvers/team.resolver';
 
 export const routes: Routes = [
@@ -51,6 +52,25 @@ export const routes: Routes = [
       { path: 'devfest/tickets', redirectTo: 'devfest' },
       { path: 'devfest/team', redirectTo: 'team' },
       { path: 'devfest/contact', redirectTo: 'about' },
+      {
+        path: 'devfest/:year',
+        loadComponent: () =>
+          import('./pages/devfest/devfest.component').then((m) => m.DevfestComponent),
+        resolve: { data: devfestYearResolver },
+      },
+      {
+        path: 'm/:moduleId',
+        loadComponent: () =>
+          import('./pages/module-page/module-page.component').then((m) => m.ModulePageComponent),
+        resolve: { data: modulePageResolver },
+      },
+      {
+        path: ':modulePath',
+        canMatch: [contentPageMatch],
+        loadComponent: () =>
+          import('./pages/module-page/module-page.component').then((m) => m.ModulePageComponent),
+        resolve: { data: modulePageResolver },
+      },
       { path: '**', redirectTo: '' },
     ],
   },

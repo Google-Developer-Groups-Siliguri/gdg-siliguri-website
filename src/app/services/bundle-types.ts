@@ -21,3 +21,7 @@ export type TeamDoc = HomeBundle['team'][number];
 export type TestimonialDoc = HomeBundle['testimonials'][number];
 export type CommunityEventDoc = HomeBundle['events'][number];
 export type PastEditionDoc = HomeBundle['pastEditions'][number];
+export type ModuleDoc = HomeBundle['modules'][number];
+export type ModuleItemDoc = NonNullable<ModuleDoc['items']>[number];
+export type ShowcaseDoc = EditionBundle['showcase'][number];
+export type EditionSummaryDoc = EditionsBundle['items'][number];

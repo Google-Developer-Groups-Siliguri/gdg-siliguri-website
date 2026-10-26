@@ -2,13 +2,18 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  afterNextRender,
   computed,
   inject,
+  signal,
   viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
+import { BlogCardComponent } from 'src/app/components/blog-card.component';
+import { ModuleSectionComponent } from 'src/app/components/modules/module-section.component';
+import { ShowcaseGridComponent } from 'src/app/components/showcase/showcase-grid.component';
 import { FaqAccordionComponent } from 'src/app/components/site/faq-accordion.component';
 import { HeroIllustrationComponent } from 'src/app/components/site/hero-illustration.component';
 import { PartnerMarqueeComponent } from 'src/app/components/site/partner-marquee.component';
@@ -16,8 +21,15 @@ import { injectCountdown } from 'src/app/motion/countdown';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
 import { ScrollWeightDirective } from 'src/app/motion/scroll-weight.directive';
 import { SiteContentService } from 'src/app/services/site-content.service';
-import { DEFAULT_JOIN_URL, splitEventRows, splitName } from 'src/app/shared/content';
+import {
+  DEFAULT_JOIN_URL,
+  isRegistrationOpen,
+  splitEventRows,
+  splitName,
+} from 'src/app/shared/content';
+import { EventRow } from 'src/app/shared/view-models';
 import { ik } from 'src/app/shared/image';
+import { HOME_MODULE_ITEM_LIMIT } from 'src/app/shared/modules';
 
 const CARD_RADII = ['56px 56px 56px 14px', '56px 14px 56px 56px', '14px 56px 56px 56px'];
 const TESTIMONIAL_COLORS = [
@@ -44,7 +56,10 @@ const WHAT_WE_DO = [
 @Component({
   selector: 'app-home-page',
   imports: [
+    BlogCardComponent,
     FaqAccordionComponent,
+    ModuleSectionComponent,
+    ShowcaseGridComponent,
     HeroIllustrationComponent,
     PartnerMarqueeComponent,
     RevealDirective,
@@ -226,7 +241,7 @@ const WHAT_WE_DO = [
             @for (meetup of upcoming(); track meetup.title + meetup.at; let i = $index) {
               <a
                 [appReveal]="i"
-                [href]="meetup.url || null"
+                [href]="isOpen(meetup) ? meetup.url : null"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="t-lift flex cursor-pointer flex-col gap-7 rounded-[36px_36px_36px_10px] bg-srf-2 p-6 text-on-srf no-underline hover:rounded-[36px] hover:bg-srf-3 hover:text-on-srf hover:shadow-[0_24px_40px_-24px_rgba(0,0,0,.45)] hover:[translate:0_-6px]"
@@ -458,6 +473,65 @@ const WHAT_WE_DO = [
         </section>
       }
 
+      @for (module of modules(); track module.id) {
+        <app-module-section [module]="module" [limit]="moduleLimit" />
+      }
+
+      @if (showcase().length) {
+        <section class="wrap flex flex-col gap-7">
+          <div appReveal="0" class="flex flex-wrap items-end justify-between gap-4">
+            <h2 class="display-md">Built by the <b class="text-pri">community</b></h2>
+            @if (showcasePath()) {
+              <a [routerLink]="showcasePath()" class="pill-btn"
+                >All projects<span class="ms">chevron_right</span></a
+              >
+            }
+          </div>
+          <app-showcase-grid [items]="showcase()" />
+        </section>
+      }
+
+      @if (blogs().length) {
+        <section class="wrap flex flex-col gap-7">
+          <div appReveal="0" class="flex flex-wrap items-end justify-between gap-4">
+            <h2 class="display-md">Latest <b>posts</b></h2>
+            <a routerLink="/blogs" class="pill-btn"
+              >All posts<span class="ms">chevron_right</span></a
+            >
+          </div>
+          <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,320px),1fr))] gap-4">
+            @for (blog of blogs(); track blog.id; let i = $index) {
+              <app-blog-card [appReveal]="i" [blog]="blog" />
+            }
+          </div>
+        </section>
+      }
+
+      @if (pastDevfests().length) {
+        <section class="wrap flex flex-col gap-7">
+          <h2 appReveal="0" class="display-md">Past <b>DevFests</b></h2>
+          <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,240px),1fr))] gap-3">
+            @for (past of pastDevfests(); track past.year; let i = $index) {
+              <a
+                [appReveal]="i"
+                [routerLink]="past.link"
+                class="t-lift flex flex-col gap-2 rounded-[36px_36px_36px_10px] bg-srf-2 p-6 text-on-srf no-underline hover:rounded-[36px] hover:bg-srf-3 hover:text-on-srf"
+              >
+                <b class="font-manrope text-[56px] font-black leading-none tracking-[-.06em]">{{
+                  past.year
+                }}</b>
+                <span class="font-urbanist text-lg font-extrabold">DevFest {{ past.year }}</span>
+                @if (past.highlight) {
+                  <span class="font-manrope text-sm font-medium text-on-srf-v">{{
+                    past.highlight
+                  }}</span>
+                }
+              </a>
+            }
+          </div>
+        </section>
+      }
+
       <section class="wrap-wide">
         <div
           appReveal="0"
@@ -506,6 +580,7 @@ export class HomePageComponent {
   protected readonly testimonialColors = TESTIMONIAL_COLORS;
   protected readonly tierDots = TIER_DOTS;
   protected readonly ik = ik;
+  protected readonly moduleLimit = HOME_MODULE_ITEM_LIMIT;
 
   private readonly view = toSignal(inject(SiteContentService).home());
 
@@ -546,12 +621,23 @@ export class HomePageComponent {
     return this.sponsors().filter((s) => s.name !== top?.name || s.tier !== top?.tier);
   });
   protected readonly partners = computed(() => this.view()?.partners ?? []);
+  private readonly now = signal(Date.now());
+  protected readonly modules = computed(() => this.view()?.modules ?? []);
+  protected readonly showcase = computed(() => this.view()?.showcase ?? []);
+  protected readonly showcasePath = computed(() => this.view()?.showcasePath ?? '');
+  protected readonly blogs = computed(() => this.view()?.blogs ?? []);
+  protected readonly pastDevfests = computed(() => this.view()?.pastDevfests ?? []);
   protected readonly meetupsShown = computed(() => this.site()?.sections.events ?? true);
   protected readonly upcoming = computed(() =>
-    splitEventRows(this.view()?.events ?? [], Date.now()).upcoming.slice(0, 3)
+    splitEventRows(this.view()?.events ?? [], this.now()).upcoming.slice(0, 3)
   );
 
+  protected isOpen(row: EventRow): boolean {
+    return isRegistrationOpen(row, this.now());
+  }
+
   constructor() {
+    afterNextRender(() => this.now.set(Date.now()));
     inject(Title).setTitle('GDG Siliguri | Google Developer Groups Siliguri');
     inject(Meta).updateTag({
       name: 'description',
