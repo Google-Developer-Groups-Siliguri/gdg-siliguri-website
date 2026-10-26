@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { CommunityPartners } from 'src/app/services/data.service';
+import { ik } from 'src/app/shared/image';
+import { PartnerView } from 'src/app/shared/view-models';
 
 const FIRST_ROW_SIZE = 6;
 
@@ -19,19 +20,21 @@ const FIRST_ROW_SIZE = 6;
       >
         @for (partner of row.partners; track $index) {
           <a
-            [href]="partner.socialMediaLink"
+            [href]="partner.url || null"
             target="_blank"
             rel="noopener noreferrer"
             class="flex flex-none items-center gap-3 rounded-full bg-srf-2 py-2 pl-2 pr-[22px] no-underline"
           >
             <img
-              [src]="partner.icon"
+              [src]="ik(partner.logo.url, { w: 88, h: 88, fit: 'contain' })"
               alt=""
+              width="44"
+              height="44"
               loading="lazy"
               class="h-11 w-11 rounded-[22px] bg-white object-cover"
             />
             <span class="whitespace-nowrap font-manrope text-sm font-semibold text-on-srf">{{
-              partner.communityName
+              partner.name
             }}</span>
           </a>
         }
@@ -40,7 +43,9 @@ const FIRST_ROW_SIZE = 6;
   `,
 })
 export class PartnerMarqueeComponent {
-  readonly partners = input.required<CommunityPartners[]>();
+  readonly partners = input.required<PartnerView[]>();
+
+  protected readonly ik = ik;
 
   protected readonly rows = computed(() => {
     const all = this.partners();

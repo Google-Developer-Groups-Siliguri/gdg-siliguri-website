@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { SocialView } from 'src/app/shared/content';
+import { SocialView } from 'src/app/shared/view-models';
 import { NavItem } from './site-header.component';
 
 @Component({

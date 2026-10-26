@@ -9,14 +9,13 @@ import {
 } from '@angular/core';
 
 const SEEN_KEY = 'gdgsg-app-sheet';
-const PLAY_STORE_URL = 'https://play.google.com/store/search?q=GDG%20Siliguri&c=apps';
 const OPEN_DELAY_MS = 700;
 
 @Component({
   selector: 'app-install-sheet',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (enabled() && narrow()) {
+    @if (enabled() && narrow() && (android() || ios())) {
       <div
         (click)="dismiss()"
         class="fixed inset-0 z-40 bg-black/50 transition-opacity duration-500"
@@ -43,12 +42,23 @@ const OPEN_DELAY_MS = 700;
           >
         </div>
         <div class="flex w-full max-w-[420px] flex-col gap-1">
-          <a
-            [href]="playStoreUrl"
-            (click)="dismiss()"
-            class="flex h-[60px] items-center justify-center gap-2.5 rounded-[30px_30px_10px_10px] bg-pri font-urbanist text-[17px] font-extrabold text-on-pri no-underline transition-[border-radius,scale] duration-500 ease-emph hover:text-on-pri active:rounded-[30px] active:[scale:.97]"
-            ><span class="ms text-[22px]">shop</span>Download on Google Play</a
-          >
+          @if (android()) {
+            <a
+              [href]="android()"
+              (click)="dismiss()"
+              class="flex h-[60px] items-center justify-center gap-2.5 rounded-[30px_30px_10px_10px] bg-pri font-urbanist text-[17px] font-extrabold text-on-pri no-underline transition-[border-radius,scale] duration-500 ease-emph hover:text-on-pri active:rounded-[30px] active:[scale:.97]"
+              ><span class="ms text-[22px]">shop</span>Download on Google Play</a
+            >
+          }
+          @if (ios()) {
+            <a
+              [href]="ios()"
+              (click)="dismiss()"
+              class="flex h-[60px] items-center justify-center gap-2.5 bg-pri font-urbanist text-[17px] font-extrabold text-on-pri no-underline transition-[border-radius,scale] duration-500 ease-emph hover:text-on-pri active:rounded-[30px] active:[scale:.97]"
+              [style.border-radius]="android() ? '10px' : '30px 30px 10px 10px'"
+              >Download on the App Store</a
+            >
+          }
           <button
             type="button"
             (click)="dismiss()"
@@ -63,8 +73,9 @@ const OPEN_DELAY_MS = 700;
 })
 export class AppInstallSheetComponent {
   readonly enabled = input.required<boolean>();
+  readonly android = input('');
+  readonly ios = input('');
 
-  protected readonly playStoreUrl = PLAY_STORE_URL;
   protected readonly narrow = signal(false);
   protected readonly open = signal(false);
 

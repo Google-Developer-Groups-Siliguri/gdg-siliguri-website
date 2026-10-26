@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { BlogPost } from '../services/data.service';
+import { BlogPost } from '../shared/view-models';
 
 @Component({
   selector: 'app-blog-card',

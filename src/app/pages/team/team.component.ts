@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Meta, Title } from '@angular/platform-browser';
+import { SeoService } from 'src/app/services/seo.service';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
 import { ScrollWeightDirective } from 'src/app/motion/scroll-weight.directive';
-import { DataService } from 'src/app/services/data.service';
-import { toTeamMember } from 'src/app/shared/content';
+import { SiteContentService } from 'src/app/services/site-content.service';
+import { ik, srcset } from 'src/app/shared/image';
 
 const VOLUNTEER_SHAPES = ['cookie9', 'clover4', 'arch', 'cookie6', 'pentagon', 'sunny'];
 
@@ -41,8 +41,12 @@ const VOLUNTEER_SHAPES = ['cookie9', 'clover4', 'arch', 'cookie6', 'pentagon', '
                 class="group t-lift relative aspect-[4/5] overflow-hidden rounded-[38px] bg-srf-3 hover:shadow-[0_28px_48px_-26px_rgba(0,0,0,.55)] hover:[translate:0_-8px]"
               >
                 <img
-                  [src]="m.photo"
-                  [alt]="m.name"
+                  [src]="ik(m.photo.url, { w: 640, h: 800, fit: 'face' })"
+                  [attr.srcset]="srcset(m.photo.url, [320, 480, 640], { fit: 'face', aspect: 0.8 }) || null"
+                  sizes="(min-width: 600px) 320px, 100vw"
+                  [alt]="m.photo.alt"
+                  [attr.width]="m.photo.width ?? null"
+                  [attr.height]="m.photo.height ?? null"
                   loading="lazy"
                   class="absolute inset-0 h-full w-full object-cover transition-[scale] duration-[1400ms] ease-emph group-hover:[scale:1.07]"
                 />
@@ -98,8 +102,12 @@ const VOLUNTEER_SHAPES = ['cookie9', 'clover4', 'arch', 'cookie6', 'pentagon', '
                   [style.clip-path]="'var(--s-' + shapes[i % shapes.length] + ')'"
                 >
                   <img
-                    [src]="m.photo"
-                    [alt]="m.name"
+                    [src]="ik(m.photo.url, { w: 400, h: 400, fit: 'face' })"
+                    [attr.srcset]="srcset(m.photo.url, [200, 400], { fit: 'face', aspect: 1 }) || null"
+                    sizes="200px"
+                    [alt]="m.photo.alt"
+                    [attr.width]="m.photo.width ?? null"
+                    [attr.height]="m.photo.height ?? null"
                     loading="lazy"
                     class="t-zoom absolute inset-0 h-full w-full object-cover group-hover:[scale:1.1]"
                   />
@@ -119,28 +127,22 @@ const VOLUNTEER_SHAPES = ['cookie9', 'clover4', 'arch', 'cookie6', 'pentagon', '
 export class TeamComponent {
   protected readonly shapes = VOLUNTEER_SHAPES;
 
-  private readonly teamResult = toSignal(inject(DataService).getAllTeams());
+  protected readonly ik = ik;
+  protected readonly srcset = srcset;
 
-  protected readonly members = computed(() => {
-    const r = this.teamResult();
-    return r?.enabled ? r.data : [];
-  });
+  protected readonly members = toSignal(inject(SiteContentService).team(), { initialValue: [] });
   protected readonly organizers = computed(() =>
-    this.members()
-      .filter((m) => m.designation === 'Organizer')
-      .map(toTeamMember)
+    this.members().filter((m) => m.role === 'organizer')
   );
   protected readonly volunteers = computed(() =>
-    this.members()
-      .filter((m) => m.designation !== 'Organizer')
-      .map(toTeamMember)
+    this.members().filter((m) => m.role === 'volunteer')
   );
 
   constructor() {
-    inject(Title).setTitle('Crew | GDG Siliguri');
-    inject(Meta).updateTag({
-      name: 'description',
-      content: 'Meet the organizers and volunteers who run GDG Siliguri and DevFest Siliguri.',
+    inject(SeoService).update({
+      title: 'Team · GDG Siliguri',
+      description: 'Meet the organizers and volunteers who run GDG Siliguri and DevFest Siliguri.',
+      path: '/team',
     });
   }
 }

@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Meta, Title } from '@angular/platform-browser';
+import { SeoService } from 'src/app/services/seo.service';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
 import { ScrollWeightDirective } from 'src/app/motion/scroll-weight.directive';
-import { DataService } from 'src/app/services/data.service';
-import { toSocials } from 'src/app/shared/content';
+import { SiteContentService } from 'src/app/services/site-content.service';
+import { DEFAULT_EMAIL, DEFAULT_JOIN_URL } from 'src/app/shared/content';
 
 @Component({
   selector: 'app-about',
@@ -96,22 +96,18 @@ import { toSocials } from 'src/app/shared/content';
   `,
 })
 export class AboutComponent {
-  private readonly eventData = toSignal(inject(DataService).getEventData());
+  private readonly site = toSignal(inject(SiteContentService).site());
 
-  protected readonly joinUrl = computed(
-    () => this.eventData()?.communityJoinLink || 'https://gdg.community.dev/gdg-siliguri/'
-  );
-  protected readonly email = computed(
-    () => this.eventData()?.communityEmail || 'gdgsiliguri@gmail.com'
-  );
-  protected readonly socials = computed(() => toSocials(this.eventData()?.socialMediaLinks));
+  protected readonly joinUrl = computed(() => this.site()?.joinUrl || DEFAULT_JOIN_URL);
+  protected readonly email = computed(() => this.site()?.email || DEFAULT_EMAIL);
+  protected readonly socials = computed(() => this.site()?.socials ?? []);
 
   constructor() {
-    inject(Title).setTitle('About | GDG Siliguri');
-    inject(Meta).updateTag({
-      name: 'description',
-      content:
+    inject(SeoService).update({
+      title: 'About · GDG Siliguri',
+      description:
         'Google Developer Group Siliguri is a community-run meetup for developers in North Bengal and Sikkim.',
+      path: '/about',
     });
   }
 }

@@ -1,24 +1,34 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { SeoService } from 'src/app/services/seo.service';
+import { eventJsonLd } from 'src/app/shared/structured-data';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Meta, Title } from '@angular/platform-browser';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ModuleSectionComponent } from 'src/app/components/modules/module-section.component';
+import { injectMinuteClock } from 'src/app/motion/minute-clock';
+import { ScheduleItem } from 'src/app/shared/view-models';
 import { FaqAccordionComponent } from 'src/app/components/site/faq-accordion.component';
-import { injectCountdown } from 'src/app/motion/countdown';
+import { PartnerMarqueeComponent } from 'src/app/components/site/partner-marquee.component';
+import { countdownLabel, injectCountdown } from 'src/app/motion/countdown';
 import { ParallaxDirective } from 'src/app/motion/parallax.directive';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
 import { ScrollWeightDirective } from 'src/app/motion/scroll-weight.directive';
 import { ShapeLoaderDirective } from 'src/app/motion/shape-loader.directive';
-import { DataService } from 'src/app/services/data.service';
-import { TRACK_COLORS, toRecap, toScheduleItems, toSpeakerCards } from 'src/app/shared/content';
-import { toDevfestEdition } from 'src/app/shared/devfest-edition';
+import { SiteContentService } from 'src/app/services/site-content.service';
+import { safeMapsEmbedUrl } from 'src/app/shared/content';
+import { ik, srcset } from 'src/app/shared/image';
 
 const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
+const LOGO_SIZES: Partial<Record<string, number>> = { platinum: 112, gold: 88 };
+const DEFAULT_LOGO_SIZE = 64;
 
 @Component({
   selector: 'app-devfest',
   imports: [
     FaqAccordionComponent,
+    ModuleSectionComponent,
     ParallaxDirective,
+    PartnerMarqueeComponent,
     RevealDirective,
     RouterLink,
     ScrollWeightDirective,
@@ -42,7 +52,7 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                 ></span>
               }
               DEVFEST {{ ed.year }} · {{ ed.weekday.slice(0, 3).toUpperCase() }} {{ ed.day }}
-              {{ ed.month.toUpperCase() }} · {{ ed.startLabel }} IST
+              {{ ed.month.toUpperCase() }} · {{ ed.startLabel }} {{ ed.zoneLabel }}
             </div>
             <h1
               appScrollWeight
@@ -52,7 +62,8 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
               Dev<b class="font-black text-pri">Fest</b><br />Siliguri
             </h1>
             @if (ed.isUpcoming) {
-              <div appReveal="2" role="group" aria-label="Time left" class="flex flex-wrap gap-1 max-sm:flex-nowrap">
+              <p class="sr-only" aria-live="polite">{{ countdownText() }}</p>
+              <div appReveal="2" aria-hidden="true" class="flex flex-wrap gap-1 max-sm:flex-nowrap">
                 <div
                   class="box-border flex h-[clamp(72px,8vw,88px)] items-center gap-1.5 rounded-[44px_10px_10px_44px] max-sm:flex-[1.5_1_0%] max-sm:min-w-0 max-sm:justify-center max-sm:px-2 bg-pri-c px-[clamp(16px,2vw,24px)] text-on-pri-c"
                 >
@@ -81,6 +92,42 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                     >{{ countdown().seconds }}</b
                   ><span class="font-manrope text-[13px] font-semibold">s</span>
                 </div>
+              </div>
+            } @else if (ed.isPast && (highlight() || recapStats().length || recapLinks().length)) {
+              <div
+                appReveal="2"
+                class="flex flex-col gap-4 self-start rounded-[40px] bg-pri-c p-[clamp(20px,2.4vw,32px)] text-on-pri-c"
+              >
+                @if (highlight()) {
+                  <b class="font-urbanist text-[clamp(20px,2.2vw,28px)] font-extrabold">{{
+                    highlight()
+                  }}</b>
+                }
+                @if (recapStats().length) {
+                  <div class="flex flex-wrap gap-6">
+                    @for (stat of recapStats(); track stat.label) {
+                      <span class="flex items-baseline gap-2"
+                        ><b class="font-manrope text-[40px] font-black leading-none">{{
+                          stat.value
+                        }}</b
+                        ><span class="font-manrope text-sm font-bold">{{ stat.label }}</span></span
+                      >
+                    }
+                  </div>
+                }
+                @if (recapLinks().length) {
+                  <div class="flex flex-wrap gap-1">
+                    @for (link of recapLinks(); track link.path) {
+                      <a
+                        [href]="link.path"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="pill-btn"
+                        >{{ link.label }}<span class="ms">arrow_outward</span></a
+                      >
+                    }
+                  </div>
+                }
               </div>
             } @else {
               <div
@@ -271,29 +318,55 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                         >{{ slot.title }}</b
                       >
                       <div class="flex flex-wrap items-center gap-2.5">
-                        @if (slot.photo) {
-                          <span
-                            class="relative h-8 w-8 flex-none overflow-hidden [clip-path:var(--s-cookie9)]"
-                            ><img
-                              [src]="slot.photo"
-                              alt=""
-                              loading="lazy"
-                              class="absolute inset-0 h-full w-full object-cover"
-                          /></span>
+                        @for (person of slot.speakers; track person.name) {
+                          @if (person.photo; as photo) {
+                            <span
+                              class="relative h-8 w-8 flex-none overflow-hidden [clip-path:var(--s-cookie9)]"
+                              ><img
+                                [src]="ik(photo.url, { w: 64, h: 64, fit: 'face' })"
+                                alt=""
+                                width="32"
+                                height="32"
+                                loading="lazy"
+                                class="absolute inset-0 h-full w-full object-cover"
+                            /></span>
+                          }
                         }
-                        <span class="font-manrope text-sm font-semibold text-on-srf-v">{{
-                          slot.speaker
-                        }}</span>
+                        @if (slot.speaker) {
+                          <span class="font-manrope text-sm font-semibold text-on-srf-v">{{
+                            slot.speaker
+                          }}</span>
+                        }
                         @if (slot.track; as track) {
                           <span
                             class="grid h-[26px] place-items-center rounded-[13px] px-2.5 font-manrope text-xs font-bold"
-                            [style.background]="trackColors[track].bg"
-                            [style.color]="trackColors[track].fg"
-                            >{{ track }}</span
+                            [style.background]="track.bg"
+                            [style.color]="track.fg"
+                            >{{ track.label }}</span
+                          >
+                        }
+                        @if (isLive(slot)) {
+                          <span
+                            class="flex h-[26px] items-center gap-1.5 rounded-[13px] bg-pri px-2.5 font-manrope text-xs font-extrabold text-on-pri"
+                            ><span
+                              class="h-2 w-2 rounded bg-current [animation:pulse_1.6s_ease-in-out_infinite]"
+                            ></span
+                            >Happening now</span
                           >
                         }
                       </div>
                     </div>
+                    @if (slot.calendarUrl && edition()?.isUpcoming) {
+                      <a
+                        [href]="slot.calendarUrl"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        [attr.aria-label]="'Add ' + slot.title + ' to calendar'"
+                        title="Add to calendar"
+                        class="ms grid h-11 w-11 flex-none place-items-center rounded-[22px] bg-srf-3 text-xl text-on-srf no-underline hover:bg-srf-4 hover:text-on-srf"
+                        >event_upcoming</a
+                      >
+                    }
                   </div>
                 } @else {
                   <div
@@ -303,6 +376,9 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                       slot.start
                     }}</b>
                     <span class="font-urbanist text-[17px] font-bold">{{ slot.title }}</span>
+                    @if (isLive(slot)) {
+                      <span class="font-manrope text-xs font-extrabold text-pri">Happening now</span>
+                    }
                     <span class="ml-auto font-manrope text-xs font-semibold text-on-srf-v">{{
                       slot.mins
                     }}</span>
@@ -335,8 +411,12 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                   [style.clip-path]="'var(--s-' + p.shape + ')'"
                 >
                   <img
-                    [src]="p.photo"
-                    [alt]="p.name"
+                    [src]="ik(p.photo.url, { w: 540, h: 540, fit: 'face' })"
+                    [attr.srcset]="srcset(p.photo.url, [270, 540], { fit: 'face', aspect: 1 }) || null"
+                    sizes="270px"
+                    [alt]="p.photo.alt"
+                    [attr.width]="p.photo.width ?? null"
+                    [attr.height]="p.photo.height ?? null"
                     loading="lazy"
                     class="t-zoom absolute inset-0 h-full w-full object-cover group-hover:[scale:1.08]"
                   />
@@ -345,7 +425,7 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                   <div
                     class="flex items-center justify-between font-manrope text-xs font-extrabold tracking-[.14em]"
                   >
-                    <span>{{ p.track }} TRACK</span
+                    <span>{{ p.track ? p.track + ' TRACK' : '' }}</span
                     ><span class="tracking-[.02em]">{{ p.time }}</span>
                   </div>
                   <div class="font-urbanist text-[30px] font-light leading-none tracking-[-.025em]">
@@ -363,6 +443,25 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
                   }
                 </div>
               </div>
+            }
+          </div>
+        </section>
+      }
+
+      @if (!schedule().length && perks().length) {
+        <section class="wrap flex flex-wrap gap-10">
+          <h2
+            appReveal="0"
+            class="m-0 flex-[1_1_300px] font-urbanist text-[clamp(44px,6vw,88px)] font-extralight leading-[.88] tracking-[-.05em]"
+          >
+            What you <b class="font-extrabold">get</b>
+          </h2>
+          <div appReveal="1" class="flex min-w-0 flex-[2_1_520px] flex-wrap content-start gap-1.5">
+            @for (perk of perks(); track perk) {
+              <span
+                class="flex h-11 items-center rounded-[22px] bg-srf-2 px-[18px] font-manrope text-[15px] font-semibold"
+                >{{ perk }}</span
+              >
             }
           </div>
         </section>
@@ -395,6 +494,106 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
         </section>
       }
 
+      @if (sponsors().length) {
+        <section class="wrap flex flex-col gap-8">
+          <h2
+            appReveal="0"
+            class="m-0 font-urbanist text-[clamp(44px,6vw,88px)] font-extralight leading-[.88] tracking-[-.05em]"
+          >
+            {{ recap().year }} <b class="font-extrabold">sponsors</b>
+          </h2>
+          @for (group of sponsors(); track group.tier) {
+            <div class="flex flex-col gap-4">
+              <span class="eyebrow">{{ group.label.toUpperCase() }}</span>
+              <div class="flex flex-wrap gap-3">
+                @for (s of group.sponsors; track s.name; let i = $index) {
+                  <a
+                    [appReveal]="i % 4"
+                    [href]="s.url || null"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="t-lift flex min-w-0 flex-[1_1_260px] items-center gap-4 rounded-[32px] bg-srf-2 py-2.5 pl-2.5 pr-5 text-on-srf no-underline hover:bg-srf-3 hover:text-on-srf hover:[translate:0_-4px]"
+                  >
+                    @let size = logoSize(group.tier);
+                    <img
+                      [src]="ik(s.logo.url, { w: size * 2, h: size * 2, fit: 'contain' })"
+                      [alt]="s.logo.alt"
+                      [attr.width]="size"
+                      [attr.height]="size"
+                      [style.width.px]="size"
+                      [style.height.px]="size"
+                      loading="lazy"
+                      class="flex-none rounded-[24px] bg-white object-contain p-2"
+                    />
+                    <div class="flex min-w-0 flex-1 flex-col gap-1">
+                      <b class="font-urbanist text-lg font-extrabold">{{ s.name }}</b>
+                      @if (s.host) {
+                        <span class="font-manrope text-[13px] font-semibold text-on-srf-v">{{
+                          s.host
+                        }}</span>
+                      }
+                    </div>
+                  </a>
+                }
+              </div>
+            </div>
+          }
+        </section>
+      }
+
+      @if (partners().length) {
+        <section class="flex flex-col gap-8">
+          <h2
+            appReveal="0"
+            class="wrap m-0 font-urbanist text-[clamp(44px,6vw,88px)] font-extralight leading-[.88] tracking-[-.05em]"
+          >
+            Community <b class="font-extrabold">partners</b>
+          </h2>
+          <app-partner-marquee [partners]="partners()" />
+        </section>
+      }
+
+      @if (venueEmbed(); as embed) {
+        <section class="wrap flex flex-wrap items-center gap-10">
+          <div class="flex min-w-0 flex-[1_1_300px] flex-col gap-4">
+            <h2
+              appReveal="0"
+              class="m-0 font-urbanist text-[clamp(44px,6vw,88px)] font-extralight leading-[.88] tracking-[-.05em]"
+            >
+              Getting <b class="font-extrabold">there</b>
+            </h2>
+            @if (edition()?.venue; as venue) {
+              <p appReveal="1" class="m-0 font-manrope text-[15px] leading-[1.6] text-on-srf-v">
+                {{ venue }}
+              </p>
+            }
+            @if (edition()?.mapsUrl; as mapsUrl) {
+              <a
+                appReveal="2"
+                [href]="mapsUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="pill-btn self-start"
+                >Open in Maps<span class="ms">arrow_outward</span></a
+              >
+            }
+          </div>
+          <iframe
+            appReveal="1"
+            [src]="embed"
+            [title]="'Map of ' + (edition()?.venue || 'the venue')"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+            class="aspect-[4/3] min-w-0 flex-[2_1_480px] rounded-[40px] border-0 bg-srf-2"
+          ></iframe>
+        </section>
+      }
+
+      @for (module of modules(); track module.id) {
+        <app-module-section [module]="module" />
+      }
+
       @if (faqs().length) {
         <section class="wrap flex flex-wrap gap-10">
           <h2
@@ -410,30 +609,25 @@ const LEAF_RADII = ['40px 12px 40px 12px', '12px 40px 12px 40px'];
   `,
 })
 export class DevfestComponent {
-  private readonly data = inject(DataService);
+  private readonly sanitizer = inject(DomSanitizer);
 
-  protected readonly trackColors = TRACK_COLORS;
+  protected readonly ik = ik;
+  protected readonly srcset = srcset;
 
-  private readonly eventData = toSignal(this.data.getEventData());
-  private readonly speakersResult = toSignal(this.data.getAllSpeakers());
-  private readonly scheduleResult = toSignal(this.data.getAllSchedules());
-  private readonly faqsResult = toSignal(this.data.getAllFAQS());
+  private readonly year = Number(inject(ActivatedRoute).snapshot.paramMap.get('year')) || undefined;
+  private readonly view = toSignal(inject(SiteContentService).devfest(this.year));
+  private readonly now = injectMinuteClock();
 
   protected readonly countdown = injectCountdown(() => this.edition()?.startsAt ?? 0);
+  protected readonly countdownText = computed(() =>
+    countdownLabel(this.edition()?.startsAt ?? 0, this.now() || Date.now())
+  );
   protected readonly hms = computed(() => [
     { label: 'h', value: this.countdown().hours },
     { label: 'm', value: this.countdown().minutes },
   ]);
 
-  private readonly rawSchedule = computed(() => {
-    const r = this.scheduleResult();
-    return r?.enabled ? r.data : [];
-  });
-  private readonly allSpeakers = computed(() => this.speakersResult()?.data ?? []);
-
-  protected readonly edition = computed(() =>
-    toDevfestEdition(this.eventData(), this.rawSchedule(), Date.now())
-  );
+  protected readonly edition = computed(() => this.view()?.edition ?? null);
   protected readonly themeParts = computed(() => {
     const theme = this.edition()?.theme ?? '';
     const split = theme.indexOf(':');
@@ -442,65 +636,89 @@ export class DevfestComponent {
       : { lead: theme.slice(0, split + 1), rest: theme.slice(split + 1).trim() };
   });
   protected readonly lineupNotice = computed(() => {
-    if (!this.edition()?.isUpcoming) {
+    const pending = this.view()?.pending;
+    if (!this.edition()?.isUpcoming || !pending) {
       return '';
     }
-    const hasSchedule = this.schedule().length > 0;
-    const hasSpeakers = this.speakers().length > 0;
-    if (!hasSchedule && !hasSpeakers) {
+    if (pending.schedule && pending.speakers) {
       return 'Speakers and schedule drop soon';
     }
-    if (!hasSpeakers) {
+    if (pending.speakers) {
       return 'Speakers drop soon';
     }
-    return hasSchedule ? '' : 'Schedule drops soon';
+    return pending.schedule ? 'Schedule drops soon' : '';
   });
 
   protected readonly schedule = computed(() => {
     let talk = 0;
-    return toScheduleItems(this.rawSchedule(), this.allSpeakers()).map((slot) => ({
+    return (this.view()?.schedule ?? []).map((slot) => ({
       ...slot,
       leaf: slot.isTalk ? LEAF_RADII[talk++ % 2] : '',
     }));
   });
-  protected readonly recap = computed(() => {
-    const e = this.eventData();
-    return toRecap(e?.eventDateTime ?? '', e?.eventVenue?.name ?? '', this.rawSchedule());
-  });
+  protected readonly recap = computed(
+    () =>
+      this.view()?.recap ?? {
+        year: '',
+        dateLabel: '',
+        venue: '',
+        firstStart: '',
+        firstTitle: '',
+        lastStart: '',
+        lastTitle: '',
+      }
+  );
   protected readonly scheduleIntro = computed(() => {
     const r = this.recap();
     const verb = this.edition()?.isUpcoming ? 'runs' : 'ran';
     const where = r.venue ? ` at ${r.venue}` : '';
-    return `How DevFest ${r.year} ${verb} on ${r.dateLabel}${where}, from ${r.firstTitle} at ${r.firstStart} to the ${r.lastTitle} at ${r.lastStart}.`;
+    const zone = this.edition()?.zoneLabel;
+    const times = zone ? ` All times ${zone}.` : '';
+    return `How DevFest ${r.year} ${verb} on ${r.dateLabel}${where}, from ${r.firstTitle} at ${r.firstStart} to the ${r.lastTitle} at ${r.lastStart}.${times}`;
   });
-  protected readonly speakers = computed(() =>
-    this.speakersResult()?.enabled ? toSpeakerCards(this.allSpeakers(), this.rawSchedule()) : []
-  );
-  protected readonly perks = computed(() => {
-    const p = this.eventData()?.perks;
-    return p?.enabled ? p.data : [];
-  });
-  protected readonly points = computed(() => {
-    const p = this.eventData()?.pointsToNote;
-    return p?.enabled ? p.data : [];
-  });
-  protected readonly faqs = computed(() => {
-    const r = this.faqsResult();
-    return r?.enabled ? r.data : [];
+  protected readonly speakers = computed(() => this.view()?.speakers ?? []);
+  protected readonly perks = computed(() => this.view()?.perks ?? []);
+  protected readonly points = computed(() => this.view()?.notes ?? []);
+  protected readonly faqs = computed(() => this.view()?.faqs ?? []);
+  protected readonly sponsors = computed(() => this.view()?.sponsors ?? []);
+  protected readonly partners = computed(() => this.view()?.partners ?? []);
+  protected readonly modules = computed(() => this.view()?.modules ?? []);
+  protected readonly highlight = computed(() => this.view()?.highlight ?? '');
+  protected readonly recapStats = computed(() => this.view()?.recapStats ?? []);
+  protected readonly recapLinks = computed(() => this.view()?.recapLinks ?? []);
+  protected readonly venueEmbed = computed(() => {
+    const url = safeMapsEmbedUrl(this.view()?.venueEmbedUrl ?? undefined);
+    return url ? this.sanitizer.bypassSecurityTrustResourceUrl(url) : null;
   });
 
+  protected isLive(slot: ScheduleItem): boolean {
+    const now = this.now();
+    return (
+      !!now && !!this.view()?.isActive && slot.startsAt > 0 && now >= slot.startsAt && now < slot.endsAt
+    );
+  }
+
+  protected logoSize(tier: string): number {
+    return LOGO_SIZES[tier] ?? DEFAULT_LOGO_SIZE;
+  }
+
   constructor() {
-    const title = inject(Title);
-    const meta = inject(Meta);
+    const seo = inject(SeoService);
     effect(() => {
+      const view = this.view();
       const ed = this.edition();
-      const name = ed?.name ?? 'DevFest Siliguri';
-      title.setTitle(`${name} | GDG Siliguri`);
-      meta.updateTag({
-        name: 'description',
-        content: ed
-          ? `${name} on ${ed.weekday} ${ed.dateLabel} ${ed.year}${ed.venue ? ` at ${ed.venue}` : ''}. Talks, codelabs and workshops by GDG Siliguri.`
-          : 'DevFest Siliguri: talks, codelabs and workshops by GDG Siliguri.',
+      const path = !view || view.isActive ? '/devfest' : `/devfest/${ed?.year ?? this.year}`;
+      const image = ed?.bannerUrl ? ik(ed.bannerUrl, { w: 1200, h: 630 }) : '';
+      seo.update({
+        title: ed?.name ?? 'DevFest Siliguri',
+        description:
+          ed?.summary ||
+          (ed
+            ? `${ed.name} on ${ed.weekday} ${ed.dateLabel} ${ed.year}${ed.venue ? ` at ${ed.venue}` : ''}.`
+            : 'DevFest Siliguri: talks, codelabs and workshops by GDG Siliguri.'),
+        path,
+        image,
+        jsonLd: ed ? eventJsonLd(ed, seo.absoluteUrl(path), seo.absoluteUrl('/'), image) : null,
       });
     });
   }

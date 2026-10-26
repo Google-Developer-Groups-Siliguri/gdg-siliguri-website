@@ -49,3 +49,5 @@ Thumbs.db
 # Design reference and Playwright artifacts
 /new website design/
 /.playwright-mcp/
+/test-results/
+/playwright-report/

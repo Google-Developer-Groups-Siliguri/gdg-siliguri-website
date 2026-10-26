@@ -12,21 +12,34 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs';
 import { ThemeService } from 'src/app/services/theme.service';
+import { SiteSections } from 'src/app/shared/view-models';
 
 export interface NavItem {
   path: string;
   label: string;
 }
 
-export function navItems(devfestYear: string): NavItem[] {
+export function navItems(
+  devfestYear: string,
+  sections?: SiteSections,
+  pages: NavItem[] = []
+): NavItem[] {
+  const shown = (key: keyof SiteSections) => sections?.[key] ?? true;
   return [
-    { path: '/', label: 'Home' },
-    { path: '/devfest', label: devfestYear ? `DevFest ${devfestYear}` : 'DevFest' },
-    { path: '/events', label: 'Events' },
-    { path: '/blogs', label: 'Blogs' },
-    { path: '/team', label: 'Crew' },
-    { path: '/about', label: 'About' },
-  ];
+    { path: '/', label: 'Home', visible: true },
+    {
+      path: '/devfest',
+      label: devfestYear ? `DevFest ${devfestYear}` : 'DevFest',
+      visible: true,
+    },
+    { path: '/events', label: 'Events', visible: shown('events') || shown('pastEditions') },
+    { path: '/blogs', label: 'Blogs', visible: shown('blogs') },
+    { path: '/team', label: 'Crew', visible: shown('team') },
+    { path: '/about', label: 'About', visible: true },
+  ]
+    .filter((item) => item.visible)
+    .map(({ path, label }) => ({ path, label }))
+    .concat(pages);
 }
 
 const TINT_SCROLL_RANGE = 80;
@@ -133,6 +146,7 @@ const TINT_SCROLL_RANGE = 80;
           <a
             [routerLink]="item.path"
             routerLinkActive="!bg-sec-c !text-on-sec-c"
+            ariaCurrentWhenActive="page"
             [routerLinkActiveOptions]="{ exact: item.path === '/' }"
             class="flex h-14 items-center rounded-[28px] px-6 font-urbanist text-lg font-bold text-on-srf no-underline transition-[background-color] duration-300 hover:text-on-srf"
             >{{ item.label }}</a

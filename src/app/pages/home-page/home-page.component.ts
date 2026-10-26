@@ -2,28 +2,41 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  afterNextRender,
   computed,
+  effect,
   inject,
+  signal,
   viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Meta, Title } from '@angular/platform-browser';
+import {
+  DEFAULT_IMAGE_PATH,
+  SITE_NAME,
+  SeoService,
+} from 'src/app/services/seo.service';
+import { organizationJsonLd } from 'src/app/shared/structured-data';
 import { RouterLink } from '@angular/router';
+import { BlogCardComponent } from 'src/app/components/blog-card.component';
+import { ModuleSectionComponent } from 'src/app/components/modules/module-section.component';
+import { ShowcaseGridComponent } from 'src/app/components/showcase/showcase-grid.component';
 import { FaqAccordionComponent } from 'src/app/components/site/faq-accordion.component';
 import { HeroIllustrationComponent } from 'src/app/components/site/hero-illustration.component';
 import { PartnerMarqueeComponent } from 'src/app/components/site/partner-marquee.component';
-import { injectCountdown } from 'src/app/motion/countdown';
+import { countdownLabel, injectCountdown } from 'src/app/motion/countdown';
+import { injectMinuteClock } from 'src/app/motion/minute-clock';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
 import { ScrollWeightDirective } from 'src/app/motion/scroll-weight.directive';
-import { DataService } from 'src/app/services/data.service';
+import { SiteContentService } from 'src/app/services/site-content.service';
 import {
-  splitCommunityEvents,
+  DEFAULT_JOIN_URL,
+  isRegistrationOpen,
+  splitEventRows,
   splitName,
-  toSocials,
-  toSponsor,
-  toTestimonials,
 } from 'src/app/shared/content';
-import { toDevfestEdition } from 'src/app/shared/devfest-edition';
+import { EventRow } from 'src/app/shared/view-models';
+import { ik } from 'src/app/shared/image';
+import { HOME_MODULE_ITEM_LIMIT } from 'src/app/shared/modules';
 
 const CARD_RADII = ['56px 56px 56px 14px', '56px 14px 56px 56px', '14px 56px 56px 56px'];
 const TESTIMONIAL_COLORS = [
@@ -31,6 +44,17 @@ const TESTIMONIAL_COLORS = [
   { bg: 'var(--srf-3)', fg: 'var(--on-srf)' },
   { bg: 'var(--pri-c)', fg: 'var(--on-pri-c)' },
 ];
+const HOME_DESCRIPTION =
+  'GDG Siliguri is the Google Developer Group for North Bengal and Sikkim: tech talks, hackathons, codelabs, workshops and DevFest Siliguri.';
+const TIER_DOTS: Partial<Record<string, string>> = {
+  platinum: '#4285F4',
+  gold: '#F9AB00',
+  silver: '#9AA0A6',
+  bronze: '#B87333',
+  community: '#34A853',
+  venue: '#EA4335',
+  media: '#A142F4',
+};
 const WHAT_WE_DO = [
   { title: 'Tech talks', shape: 'cookie9', color: 'var(--pri)' },
   { title: 'Hackathons', shape: 'sunny', color: 'var(--ter)' },
@@ -41,7 +65,10 @@ const WHAT_WE_DO = [
 @Component({
   selector: 'app-home-page',
   imports: [
+    BlogCardComponent,
     FaqAccordionComponent,
+    ModuleSectionComponent,
+    ShowcaseGridComponent,
     HeroIllustrationComponent,
     PartnerMarqueeComponent,
     RevealDirective,
@@ -89,7 +116,7 @@ const WHAT_WE_DO = [
         <app-hero-illustration />
       </section>
 
-      @if (edition(); as ed) {
+      @if (devfestCard(); as ed) {
         <section class="wrap-wide">
           <div
             appReveal="0"
@@ -123,7 +150,8 @@ const WHAT_WE_DO = [
             </div>
             <div class="relative flex min-w-0 flex-[1_1_360px] flex-col gap-4">
               @if (ed.isUpcoming) {
-                <div role="group" aria-label="Time left" class="grid grid-cols-4 gap-1">
+                <p class="sr-only" aria-live="polite">{{ countdownText() }}</p>
+                <div aria-hidden="true" class="grid grid-cols-4 gap-1">
                   @for (
                     unit of countdownUnits();
                     track unit.label;
@@ -182,7 +210,7 @@ const WHAT_WE_DO = [
         <div class="flex min-w-0 flex-[1_1_360px] flex-col gap-[22px]">
           <h2 appReveal="0" class="display-md">What we <b>do</b></h2>
           <p appReveal="1" class="m-0 font-manrope text-base leading-[1.65] text-on-srf-v">
-            {{ eventData()?.communityDescription }}
+            {{ site()?.description }}
           </p>
           <a appReveal="2" routerLink="/about" class="pill-btn self-start"
             >About us<span class="ms">chevron_right</span></a
@@ -211,55 +239,21 @@ const WHAT_WE_DO = [
         </div>
       </section>
 
-      <section class="wrap flex flex-col gap-7">
-        <div appReveal="0" class="flex flex-wrap items-end justify-between gap-4">
-          <h2 class="display-md">Coming <b class="text-pri">up</b></h2>
-          <a routerLink="/events" class="pill-btn"
-            >All events<span class="ms">chevron_right</span></a
-          >
-        </div>
-        <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,320px),1fr))] gap-3">
-          @for (meetup of upcoming(); track meetup.title + meetup.at; let i = $index) {
-            <a
-              [appReveal]="i"
-              [href]="meetup.url || null"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="t-lift flex cursor-pointer flex-col gap-7 rounded-[36px_36px_36px_10px] bg-srf-2 p-6 text-on-srf no-underline hover:rounded-[36px] hover:bg-srf-3 hover:text-on-srf hover:shadow-[0_24px_40px_-24px_rgba(0,0,0,.45)] hover:[translate:0_-6px]"
+      @if (meetupsShown()) {
+        <section class="wrap flex flex-col gap-7">
+          <div appReveal="0" class="flex flex-wrap items-end justify-between gap-4">
+            <h2 class="display-md">Coming <b class="text-pri">up</b></h2>
+            <a routerLink="/events" class="pill-btn"
+              >All events<span class="ms">chevron_right</span></a
             >
-              <div class="flex items-start justify-between">
-                <div
-                  class="flex h-[84px] w-[84px] flex-col items-center justify-center bg-pri text-on-pri [clip-path:var(--s-cookie6)]"
-                >
-                  <b class="font-manrope text-[28px] font-extrabold leading-none">{{
-                    meetup.day
-                  }}</b>
-                  <span class="font-manrope text-[11px] font-bold tracking-[.12em]">{{
-                    meetup.mon
-                  }}</span>
-                </div>
-                <span
-                  class="grid h-8 place-items-center rounded-2xl border border-solid border-out px-3.5 font-manrope text-xs font-bold"
-                  >{{ meetup.tag }}</span
-                >
-              </div>
-              <div class="flex flex-col gap-1.5">
-                <b class="font-urbanist text-[22px] font-bold leading-[1.2] tracking-[-.01em]">{{
-                  meetup.title
-                }}</b>
-                @if (meetup.where) {
-                  <span
-                    class="flex items-center gap-1.5 font-manrope text-sm font-medium text-on-srf-v"
-                    ><span class="ms text-lg">location_on</span>{{ meetup.where }}</span
-                  >
-                }
-              </div>
-            </a>
-          } @empty {
-            @if (edition()?.isUpcoming) {
+          </div>
+          <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,320px),1fr))] gap-3">
+            @for (meetup of upcoming(); track meetup.title + meetup.at; let i = $index) {
               <a
-                appReveal="0"
-                routerLink="/devfest"
+                [appReveal]="i"
+                [href]="isOpen(meetup) ? meetup.url : null"
+                target="_blank"
+                rel="noopener noreferrer"
                 class="t-lift flex cursor-pointer flex-col gap-7 rounded-[36px_36px_36px_10px] bg-srf-2 p-6 text-on-srf no-underline hover:rounded-[36px] hover:bg-srf-3 hover:text-on-srf hover:shadow-[0_24px_40px_-24px_rgba(0,0,0,.45)] hover:[translate:0_-6px]"
               >
                 <div class="flex items-start justify-between">
@@ -267,49 +261,85 @@ const WHAT_WE_DO = [
                     class="flex h-[84px] w-[84px] flex-col items-center justify-center bg-pri text-on-pri [clip-path:var(--s-cookie6)]"
                   >
                     <b class="font-manrope text-[28px] font-extrabold leading-none">{{
-                      edition()?.day
+                      meetup.day
                     }}</b>
                     <span class="font-manrope text-[11px] font-bold tracking-[.12em]">{{
-                      edition()?.month?.toUpperCase()
+                      meetup.mon
                     }}</span>
                   </div>
                   <span
                     class="grid h-8 place-items-center rounded-2xl border border-solid border-out px-3.5 font-manrope text-xs font-bold"
-                    >Conference</span
+                    >{{ meetup.tag }}</span
                   >
                 </div>
                 <div class="flex flex-col gap-1.5">
                   <b class="font-urbanist text-[22px] font-bold leading-[1.2] tracking-[-.01em]">{{
-                    edition()?.name
+                    meetup.title
                   }}</b>
-                  @if (edition()?.venue) {
+                  @if (meetup.where) {
                     <span
                       class="flex items-center gap-1.5 font-manrope text-sm font-medium text-on-srf-v"
-                      ><span class="ms text-lg">location_on</span>{{ edition()?.venue }}</span
+                      ><span class="ms text-lg">location_on</span>{{ meetup.where }}</span
                     >
                   }
                 </div>
               </a>
-            } @else {
-              <a
-                appReveal="0"
-                [href]="joinUrl()"
-                class="t-lift flex flex-col gap-7 rounded-[36px_36px_36px_10px] bg-srf-2 p-6 text-on-srf no-underline hover:rounded-[36px] hover:bg-srf-3 hover:text-on-srf hover:[translate:0_-6px]"
-              >
-                <span class="h-[84px] w-[84px] bg-pri [clip-path:var(--s-cookie6)]"></span>
-                <div class="flex flex-col gap-1.5">
-                  <b class="font-urbanist text-[22px] font-bold leading-[1.2] tracking-[-.01em]"
-                    >More meetups are on the way</b
-                  >
-                  <span class="font-manrope text-sm font-medium text-on-srf-v"
-                    >Join the community to hear about them first.</span
-                  >
-                </div>
-              </a>
+            } @empty {
+              @if (edition()?.isUpcoming) {
+                <a
+                  appReveal="0"
+                  routerLink="/devfest"
+                  class="t-lift flex cursor-pointer flex-col gap-7 rounded-[36px_36px_36px_10px] bg-srf-2 p-6 text-on-srf no-underline hover:rounded-[36px] hover:bg-srf-3 hover:text-on-srf hover:shadow-[0_24px_40px_-24px_rgba(0,0,0,.45)] hover:[translate:0_-6px]"
+                >
+                  <div class="flex items-start justify-between">
+                    <div
+                      class="flex h-[84px] w-[84px] flex-col items-center justify-center bg-pri text-on-pri [clip-path:var(--s-cookie6)]"
+                    >
+                      <b class="font-manrope text-[28px] font-extrabold leading-none">{{
+                        edition()?.day
+                      }}</b>
+                      <span class="font-manrope text-[11px] font-bold tracking-[.12em]">{{
+                        edition()?.month?.toUpperCase()
+                      }}</span>
+                    </div>
+                    <span
+                      class="grid h-8 place-items-center rounded-2xl border border-solid border-out px-3.5 font-manrope text-xs font-bold"
+                      >Conference</span
+                    >
+                  </div>
+                  <div class="flex flex-col gap-1.5">
+                    <b class="font-urbanist text-[22px] font-bold leading-[1.2] tracking-[-.01em]">{{
+                      edition()?.name
+                    }}</b>
+                    @if (edition()?.venue) {
+                      <span
+                        class="flex items-center gap-1.5 font-manrope text-sm font-medium text-on-srf-v"
+                        ><span class="ms text-lg">location_on</span>{{ edition()?.venue }}</span
+                      >
+                    }
+                  </div>
+                </a>
+              } @else {
+                <a
+                  appReveal="0"
+                  [href]="joinUrl()"
+                  class="t-lift flex flex-col gap-7 rounded-[36px_36px_36px_10px] bg-srf-2 p-6 text-on-srf no-underline hover:rounded-[36px] hover:bg-srf-3 hover:text-on-srf hover:[translate:0_-6px]"
+                >
+                  <span class="h-[84px] w-[84px] bg-pri [clip-path:var(--s-cookie6)]"></span>
+                  <div class="flex flex-col gap-1.5">
+                    <b class="font-urbanist text-[22px] font-bold leading-[1.2] tracking-[-.01em]"
+                      >More meetups are on the way</b
+                    >
+                    <span class="font-manrope text-sm font-medium text-on-srf-v"
+                      >Join the community to hear about them first.</span
+                    >
+                  </div>
+                </a>
+              }
             }
-          }
-        </div>
-      </section>
+          </div>
+        </section>
+      }
 
       @if (testimonials().length) {
         <section class="flex flex-col gap-7">
@@ -367,7 +397,7 @@ const WHAT_WE_DO = [
         </section>
       }
 
-      @if (platinum() || gold().length || partners().length) {
+      @if (platinum() || others().length || partners().length) {
         <section class="flex flex-col gap-8">
           <div class="wrap flex flex-col gap-7">
             <h2 appReveal="0" class="display-md">Sponsors &amp; <b>partners</b></h2>
@@ -384,7 +414,7 @@ const WHAT_WE_DO = [
                     role="img"
                     [attr.aria-label]="plat.name"
                     class="aspect-square w-[clamp(120px,14vw,168px)] flex-none bg-white bg-[length:118%] bg-center bg-no-repeat [clip-path:var(--s-cookie9)]"
-                    [style.background-image]="'url(' + plat.icon + ')'"
+                    [style.background-image]="'url(' + ik(plat.logo.url, { w: 336 }) + ')'"
                   ></div>
                   <div class="flex min-w-0 flex-[1_1_200px] flex-col gap-2.5">
                     <span
@@ -395,14 +425,16 @@ const WHAT_WE_DO = [
                       class="font-urbanist text-[clamp(30px,3.4vw,44px)] font-light leading-none tracking-[-.03em]"
                       >{{ plat.lead }} <b class="font-extrabold">{{ plat.rest }}</b></b
                     >
+                    @if (plat.host) {
                     <span class="flex items-center gap-1.5 font-manrope text-sm font-semibold"
                       >{{ plat.host }}<span class="ms text-lg">arrow_outward</span></span
                     >
+                    }
                   </div>
                 </a>
               }
               <div class="flex min-w-0 flex-[1_1_300px] flex-col gap-2">
-                @for (g of gold(); track g.url; let i = $index, first = $first, last = $last) {
+                @for (g of others(); track g.name; let i = $index, first = $first, last = $last) {
                   <a
                     [appReveal]="i + 1"
                     [href]="g.url"
@@ -423,13 +455,17 @@ const WHAT_WE_DO = [
                       role="img"
                       [attr.aria-label]="g.name"
                       class="h-16 w-16 flex-none bg-white bg-[length:78%] bg-center bg-no-repeat [clip-path:var(--s-cookie6)]"
-                      [style.background-image]="'url(' + g.icon + ')'"
+                      [style.background-image]="'url(' + ik(g.logo.url, { w: 128 }) + ')'"
                     ></div>
                     <div class="flex min-w-0 flex-1 flex-col gap-[3px]">
                       <b class="font-urbanist text-lg font-extrabold">{{ g.name }}</b>
                       <span
                         class="flex items-center gap-1.5 font-manrope text-[11px] font-bold tracking-[.14em] text-on-srf-v"
-                        ><span class="h-2 w-2 rounded bg-[#F9AB00]"></span>GOLD</span
+                        ><span
+                          class="h-2 w-2 rounded"
+                          [style.background]="tierDots[g.tier] ?? 'var(--out)'"
+                        ></span
+                        >{{ g.tierLabel.toUpperCase() }}</span
                       >
                     </div>
                     <span class="ms text-xl text-on-srf-v">arrow_outward</span>
@@ -444,6 +480,65 @@ const WHAT_WE_DO = [
           @if (partners().length) {
             <app-partner-marquee [partners]="partners()" />
           }
+        </section>
+      }
+
+      @for (module of modules(); track module.id) {
+        <app-module-section [module]="module" [limit]="moduleLimit" />
+      }
+
+      @if (showcase().length) {
+        <section class="wrap flex flex-col gap-7">
+          <div appReveal="0" class="flex flex-wrap items-end justify-between gap-4">
+            <h2 class="display-md">Built by the <b class="text-pri">community</b></h2>
+            @if (showcasePath()) {
+              <a [routerLink]="showcasePath()" class="pill-btn"
+                >All projects<span class="ms">chevron_right</span></a
+              >
+            }
+          </div>
+          <app-showcase-grid [items]="showcase()" />
+        </section>
+      }
+
+      @if (blogs().length) {
+        <section class="wrap flex flex-col gap-7">
+          <div appReveal="0" class="flex flex-wrap items-end justify-between gap-4">
+            <h2 class="display-md">Latest <b>posts</b></h2>
+            <a routerLink="/blogs" class="pill-btn"
+              >All posts<span class="ms">chevron_right</span></a
+            >
+          </div>
+          <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,320px),1fr))] gap-4">
+            @for (blog of blogs(); track blog.id; let i = $index) {
+              <app-blog-card [appReveal]="i" [blog]="blog" />
+            }
+          </div>
+        </section>
+      }
+
+      @if (pastDevfests().length) {
+        <section class="wrap flex flex-col gap-7">
+          <h2 appReveal="0" class="display-md">Past <b>DevFests</b></h2>
+          <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,240px),1fr))] gap-3">
+            @for (past of pastDevfests(); track past.year; let i = $index) {
+              <a
+                [appReveal]="i"
+                [routerLink]="past.link"
+                class="t-lift flex flex-col gap-2 rounded-[36px_36px_36px_10px] bg-srf-2 p-6 text-on-srf no-underline hover:rounded-[36px] hover:bg-srf-3 hover:text-on-srf"
+              >
+                <b class="font-manrope text-[56px] font-black leading-none tracking-[-.06em]">{{
+                  past.year
+                }}</b>
+                <span class="font-urbanist text-lg font-extrabold">DevFest {{ past.year }}</span>
+                @if (past.highlight) {
+                  <span class="font-manrope text-sm font-medium text-on-srf-v">{{
+                    past.highlight
+                  }}</span>
+                }
+              </a>
+            }
+          </div>
         </section>
       }
 
@@ -488,24 +583,27 @@ const WHAT_WE_DO = [
   `,
 })
 export class HomePageComponent {
-  private readonly data = inject(DataService);
   private readonly testimonialTrack = viewChild<ElementRef<HTMLElement>>('testimonialTrack');
 
   protected readonly radii = CARD_RADII;
   protected readonly whatWeDo = WHAT_WE_DO;
   protected readonly testimonialColors = TESTIMONIAL_COLORS;
+  protected readonly tierDots = TIER_DOTS;
+  protected readonly ik = ik;
+  protected readonly moduleLimit = HOME_MODULE_ITEM_LIMIT;
 
-  protected readonly eventData = toSignal(this.data.getEventData());
-  private readonly faqsResult = toSignal(this.data.getAllGDGFAQS());
-  private readonly feedbacksResult = toSignal(this.data.getAllFeedbacks());
-  private readonly sponsorsResult = toSignal(this.data.getAllSponsors());
-  private readonly partnersResult = toSignal(this.data.getAllCommunityPartners());
-  private readonly eventsResult = toSignal(this.data.getCommunityEventsData());
+  private readonly view = toSignal(inject(SiteContentService).home());
 
-  protected readonly edition = computed(() =>
-    toDevfestEdition(this.eventData(), [], Date.now())
+  protected readonly site = computed(() => this.view()?.site);
+  protected readonly edition = computed(() => this.view()?.edition ?? null);
+  protected readonly devfestCard = computed(() =>
+    this.view()?.eventMode ? this.edition() : null
   );
   private readonly countdown = injectCountdown(() => this.edition()?.startsAt ?? 0);
+  private readonly minute = injectMinuteClock();
+  protected readonly countdownText = computed(() =>
+    countdownLabel(this.edition()?.startsAt ?? 0, this.minute() || Date.now())
+  );
   protected readonly countdownUnits = computed(() => {
     const c = this.countdown();
     return [
@@ -516,47 +614,57 @@ export class HomePageComponent {
     ];
   });
 
-  protected readonly joinUrl = computed(
-    () => this.eventData()?.communityJoinLink || 'https://gdg.community.dev/gdg-siliguri/'
-  );
-  protected readonly socials = computed(() => toSocials(this.eventData()?.socialMediaLinks));
+  protected readonly joinUrl = computed(() => this.site()?.joinUrl || DEFAULT_JOIN_URL);
+  protected readonly socials = computed(() => this.site()?.socials ?? []);
 
-  protected readonly gdgFaqs = computed(() => {
-    const r = this.faqsResult();
-    return r?.enabled ? r.data : [];
-  });
-  protected readonly testimonials = computed(() => {
-    const r = this.feedbacksResult();
-    return r?.enabled ? toTestimonials(r.data) : [];
-  });
+  protected readonly gdgFaqs = computed(() => this.view()?.faqs ?? []);
+  protected readonly testimonials = computed(() => this.view()?.testimonials ?? []);
+  private readonly sponsors = computed(() =>
+    (this.view()?.sponsors ?? []).flatMap((group) => group.sponsors)
+  );
   protected readonly platinum = computed(() => {
-    const r = this.sponsorsResult();
-    const top = r?.enabled ? r.platinum?.[0] : undefined;
+    const top = this.sponsors().find((s) => s.tier === 'platinum');
     if (!top) {
       return null;
     }
-    const { first, last } = splitName(top.sponsorName);
-    return { ...toSponsor(top), lead: first, rest: last };
+    const { first, last } = splitName(top.name);
+    return { ...top, lead: first, rest: last };
   });
-  protected readonly gold = computed(() => {
-    const r = this.sponsorsResult();
-    return r?.enabled ? (r.gold ?? []).map(toSponsor) : [];
+  protected readonly others = computed(() => {
+    const top = this.platinum();
+    return this.sponsors().filter((s) => s.name !== top?.name || s.tier !== top?.tier);
   });
-  protected readonly partners = computed(() => {
-    const r = this.partnersResult();
-    return r?.enabled ? r.data : [];
-  });
-  protected readonly upcoming = computed(() => {
-    const r = this.eventsResult();
-    return splitCommunityEvents(r?.enabled ? r.data : [], Date.now()).upcoming.slice(0, 3);
-  });
+  protected readonly partners = computed(() => this.view()?.partners ?? []);
+  private readonly now = signal(Date.now());
+  protected readonly modules = computed(() => this.view()?.modules ?? []);
+  protected readonly showcase = computed(() => this.view()?.showcase ?? []);
+  protected readonly showcasePath = computed(() => this.view()?.showcasePath ?? '');
+  protected readonly blogs = computed(() => this.view()?.blogs ?? []);
+  protected readonly pastDevfests = computed(() => this.view()?.pastDevfests ?? []);
+  protected readonly meetupsShown = computed(() => this.site()?.sections.events ?? true);
+  protected readonly upcoming = computed(() =>
+    splitEventRows(this.view()?.events ?? [], this.now()).upcoming.slice(0, 3)
+  );
+
+  protected isOpen(row: EventRow): boolean {
+    return isRegistrationOpen(row, this.now());
+  }
 
   constructor() {
-    inject(Title).setTitle('GDG Siliguri | Google Developer Groups Siliguri');
-    inject(Meta).updateTag({
-      name: 'description',
-      content:
-        'GDG Siliguri is the Google Developer Group for North Bengal and Sikkim: tech talks, hackathons, codelabs, workshops and DevFest Siliguri.',
+    afterNextRender(() => this.now.set(Date.now()));
+    const seo = inject(SeoService);
+    effect(() => {
+      const site = this.site();
+      const banner = this.edition()?.bannerUrl;
+      seo.update({
+        title: SITE_NAME,
+        description: site?.tagline || site?.description || HOME_DESCRIPTION,
+        path: '/',
+        image: banner ? ik(banner, { w: 1200, h: 630 }) : '',
+        jsonLd: site
+          ? organizationJsonLd(site, seo.absoluteUrl('/'), seo.absoluteUrl(DEFAULT_IMAGE_PATH))
+          : null,
+      });
     });
   }
 
