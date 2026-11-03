@@ -41,6 +41,20 @@ export interface BundleEdition {
       opensAt?: string;
       closesAt?: string;
     };
+    calls: {
+      speakers?: {
+        url?: string;
+        open: boolean;
+      };
+      sponsors?: {
+        url?: string;
+        open: boolean;
+      };
+      partners?: {
+        url?: string;
+        open: boolean;
+      };
+    };
     venue: {
       name: string;
       address?: string;
@@ -421,6 +435,20 @@ export interface BundleHome {
       url?: string;
       opensAt?: string;
       closesAt?: string;
+    };
+    calls: {
+      speakers?: {
+        url?: string;
+        open: boolean;
+      };
+      sponsors?: {
+        url?: string;
+        open: boolean;
+      };
+      partners?: {
+        url?: string;
+        open: boolean;
+      };
     };
     venue: {
       name: string;
@@ -852,6 +880,20 @@ export interface Edition {
     url?: string;
     opensAt?: string;
     closesAt?: string;
+  };
+  calls: {
+    speakers?: {
+      url?: string;
+      open: boolean;
+    };
+    sponsors?: {
+      url?: string;
+      open: boolean;
+    };
+    partners?: {
+      url?: string;
+      open: boolean;
+    };
   };
   venue: {
     name: string;

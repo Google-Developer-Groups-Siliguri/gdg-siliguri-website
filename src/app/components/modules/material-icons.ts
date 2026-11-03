@@ -6,11 +6,14 @@ export const LOADED_ICONS = new Set([
   'chevron_right',
   'close',
   'confirmation_number',
+  'diversity_3',
   'event_upcoming',
   'group_add',
+  'handshake',
   'location_on',
   'mail',
   'menu',
+  'record_voice_over',
   'shop',
 ]);
 

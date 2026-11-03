@@ -325,6 +325,7 @@ export function toDevfestEdition(
       isUpcoming &&
       (Number.isNaN(registrationEnds) || registrationEnds > now),
     ticketUrl: event.eventTicketURL,
+    calls: [],
     venue,
     mapsUrl: event.eventVenue?.mapsURL ?? '',
     summary: event.bannerDescription ?? '',
