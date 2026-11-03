@@ -155,6 +155,28 @@ describe('content mappers (v2)', () => {
         )?.registrationOpen
       ).toBeFalse();
     });
+
+    it('lists the calls that have a form link, with tickets first, until the event starts', () => {
+      const base = edition2026.edition;
+      const withCalls = {
+        ...base,
+        sections: { ...base.sections, registration: true },
+        registration: { url: 'https://example.com/t' },
+        calls: {
+          speakers: { url: 'https://forms.gle/speak', open: true },
+          sponsors: { url: 'https://forms.gle/sponsor', open: false },
+          partners: { open: true },
+        },
+      };
+      const calls = toDevfestEdition(withCalls, BEFORE_2026)?.calls ?? [];
+      expect(calls.map((call) => [call.key, call.open])).toEqual([
+        ['tickets', true],
+        ['speakers', true],
+        ['sponsors', false],
+      ]);
+      expect(toDevfestEdition(base, BEFORE_2026)?.calls).toEqual([]);
+      expect(toDevfestEdition(withCalls, Date.parse('2026-11-15T00:00:00Z'))?.calls).toEqual([]);
+    });
   });
 
   describe('DevFest 2026 (real data, lineup off)', () => {

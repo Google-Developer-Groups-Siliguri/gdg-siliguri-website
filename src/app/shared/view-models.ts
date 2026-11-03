@@ -183,6 +183,7 @@ export interface DevfestEdition {
   isPast: boolean;
   registrationOpen: boolean;
   ticketUrl: string;
+  calls: CallCard[];
   venue: string;
   mapsUrl: string;
   summary: string;
@@ -193,6 +194,17 @@ export interface DevfestEdition {
   startIso: string;
   endIso: string;
   address: string;
+}
+
+export interface CallCard {
+  key: string;
+  lead: string;
+  rest: string;
+  body: string;
+  icon: string;
+  shape: string;
+  url: string;
+  open: boolean;
 }
 
 export interface EditionSections {

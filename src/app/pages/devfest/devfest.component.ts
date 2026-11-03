@@ -7,6 +7,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ModuleSectionComponent } from 'src/app/components/modules/module-section.component';
 import { injectMinuteClock } from 'src/app/motion/minute-clock';
 import { ScheduleItem } from 'src/app/shared/view-models';
+import { DevfestCallsComponent } from 'src/app/components/site/devfest-calls.component';
 import { FaqAccordionComponent } from 'src/app/components/site/faq-accordion.component';
 import { PartnerMarqueeComponent } from 'src/app/components/site/partner-marquee.component';
 import { countdownLabel, injectCountdown } from 'src/app/motion/countdown';
@@ -25,6 +26,7 @@ const DEFAULT_LOGO_SIZE = 64;
 @Component({
   selector: 'app-devfest',
   imports: [
+    DevfestCallsComponent,
     FaqAccordionComponent,
     ModuleSectionComponent,
     ParallaxDirective,
@@ -263,6 +265,27 @@ const DEFAULT_LOGO_SIZE = 64;
             }
           </section>
         }
+      }
+
+      @if (edition()?.calls?.length) {
+        <section id="get-involved" class="wrap flex flex-col gap-8">
+          <div class="flex flex-wrap items-end justify-between gap-4">
+            <h2
+              appReveal="0"
+              class="m-0 font-urbanist text-[clamp(44px,6vw,88px)] font-extralight leading-[.88] tracking-[-.05em]"
+            >
+              Get <b class="font-extrabold">involved</b>
+            </h2>
+            <p
+              appReveal="1"
+              class="m-0 max-w-[420px] font-manrope text-[15px] leading-[1.6] text-on-srf-v"
+            >
+              Attend, speak, sponsor or partner with DevFest {{ edition()?.year }}. Each card opens
+              its form.
+            </p>
+          </div>
+          <app-devfest-calls [calls]="edition()?.calls ?? []" />
+        </section>
       }
 
       @if (schedule().length) {

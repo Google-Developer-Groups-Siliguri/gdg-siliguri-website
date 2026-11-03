@@ -20,6 +20,7 @@ import { RouterLink } from '@angular/router';
 import { BlogCardComponent } from 'src/app/components/blog-card.component';
 import { ModuleSectionComponent } from 'src/app/components/modules/module-section.component';
 import { ShowcaseGridComponent } from 'src/app/components/showcase/showcase-grid.component';
+import { DevfestCallsComponent } from 'src/app/components/site/devfest-calls.component';
 import { FaqAccordionComponent } from 'src/app/components/site/faq-accordion.component';
 import { HeroIllustrationComponent } from 'src/app/components/site/hero-illustration.component';
 import { PartnerMarqueeComponent } from 'src/app/components/site/partner-marquee.component';
@@ -66,6 +67,7 @@ const WHAT_WE_DO = [
   selector: 'app-home-page',
   imports: [
     BlogCardComponent,
+    DevfestCallsComponent,
     FaqAccordionComponent,
     ModuleSectionComponent,
     ShowcaseGridComponent,
@@ -203,6 +205,18 @@ const WHAT_WE_DO = [
               </div>
             </div>
           </div>
+        </section>
+      }
+
+      @if (devfestCard()?.calls?.length) {
+        <section class="wrap flex flex-col gap-7">
+          <div appReveal="0" class="flex flex-wrap items-end justify-between gap-4">
+            <h2 class="display-md">Be part of <b class="text-pri">DevFest</b></h2>
+            <a routerLink="/devfest" fragment="get-involved" class="pill-btn"
+              >DevFest {{ devfestCard()?.year }}<span class="ms">chevron_right</span></a
+            >
+          </div>
+          <app-devfest-calls [calls]="devfestCard()?.calls ?? []" />
         </section>
       }
 

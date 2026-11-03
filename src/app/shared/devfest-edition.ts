@@ -1,5 +1,5 @@
 import type { EditionInfo } from '../services/bundle-types';
-import { DevfestEdition } from './view-models';
+import { CallCard, DevfestEdition } from './view-models';
 import {
   isoWithOffset,
   titleMonth,
@@ -28,6 +28,52 @@ export function calendarLink(
     details,
   });
   return `https://calendar.google.com/calendar/render?${params}`;
+}
+
+const CALLS = [
+  {
+    key: 'speakers',
+    lead: 'Call for',
+    rest: 'speakers',
+    body: 'Share what you have built or learned on the DevFest stage.',
+    icon: 'record_voice_over',
+    shape: 'sunny',
+  },
+  {
+    key: 'sponsors',
+    lead: 'Call for',
+    rest: 'sponsors',
+    body: 'Back the event and meet hundreds of developers from the region.',
+    icon: 'handshake',
+    shape: 'clover4',
+  },
+  {
+    key: 'partners',
+    lead: 'Call for community',
+    rest: 'partners',
+    body: 'Bring your community along and help us spread the word.',
+    icon: 'diversity_3',
+    shape: 'cookie6',
+  },
+] as const;
+
+function toCalls(edition: EditionInfo, ticketUrl: string, ticketsOpen: boolean): CallCard[] {
+  const tickets: CallCard = {
+    key: 'tickets',
+    lead: 'Register for',
+    rest: 'tickets',
+    body: 'Save your seat for a day of talks, codelabs and workshops.',
+    icon: 'confirmation_number',
+    shape: 'cookie9',
+    url: ticketUrl,
+    open: ticketsOpen,
+  };
+  const calls = CALLS.map((call) => ({
+    ...call,
+    url: edition.calls?.[call.key]?.url ?? '',
+    open: !!edition.calls?.[call.key]?.open,
+  }));
+  return [tickets, ...calls].filter((call) => /^https:\/\//.test(call.url));
 }
 
 function isBefore(now: number, iso: string | undefined): boolean {
@@ -60,6 +106,12 @@ export function toDevfestEdition(
   const venue = edition.venue?.name?.trim() ?? '';
   const ticketUrl = edition.registration?.url ?? '';
   const isUpcoming = startsAt > now;
+  const registrationOpen =
+    !!edition.sections?.registration &&
+    !!ticketUrl &&
+    isUpcoming &&
+    isAfter(now, edition.registration?.opensAt) &&
+    isBefore(now, edition.registration?.closesAt);
   return {
     name,
     year: String(edition.year || year),
@@ -77,13 +129,9 @@ export function toDevfestEdition(
     endsAt,
     isUpcoming,
     isPast: endsAt <= now,
-    registrationOpen:
-      !!edition.sections?.registration &&
-      !!ticketUrl &&
-      isUpcoming &&
-      isAfter(now, edition.registration?.opensAt) &&
-      isBefore(now, edition.registration?.closesAt),
+    registrationOpen,
     ticketUrl,
+    calls: isUpcoming ? toCalls(edition, ticketUrl, registrationOpen) : [],
     venue,
     mapsUrl: edition.venue?.mapsUrl ?? '',
     summary: edition.summary ?? '',
