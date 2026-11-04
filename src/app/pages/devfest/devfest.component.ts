@@ -288,6 +288,64 @@ const DEFAULT_LOGO_SIZE = 64;
         </section>
       }
 
+      @if (speakers().length) {
+        <section id="speakers" class="wrap flex flex-col gap-8">
+          <h2
+            appReveal="0"
+            class="m-0 font-urbanist text-[clamp(44px,6vw,88px)] font-extralight leading-[.88] tracking-[-.05em]"
+          >
+            {{ recap().year }} <b class="font-extrabold">speakers</b>
+          </h2>
+          <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,270px),1fr))] gap-4">
+            @for (p of speakers(); track p.name; let i = $index) {
+              <div
+                [appReveal]="i % 4"
+                class="group t-lift flex flex-col gap-[18px] rounded-[40px] px-3 pb-6 pt-3 hover:rounded-[28px] hover:shadow-[0_28px_48px_-26px_rgba(0,0,0,.55)] hover:[translate:0_-8px]"
+                [style.background]="p.colors.bg"
+                [style.color]="p.colors.fg"
+              >
+                <div
+                  class="relative aspect-square w-full overflow-hidden bg-black/[.08]"
+                  [style.clip-path]="'var(--s-' + p.shape + ')'"
+                >
+                  <img
+                    [src]="ik(p.photo.url, { w: 540, h: 540, fit: 'face' })"
+                    [attr.srcset]="srcset(p.photo.url, [270, 540], { fit: 'face', aspect: 1 }) || null"
+                    sizes="270px"
+                    [alt]="p.photo.alt"
+                    [attr.width]="p.photo.width ?? null"
+                    [attr.height]="p.photo.height ?? null"
+                    loading="lazy"
+                    class="t-zoom absolute inset-0 h-full w-full object-cover group-hover:[scale:1.08]"
+                  />
+                </div>
+                <div class="flex flex-col gap-2.5 px-3">
+                  <div
+                    class="flex items-center justify-between font-manrope text-xs font-extrabold tracking-[.14em]"
+                  >
+                    <span>{{ p.track ? p.track + ' TRACK' : '' }}</span
+                    ><span class="tracking-[.02em]">{{ p.time }}</span>
+                  </div>
+                  <div class="font-urbanist text-[30px] font-light leading-none tracking-[-.025em]">
+                    {{ p.first }} <b class="font-extrabold">{{ p.last }}</b>
+                  </div>
+                  <span class="font-manrope text-[13px] font-medium leading-[1.4] opacity-80">{{
+                    p.desc
+                  }}</span>
+                  @if (p.talk) {
+                    <div
+                      class="mt-1 border-t-[1.5px] border-solid border-[color-mix(in_srgb,currentColor_25%,transparent)] pt-3.5 font-urbanist text-base font-bold leading-[1.3]"
+                    >
+                      {{ p.talk }}
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
       @if (schedule().length) {
         <section id="schedule" class="wrap flex flex-wrap items-start gap-[clamp(32px,5vw,72px)]">
           <div class="top-[110px] flex min-w-0 flex-[1_1_300px] flex-col gap-6 min-[900px]:sticky">
@@ -407,64 +465,6 @@ const DEFAULT_LOGO_SIZE = 64;
                     }}</span>
                   </div>
                 }
-              </div>
-            }
-          </div>
-        </section>
-      }
-
-      @if (speakers().length) {
-        <section class="wrap flex flex-col gap-8">
-          <h2
-            appReveal="0"
-            class="m-0 font-urbanist text-[clamp(44px,6vw,88px)] font-extralight leading-[.88] tracking-[-.05em]"
-          >
-            {{ recap().year }} <b class="font-extrabold">speakers</b>
-          </h2>
-          <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,270px),1fr))] gap-4">
-            @for (p of speakers(); track p.name; let i = $index) {
-              <div
-                [appReveal]="i % 4"
-                class="group t-lift flex flex-col gap-[18px] rounded-[40px] px-3 pb-6 pt-3 hover:rounded-[28px] hover:shadow-[0_28px_48px_-26px_rgba(0,0,0,.55)] hover:[translate:0_-8px]"
-                [style.background]="p.colors.bg"
-                [style.color]="p.colors.fg"
-              >
-                <div
-                  class="relative aspect-square w-full overflow-hidden bg-black/[.08]"
-                  [style.clip-path]="'var(--s-' + p.shape + ')'"
-                >
-                  <img
-                    [src]="ik(p.photo.url, { w: 540, h: 540, fit: 'face' })"
-                    [attr.srcset]="srcset(p.photo.url, [270, 540], { fit: 'face', aspect: 1 }) || null"
-                    sizes="270px"
-                    [alt]="p.photo.alt"
-                    [attr.width]="p.photo.width ?? null"
-                    [attr.height]="p.photo.height ?? null"
-                    loading="lazy"
-                    class="t-zoom absolute inset-0 h-full w-full object-cover group-hover:[scale:1.08]"
-                  />
-                </div>
-                <div class="flex flex-col gap-2.5 px-3">
-                  <div
-                    class="flex items-center justify-between font-manrope text-xs font-extrabold tracking-[.14em]"
-                  >
-                    <span>{{ p.track ? p.track + ' TRACK' : '' }}</span
-                    ><span class="tracking-[.02em]">{{ p.time }}</span>
-                  </div>
-                  <div class="font-urbanist text-[30px] font-light leading-none tracking-[-.025em]">
-                    {{ p.first }} <b class="font-extrabold">{{ p.last }}</b>
-                  </div>
-                  <span class="font-manrope text-[13px] font-medium leading-[1.4] opacity-80">{{
-                    p.desc
-                  }}</span>
-                  @if (p.talk) {
-                    <div
-                      class="mt-1 border-t-[1.5px] border-solid border-[color-mix(in_srgb,currentColor_25%,transparent)] pt-3.5 font-urbanist text-base font-bold leading-[1.3]"
-                    >
-                      {{ p.talk }}
-                    </div>
-                  }
-                </div>
               </div>
             }
           </div>
