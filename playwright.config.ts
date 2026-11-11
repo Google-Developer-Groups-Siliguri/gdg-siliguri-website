@@ -11,7 +11,12 @@ export default defineConfig({
   use: {
     baseURL: `http://127.0.0.1:${port}`,
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'], ...(process.env['CI'] ? { channel: 'chrome' } : {}) },
+    },
+  ],
   webServer: {
     command: `node scripts/serve-dist.mjs dist/gdg-siliguri-website/browser ${port}`,
     url: `http://127.0.0.1:${port}/`,
