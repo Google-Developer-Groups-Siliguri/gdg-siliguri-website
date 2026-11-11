@@ -37,7 +37,7 @@ import {
   EventsView,
   FaqView,
   HomeView,
-  MemberLink,
+  PersonLink,
   PageLink,
   RecapStat,
   PartnerView,
@@ -100,10 +100,17 @@ const SOCIAL_NETWORKS: { key: keyof SiteLinks; name: string }[] = [
   { key: 'website', name: 'Website' },
 ];
 
-const MEMBER_LINKS: { key: 'linkedin' | 'x' | 'github'; short: string; label: string }[] = [
-  { key: 'linkedin', short: 'in', label: 'LinkedIn' },
-  { key: 'x', short: 'X', label: 'X' },
-  { key: 'github', short: 'GH', label: 'GitHub' },
+type PersonLinkKey = keyof NonNullable<TeamDoc['links']>;
+
+const PERSON_LINKS: { key: PersonLinkKey; label: string }[] = [
+  { key: 'linkedin', label: 'LinkedIn' },
+  { key: 'x', label: 'X' },
+  { key: 'github', label: 'GitHub' },
+  { key: 'website', label: 'Website' },
+  { key: 'instagram', label: 'Instagram' },
+  { key: 'youtube', label: 'YouTube' },
+  { key: 'medium', label: 'Medium' },
+  { key: 'facebook', label: 'Facebook' },
 ];
 
 const TALK_TYPES = new Set(['keynote', 'talk', 'workshop', 'panel', 'lightning']);
@@ -297,6 +304,7 @@ export function toSpeakerCards(
       shape: (chip && SPEAKER_SHAPES[chip.label]) || DEFAULT_SPEAKER_SHAPE,
       talk: talk?.title ?? '',
       time: clock ? `${clock.clock} ${clock.meridiem}` : '',
+      links: toPersonLinks(p.links),
     };
   });
 }
@@ -305,17 +313,22 @@ function toTeamRole(role: string): TeamRoleView {
   return role === 'organizer' || role === 'volunteer' ? role : 'other';
 }
 
-export function toTeamMember(m: TeamDoc): TeamMember {
-  const links: MemberLink[] = MEMBER_LINKS.flatMap(({ key, short, label }) => {
-    const url = m.links?.[key];
-    return url ? [{ short, label, url }] : [];
+export function toPersonLinks(links: TeamDoc['links'] | SpeakerDoc['links']): PersonLink[] {
+  return PERSON_LINKS.flatMap(({ key, label }) => {
+    const url = links?.[key]?.trim();
+    return url && /^https:\/\//.test(url)
+      ? [{ key, label, url, icon: `assets/icons/social/${key}.svg` }]
+      : [];
   });
+}
+
+export function toTeamMember(m: TeamDoc): TeamMember {
   return {
     name: m.name,
     ...splitName(m.name),
     desc: m.headline ?? '',
     photo: toImage(m.photo, m.name),
-    links,
+    links: toPersonLinks(m.links),
     role: toTeamRole(m.role),
   };
 }

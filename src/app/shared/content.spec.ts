@@ -24,6 +24,7 @@ import {
   toHomeView,
   toScheduleItems,
   toSiteView,
+  toPersonLinks,
   toSocials,
   toSpeakerCards,
   toSponsorGroups,
@@ -345,6 +346,37 @@ describe('content mappers (v2)', () => {
   });
 
   describe('small mappers', () => {
+    it('maps every person link in a fixed order and drops blank or non-https ones', () => {
+      const links = toPersonLinks({
+        medium: 'https://medium.com/@d',
+        website: 'https://debajit.dev',
+        github: 'https://github.com/d',
+        x: 'http://x.com/d',
+        linkedin: '  ',
+        instagram: 'https://instagram.com/d',
+        youtube: 'https://youtube.com/@d',
+        facebook: 'https://facebook.com/d',
+      });
+      expect(links.map((l) => l.key)).toEqual(['github', 'website', 'instagram', 'youtube', 'medium', 'facebook']);
+      expect(links.map((l) => l.icon)).toContain('assets/icons/social/youtube.svg');
+      expect(toPersonLinks(undefined)).toEqual([]);
+    });
+
+    it('gives speaker cards their links', () => {
+      const speaker: SpeakerDoc = {
+        id: 'ada',
+        name: 'Ada Lovelace',
+        photo: { url: 'https://ik.imagekit.io/x/a.png', alt: '' },
+        links: { linkedin: 'https://linkedin.com/in/ada', x: 'https://x.com/ada' },
+        order: 10,
+        sessionIds: [],
+      };
+      const [card] = toSpeakerCards([speaker], [], [], 'Asia/Kolkata');
+      expect(card.links.map((l) => l.label)).toEqual(['LinkedIn', 'X']);
+      const [bare] = toSpeakerCards([{ ...speaker, links: undefined }], [], [], 'Asia/Kolkata');
+      expect(bare.links).toEqual([]);
+    });
+
     it('maps team roles, treating unknown roles as other', () => {
       const member: TeamDoc = {
         id: 'a',
@@ -358,7 +390,13 @@ describe('content mappers (v2)', () => {
       };
       const mapped = toTeamMember(member);
       expect(mapped.role).toBe('organizer');
-      expect(mapped.links.map((l) => l.short)).toEqual(['in', 'GH']);
+      expect(mapped.links.map((l) => l.key)).toEqual(['linkedin', 'github']);
+      expect(mapped.links[0]).toEqual({
+        key: 'linkedin',
+        label: 'LinkedIn',
+        url: 'https://linkedin.com/in/d',
+        icon: 'assets/icons/social/linkedin.svg',
+      });
       expect(mapped.photo).toEqual({
         url: 'https://ik.imagekit.io/x/d.webp',
         alt: 'Debajit Mallick',
