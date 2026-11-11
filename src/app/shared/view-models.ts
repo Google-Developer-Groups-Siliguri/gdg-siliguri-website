@@ -89,12 +89,14 @@ export interface SpeakerCard {
   shape: string;
   talk: string;
   time: string;
+  links: PersonLink[];
 }
 
-export interface MemberLink {
-  short: string;
+export interface PersonLink {
+  key: string;
   label: string;
   url: string;
+  icon: string;
 }
 
 export type TeamRoleView = 'organizer' | 'volunteer' | 'other';
@@ -105,7 +107,7 @@ export interface TeamMember {
   last: string;
   desc: string;
   photo: ImageView;
-  links: MemberLink[];
+  links: PersonLink[];
   role: TeamRoleView;
 }
 

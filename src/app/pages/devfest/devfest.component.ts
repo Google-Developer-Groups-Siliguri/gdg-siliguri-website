@@ -10,6 +10,7 @@ import { ScheduleItem } from 'src/app/shared/view-models';
 import { DevfestCallsComponent } from 'src/app/components/site/devfest-calls.component';
 import { FaqAccordionComponent } from 'src/app/components/site/faq-accordion.component';
 import { PartnerMarqueeComponent } from 'src/app/components/site/partner-marquee.component';
+import { PersonLinksComponent } from 'src/app/components/site/person-links.component';
 import { countdownLabel, injectCountdown } from 'src/app/motion/countdown';
 import { ParallaxDirective } from 'src/app/motion/parallax.directive';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
@@ -31,6 +32,7 @@ const DEFAULT_LOGO_SIZE = 64;
     ModuleSectionComponent,
     ParallaxDirective,
     PartnerMarqueeComponent,
+    PersonLinksComponent,
     RevealDirective,
     RouterLink,
     ScrollWeightDirective,
@@ -340,6 +342,11 @@ const DEFAULT_LOGO_SIZE = 64;
                     </div>
                   }
                 </div>
+                @if (p.links.length) {
+                  <div class="mt-auto px-3">
+                    <app-person-links [links]="p.links" [name]="p.name" />
+                  </div>
+                }
               </div>
             }
           </div>

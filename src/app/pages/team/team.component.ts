@@ -4,13 +4,14 @@ import { SeoService } from 'src/app/services/seo.service';
 import { RevealDirective } from 'src/app/motion/reveal.directive';
 import { ScrollWeightDirective } from 'src/app/motion/scroll-weight.directive';
 import { SiteContentService } from 'src/app/services/site-content.service';
+import { PersonLinksComponent } from 'src/app/components/site/person-links.component';
 import { ik, srcset } from 'src/app/shared/image';
 
 const VOLUNTEER_SHAPES = ['cookie9', 'clover4', 'arch', 'cookie6', 'pentagon', 'sunny'];
 
 @Component({
   selector: 'app-team',
-  imports: [RevealDirective, ScrollWeightDirective],
+  imports: [RevealDirective, ScrollWeightDirective, PersonLinksComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <main
@@ -63,19 +64,11 @@ const VOLUNTEER_SHAPES = ['cookie9', 'clover4', 'arch', 'cookie6', 'pentagon', '
                   <span class="font-manrope text-[13px] font-medium text-on-srf-v">{{
                     m.desc
                   }}</span>
-                  <div class="mt-1 flex gap-1">
-                    @for (link of m.links; track link.url) {
-                      <a
-                        [href]="link.url"
-                        [title]="link.label"
-                        [attr.aria-label]="m.name + ' on ' + link.label"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="box-border grid h-8 min-w-[32px] place-items-center rounded-2xl bg-srf-4 px-2.5 font-manrope text-xs font-extrabold text-on-srf no-underline transition-[background-color] duration-300 hover:bg-pri-c hover:text-on-pri-c"
-                        >{{ link.short }}</a
-                      >
-                    }
-                  </div>
+                  @if (m.links.length) {
+                    <div class="mt-1">
+                      <app-person-links [links]="m.links" [name]="m.name" />
+                    </div>
+                  }
                 </div>
               </div>
             }
@@ -86,37 +79,41 @@ const VOLUNTEER_SHAPES = ['cookie9', 'clover4', 'arch', 'cookie6', 'pentagon', '
       @if (volunteers().length) {
         <section class="flex flex-col gap-5">
           <span class="eyebrow">VOLUNTEERS</span>
-          <div
-            class="grid grid-cols-[repeat(auto-fill,minmax(min(42%,180px),1fr))] gap-x-4 gap-y-7"
-          >
+          <div class="grid grid-cols-2 gap-3 min-[600px]:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] min-[600px]:gap-4">
             @for (m of volunteers(); track m.name; let i = $index) {
-              <a
+              <div
                 [appReveal]="i % 5"
-                [href]="m.links[0]?.url || null"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="group flex flex-col items-center gap-3 text-center text-on-srf no-underline hover:text-on-srf"
+                class="group t-lift flex flex-col items-center gap-4 rounded-[32px] border border-solid border-out-v bg-srf-1 px-3 pb-5 pt-3 text-center text-on-srf hover:rounded-[24px] hover:border-transparent hover:bg-srf-3 hover:shadow-[0_24px_40px_-26px_rgba(0,0,0,.5)] hover:[translate:0_-6px]"
               >
-                <div
-                  class="relative aspect-square w-full overflow-hidden bg-srf-3"
-                  [style.clip-path]="'var(--s-' + shapes[i % shapes.length] + ')'"
-                >
-                  <img
-                    [src]="ik(m.photo.url, { w: 400, h: 400, fit: 'face' })"
-                    [attr.srcset]="srcset(m.photo.url, [200, 400], { fit: 'face', aspect: 1 }) || null"
-                    sizes="200px"
-                    [alt]="m.photo.alt"
-                    [attr.width]="m.photo.width ?? null"
-                    [attr.height]="m.photo.height ?? null"
-                    loading="lazy"
-                    class="t-zoom absolute inset-0 h-full w-full object-cover group-hover:[scale:1.1]"
-                  />
+                <div class="relative aspect-square w-full overflow-hidden rounded-[24px] bg-srf-3 p-3">
+                  <div
+                    class="relative h-full w-full overflow-hidden bg-srf-4"
+                    [style.clip-path]="'var(--s-' + shapes[i % shapes.length] + ')'"
+                  >
+                    <img
+                      [src]="ik(m.photo.url, { w: 400, h: 400, fit: 'face' })"
+                      [attr.srcset]="srcset(m.photo.url, [200, 400], { fit: 'face', aspect: 1 }) || null"
+                      sizes="200px"
+                      [alt]="m.photo.alt"
+                      [attr.width]="m.photo.width ?? null"
+                      [attr.height]="m.photo.height ?? null"
+                      loading="lazy"
+                      class="t-zoom absolute inset-0 h-full w-full object-cover group-hover:[scale:1.1]"
+                    />
+                  </div>
                 </div>
-                <div class="flex flex-col gap-[3px]">
+                <div class="flex flex-col gap-1 px-1">
                   <b class="font-urbanist text-lg font-extrabold leading-[1.2]">{{ m.name }}</b>
-                  <span class="font-manrope text-xs font-medium text-on-srf-v">{{ m.desc }}</span>
+                  @if (m.desc) {
+                    <span class="font-manrope text-xs font-medium leading-[1.45] text-on-srf-v">{{ m.desc }}</span>
+                  }
                 </div>
-              </a>
+                @if (m.links.length) {
+                  <div class="mt-auto flex justify-center">
+                    <app-person-links [links]="m.links" [name]="m.name" />
+                  </div>
+                }
+              </div>
             }
           </div>
         </section>

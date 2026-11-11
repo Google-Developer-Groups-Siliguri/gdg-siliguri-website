@@ -20,6 +20,7 @@ import {
   hostOf,
   safeMapsEmbedUrl,
   splitName,
+  toPersonLinks,
   toSiteSections,
 } from './content';
 import {
@@ -30,7 +31,6 @@ import {
   EventsView,
   FaqView,
   HomeView,
-  MemberLink,
   PartnerView,
   PastDevfestView,
   Recap,
@@ -141,6 +141,10 @@ export function toScheduleItems(
   });
 }
 
+function legacyLinks(m: Members) {
+  return toPersonLinks({ linkedin: m.linkedInURL, x: m.twitterURL, github: m.githubURL });
+}
+
 export function toSpeakerCards(speakers: Members[], schedule: Schedule[]): SpeakerCard[] {
   return speakers.map((p) => {
     const slot = schedule.find((s) => s.subTitle === p.name);
@@ -155,22 +159,18 @@ export function toSpeakerCards(speakers: Members[], schedule: Schedule[]): Speak
       shape: SPEAKER_SHAPES[track],
       talk: slot?.title ?? '',
       time: slot?.startTime ?? '',
+      links: legacyLinks(p),
     };
   });
 }
 
 export function toTeamMember(m: Members): TeamMember {
-  const links: MemberLink[] = [
-    { short: 'in', label: 'LinkedIn', url: m.linkedInURL },
-    { short: 'X', label: 'X', url: m.twitterURL },
-    { short: 'GH', label: 'GitHub', url: m.githubURL },
-  ].filter((l) => !!l.url);
   return {
     name: m.name,
     ...splitName(m.name),
     desc: m.description,
     photo: { url: m.profilePictureURL, alt: m.name },
-    links,
+    links: legacyLinks(m),
     role: m.designation === 'Organizer' ? 'organizer' : 'volunteer',
   };
 }
